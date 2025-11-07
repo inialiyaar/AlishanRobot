@@ -62,7 +62,7 @@ async def play_handler(event, command_used, song_name):
         return await event.reply("𝖯ʟᴇᴀsᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ **𝖲ᴏɴɢ 𝖭ᴀᴍᴇ** ᴏʀ **𝖸ᴏᴜᴛᴜʙᴇ 𝖴ʀʟ** ᴀғᴛᴇʀ /play")
     try:
         await Assistant(GetParticipantRequest(chat_id, assistant_entity.id))
-        await add_to_queue(song_name, chat_id, guery_format, mention, download)
+        await add_to_queue(song_name, chat_id, query_format, mention, download)
         return
     except Exception:
         pass
