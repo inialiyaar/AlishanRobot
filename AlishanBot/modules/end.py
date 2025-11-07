@@ -1,0 +1,111 @@
+from AlishanBot.core.bot import Alishan,music
+from AlishanBot.core.decorators import add_command, callback_query
+from telethon import events
+from AlishanBot.modules.helper_funcs.queue import queues, current_ind, queue_position
+from AlishanBot.__init__ import is_playing, BOT_MENTION
+from telethon import Button
+
+
+votes = {}
+
+@add_command("stop", "end")
+async def Stop(event, command_used, args):
+    if event.is_group or event.is_channel:
+        user = await event.get_sender()
+        chat = await event.get_chat()
+        chat_id = int(f"-100{chat.id}" if not str(chat.id).startswith("-100") else chat.id)
+        rights = await Alishan.get_permissions(chat.id, user.id)
+        if not rights.is_admin:
+            votes_target = 5
+            msg = await event.reply(
+                f"**𝖠ᴅᴍɪɴ ʀɪɢʜᴛs ɴᴇᴇᴅᴇᴅ**\n\n⧽ {votes_target} ᴠᴏᴛᴇs ɴᴇᴇᴅᴇᴅ ғᴏʀ ᴘᴇʀғᴏʀᴍɪɴɢ ᴛʜɪs ᴀᴄᴛɪᴏɴ.",
+                buttons = [
+                    [Button.inline("ᴠᴏᴛᴇ", data=b"skip_vote")]
+                ]
+                )
+            votes[chat_id, msg.id] = {
+                "users": set(), 
+                "count": 0,
+                "target": 5
+            }    
+            return
+        try:
+            await stop_song(event)
+        except Exception:
+            pass
+    else:
+        await event.reply("𝖸ᴏᴜ ᴄᴀɴ ᴜsᴇ ɪɴ ɢʀᴏᴜᴘs ᴏɴʟʏ!.")
+
+@callback_query("stop")
+async def Stop_Callback(event):
+    user = await event.get_sender()
+    chat = await event.get_chat()
+    rights = await Alishan.get_permissions(chat.id, user.id)
+    if not rights.is_admin:
+        await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
+        return
+    try:
+        await stop_song(event)
+    except Exception:
+        pass
+
+async def stop_song(event):
+    user = await event.get_sender()
+    try:
+        mention = f"<a href=\"tg://user?id={user.id}\">{user.first_name}</a>"
+    except Exception:
+        mention = "ᴀɴᴏɴʏᴍᴏᴜs"
+    try:
+        await event.delete()
+    except Exception:
+        pass
+    
+    chat = await event.get_chat()
+    chat_id = int(f"-100{chat.id}" if not str(chat.id).startswith("-100") else chat.id)
+    if chat_id in is_playing:
+        queues.pop(chat_id, None)
+        queue_position.pop(chat_id, None)
+        current_ind.pop(chat_id, None)
+        await music.leave_call(chat_id)
+        await event.reply(f"<b>➭ sᴛʀᴇᴀᴍ ᴇɴᴅᴇᴅ / sᴛᴏᴘᴘᴇᴅ\nᴇɴᴅᴇᴅ ʙʏ :</b> {mention}", buttons=None, parse_mode="html")
+        is_playing.pop(chat_id, None) 
+    else:
+        await event.reply(f"» {BOT_MENTION} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.", parse_mode="html")
+  
+@callback_query("end_vote")
+async def end_vote_callback(event):
+    chat = await event.get_chat()
+    chat_id = int(f"-100{chat.id}" if not str(chat.id).startswith("-100") else chat.id)
+    msg_id = event.message_id
+    user_id = event.sender_id
+    key = (chat_id, msg_id)
+    if key not in votes:
+        return
+    vote_data = votes[key]  
+    if user_id in vote_data:
+        return await event.answer("ʏᴏᴜ ᴀʟʀᴇᴀᴅʏ ᴠᴏᴛᴇᴅ!", alert=True)
+    vote_data["users"].add(user_id)
+    vote_data["count"] +=1
+    if vote_data["count"] >= vote_data["target"]:
+        if chat_id in is_playing:
+            queues.pop(chat_id, None)
+            queue_position.pop(chat_id, None)
+            current_ind.pop(chat_id, None)
+            await music.leave_call(chat_id)
+            await event.reply(f"<b>➭ sᴛʀᴇᴀᴍ ᴇɴᴅᴇᴅ / sᴛᴏᴘᴘᴇᴅ\nᴇɴᴅᴇᴅ ʙʏ :</b> ᴠᴏᴛɪɴɢ", buttons=None, parse_mode="html")
+            is_playing.pop(chat_id, None) 
+        else:
+            await event.reply(f"» {BOT_MENTION} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.", parse_mode="html")
+        del votes[key]  
+    else:
+        remaining = vote_data["target"] - vote_data["count"]
+        target = vote_data["target"]
+        count = vote_data["count"]
+        await event.answer("ᴀᴅᴅᴇᴅ 1 ᴜᴘ ᴠᴏᴛᴇ")
+        await event.edit(
+            f"**𝖠ᴅᴍɪɴ ʀɪɢʜᴛs ɴᴇᴇᴅᴇᴅ**\n\n⧽ {target} ᴠᴏᴛᴇs ɴᴇᴇᴅᴇᴅ ғᴏʀ ᴘᴇʀғᴏʀᴍɪɴɢ ᴛʜɪs ᴀᴄᴛɪᴏɴ.", 
+            buttons= [
+                    [Button.inline(f"{count} 👍", data=b"skip_vote")]
+                ]
+            )
+                

@@ -1,0 +1,3 @@
+source venv/bin/activate
+rm -rf __pycache__
+python3 -W ignore -m AlishanBot
