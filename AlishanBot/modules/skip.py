@@ -13,7 +13,7 @@ async def skip_handler(event, command_used, args):
     if event.is_group or event.is_channel:
         user = await event.get_sender()
         chat = await event.get_chat()
-        chat_id = int(f"-100{chat.id}" if not str(chat.id).startswith("-100") else chat.id)
+        chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
         rights = await Alishan.get_permissions(chat.id, user.id)
         if not rights.is_admin:
             votes_target = 5
@@ -24,7 +24,7 @@ async def skip_handler(event, command_used, args):
                 ]
                 )
             votes[chat_id, msg.id] = {
-                "users": set(), 
+                "users": [], 
                 "count": 0,
                 "target": 5
             }    
@@ -34,20 +34,17 @@ async def skip_handler(event, command_used, args):
         except Exception:
             mention = "ᴀɴᴏɴʏᴍᴏᴜs"
         chat = await event.get_chat()
-        chat_id = int(f"-100{chat.id}" if not str(chat.id).startswith("-100") else chat.id)
-        status = await event.reply("**sᴋɪᴘᴘɪɴɢ...🥀**")
+        chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
         if chat_id in queues and len(queues[chat_id]) > 0:
             try:
                 await play_next(chat_id)
                 await event.delete()
             except Exception:
                 pass
-            try:
-                await status.edit(f"<b>➭ 𝖳ʀᴀᴄᴋ sᴋɪᴘᴇᴅ sᴜᴄᴄᴇssғᴜʟʟʏ.</b>\n𝖲ᴋɪᴘᴇᴅ ʙʏ : {mention}", parse_mode="html")
-            except Exception:
-                await status.edit(f"<b>➭ 𝖳ʀᴀᴄᴋ sᴋɪᴘᴇᴅ sᴜᴄᴄᴇssғᴜʟʟʏ.</b>\n𝖲ᴋɪᴘᴇᴅ ʙʏ : {mention}", parse_mode="html")
+            await event.reply(f"<b>➭ 𝖳ʀᴀᴄᴋ sᴋɪᴘᴇᴅ sᴜᴄᴄᴇssғᴜʟʟʏ.</b>\n𝖲ᴋɪᴘᴇᴅ ʙʏ : {mention}", parse_mode="html")
         else:
-            await event.reply(f"» {BOT_MENTION} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.")
+            await event.reply(f"» {BOT_MENTION} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.", parse_mode="html")
+                
     else:
         await event.reply("𝖸ᴏᴜ ᴄᴀɴ ᴜsᴇ ɪɴ ɢʀᴏᴜᴘs ᴏɴʟʏ!.")
     
@@ -55,41 +52,36 @@ async def skip_handler(event, command_used, args):
 async def callback_skip(event):
     user = await event.get_sender()
     chat = await event.get_chat()
-    chat_id = int(f"-100{chat.id}" if not str(chat.id).startswith("-100") else chat.id)
+    chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
     rights = await Alishan.get_permissions(chat.id, user.id)
     if not rights.is_admin:
         await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
         return
     mention = f"<a href=\"tg://user?id={user.id}\">{user.first_name}</a>"
-    status = await event.reply("**sᴋɪᴘᴘɪɴɢ...🥀**")
     if chat_id in queues and len(queues[chat_id]) > 0:
         try:
             await play_next(chat_id)
         except Exception:
             pass
-        try:
-            await status.edit(f"<b>➭ 𝖳ʀᴀᴄᴋ sᴋɪᴘᴇᴅ sᴜᴄᴄᴇssғᴜʟʟʏ.</b>\n𝖲ᴋɪᴘᴇᴅ ʙʏ : {mention}", parse_mode="html")
-        except Exception:
-            await event.reply(f"<b>➭ 𝖳ʀᴀᴄᴋ sᴋɪᴘᴇᴅ sᴜᴄᴄᴇssғᴜʟʟʏ.</b>\n𝖲ᴋɪᴘᴇᴅ ʙʏ : {mention}", parse_mode="html")
+        await event.reply(f"<b>➭ 𝖳ʀᴀᴄᴋ sᴋɪᴘᴇᴅ sᴜᴄᴄᴇssғᴜʟʟʏ.</b>\n𝖲ᴋɪᴘᴇᴅ ʙʏ : {mention}", parse_mode="html")
     else:
-        await event.reply(f"» {BOT_MENTION} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.")
+        await event.reply(f"» {BOT_MENTION} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.", parse_mode="html")
         
 @callback_query("skip_vote")
 async def skip_vote_callback(event):
     chat = await event.get_chat()
-    chat_id = int(f"-100{chat.id}" if not str(chat.id).startswith("-100") else chat.id)
+    chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
     msg_id = event.message_id
     user_id = event.sender_id
     key = (chat_id, msg_id)
     if key not in votes:
         return
     vote_data = votes[key]  
-    if user_id in vote_data:
+    if user_id in vote_data["users"]:
         return await event.answer("ʏᴏᴜ ᴀʟʀᴇᴀᴅʏ ᴠᴏᴛᴇᴅ!", alert=True)
-    vote_data["users"].add(user_id)
+    vote_data["users"].append(user_id)
     vote_data["count"] +=1
     if vote_data["count"] >= vote_data["target"]:
-        await event.edit(f"**sᴋɪᴘᴘɪɴɢ...🥀**")
         if chat_id in queues and len(queues[chat_id]) > 0:
             try:
                 await play_next(chat_id)
@@ -101,7 +93,7 @@ async def skip_vote_callback(event):
                 await event.reply(f"<b>➭ 𝖳ʀᴀᴄᴋ sᴋɪᴘᴇᴅ sᴜᴄᴄᴇssғᴜʟʟʏ.</b>\n𝖲ᴋɪᴘᴇᴅ ʙʏ : ᴠᴏᴛɪɴɢ", buttons=None, parse_mode="html")
             del votes[key]  
         else:
-            await event.reply(f"» {BOT_MENTION} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.")
+            await event.reply(f"» {BOT_MENTION} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.", parse_mode="html")
     else:
         remaining = vote_data["target"] - vote_data["count"]
         target = vote_data["target"]

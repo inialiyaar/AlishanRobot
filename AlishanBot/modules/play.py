@@ -29,7 +29,7 @@ async def play_handler(event, command_used, song_name):
     except Exception:
         mention = "ᴀɴᴏɴʏᴍᴏᴜs"
     chat = await event.get_chat()
-    chat_id = int(f"-100{chat.id}" if not str(chat.id).startswith("-100") else chat.id)
+    chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
     full_channel = await Alishan(GetFullChannelRequest(chat_id))
     call = full_channel.full_chat.call
     if not call:
@@ -44,9 +44,7 @@ async def play_handler(event, command_used, song_name):
             song_name = await reply.download_media(file="downloads/local_download.mp4")
             
         elif reply.video and command_used == "play":
-            song_name = os.path.splitext(path)[0] + ".mp3"
-            
-            os.system(f"ffmpeg -y -i \"{path}\" -vn -acodec libmp3lame \"{song_name}\"")
+            return await promsg.edit("𝖯ʟᴇᴀsᴇ ʀᴇᴘʟʏ ᴛᴏ **𝖠ᴜᴅɪᴏ** ᴏʀ ɢɪᴠᴇ ᴍᴇ **𝖲ᴏɴɢ 𝖭ᴀᴍᴇ ᴀɴᴅ 𝖸ᴏᴜᴛᴜʙᴇ 𝖴ʀʟ**. ᴀғᴛᴇʀ /play")
             
         elif reply.audio and command_used == "play":
             song_name = await reply.download_media(file="downloads/local_download.mp3")

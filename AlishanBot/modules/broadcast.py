@@ -10,13 +10,6 @@ sudo_list = config.sudo_list
 
 @add_command("broadcast")
 async def broadcast_handler(event, command_used, text):
-    await Alishan(SendReactionRequest(
-        peer=event.chat_id,
-        msg_id=event.id,
-        reaction=[types.ReactionEmoji(
-            emoticon='❤️'
-        )]
-    ))
     if event.sender_id not in sudo_list:
         return
 

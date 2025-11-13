@@ -1,7 +1,7 @@
 from AlishanBot.core.bot import Alishan,music
 from AlishanBot.core.decorators import add_command, callback_query
 from telethon import events
-from AlishanBot.modules.helper_funcs.queue import queues, current_ind, queue_position
+from AlishanBot.modules.helper_funcs.queue import queues, current_ind, queue_position, queue_locks
 from AlishanBot.__init__ import is_playing, BOT_MENTION
 from telethon import Button
 
@@ -13,7 +13,7 @@ async def Stop(event, command_used, args):
     if event.is_group or event.is_channel:
         user = await event.get_sender()
         chat = await event.get_chat()
-        chat_id = int(f"-100{chat.id}" if not str(chat.id).startswith("-100") else chat.id)
+        chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
         rights = await Alishan.get_permissions(chat.id, user.id)
         if not rights.is_admin:
             votes_target = 5
@@ -24,7 +24,7 @@ async def Stop(event, command_used, args):
                 ]
                 )
             votes[chat_id, msg.id] = {
-                "users": set(), 
+                "users": [], 
                 "count": 0,
                 "target": 5
             }    
@@ -63,12 +63,13 @@ async def stop_song(event):
     chat = await event.get_chat()
     chat_id = int(f"-100{chat.id}" if not str(chat.id).startswith("-100") else chat.id)
     if chat_id in is_playing:
-        queues.pop(chat_id, None)
-        queue_position.pop(chat_id, None)
-        current_ind.pop(chat_id, None)
+        async with queue_locks[chat_id]:
+            queues.pop(chat_id, None)
+            queue_position.pop(chat_id, None)
+            current_ind.pop(chat_id, None)
+            is_playing.pop(chat_id, None)
         await music.leave_call(chat_id)
         await event.reply(f"<b>➭ sᴛʀᴇᴀᴍ ᴇɴᴅᴇᴅ / sᴛᴏᴘᴘᴇᴅ\nᴇɴᴅᴇᴅ ʙʏ :</b> {mention}", buttons=None, parse_mode="html")
-        is_playing.pop(chat_id, None) 
     else:
         await event.reply(f"» {BOT_MENTION} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.", parse_mode="html")
   
@@ -82,18 +83,19 @@ async def end_vote_callback(event):
     if key not in votes:
         return
     vote_data = votes[key]  
-    if user_id in vote_data:
+    if user_id in vote_data["users"]:
         return await event.answer("ʏᴏᴜ ᴀʟʀᴇᴀᴅʏ ᴠᴏᴛᴇᴅ!", alert=True)
-    vote_data["users"].add(user_id)
+    vote_data["users"].append(user_id)
     vote_data["count"] +=1
     if vote_data["count"] >= vote_data["target"]:
         if chat_id in is_playing:
-            queues.pop(chat_id, None)
-            queue_position.pop(chat_id, None)
-            current_ind.pop(chat_id, None)
+            async with queue_locks[chat_id]:
+                queues.pop(chat_id, None)
+                queue_position.pop(chat_id, None)
+                current_ind.pop(chat_id, None)
+                is_playing.pop(chat_id, None) 
             await music.leave_call(chat_id)
             await event.reply(f"<b>➭ sᴛʀᴇᴀᴍ ᴇɴᴅᴇᴅ / sᴛᴏᴘᴘᴇᴅ\nᴇɴᴅᴇᴅ ʙʏ :</b> ᴠᴏᴛɪɴɢ", buttons=None, parse_mode="html")
-            is_playing.pop(chat_id, None) 
         else:
             await event.reply(f"» {BOT_MENTION} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.", parse_mode="html")
         del votes[key]  

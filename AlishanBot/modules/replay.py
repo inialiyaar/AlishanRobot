@@ -6,7 +6,6 @@ from AlishanBot.modules.helper_funcs.queue import replay
 async def replay_handler(event):
     user = await event.get_sender()
     chat = await event.get_chat()
-    chat_id = int(f"-100{chat.id}" if not str(chat.id).startswith("-100") else chat.id)
     rights = await Alishan.get_permissions(chat.id, user.id)
     if not rights.is_admin:
         await event.reply("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.")

@@ -11,17 +11,23 @@ from AlishanBot.modules.helper_funcs.thumbnail import Thumbnail
 from AlishanBot.__init__ import BOT_USERNAME, ASSISTANT_MENTION, BOT_MENTION
 from AlishanBot import config
 import asyncio
+from asyncio import Lock
+from collections import defaultdict
 
 queues = {}  
 queue_position = {}  
 current_ind = {}
+queue_locks = defaultdict(Lock) 
 
 
 async def add_to_queue(song_name, chat_id, query_format, mention, download):
     status = await Alishan.send_message(chat_id, f"**sᴇᴀʀᴄʜɪɴɢ...🔎**")
+    if not download:
+        data = await meta_data(song_name)
     queues.setdefault(chat_id, [])
     queue_position.setdefault(chat_id, 0)
     current_ind.setdefault(chat_id, 0)
+    
     if download:
         stream_url = song_name
         title = "𝖳ᴇʟᴇɢʀᴀᴍ ʟᴏᴄᴀʟ ᴘʟᴀʏʙᴀᴄᴋ"
@@ -30,22 +36,34 @@ async def add_to_queue(song_name, chat_id, query_format, mention, download):
         thumbnail = "https://i.ibb.co/gLNS8hC1/x.jpg"
     try:
         if not chat_id in is_playing:
-            if not download:
-                data = await meta_data(song_name)
-                stream_url, title, artist, duration, thumbnail = data
-            if query_format == "video":
-                await Play_Video(chat_id, stream_url)
-            else:
-                await Play_Audio(chat_id, stream_url)
             is_playing[chat_id] = True
+            if not download:
+                stream_url, title, artist, duration, thumbnail = data
+            await asyncio.sleep(4)    
+            if query_format == "video":
+                await Play_Video(
+                    chat_id, 
+                    stream_url
+                )
+            if query_format == "audio":
+                await Play_Audio(
+                    chat_id,
+                    stream_url
+                    )
+            async with queue_locks[chat_id]:
+                queues[chat_id] = queues.get(chat_id, []) + [
+        (stream_url, title, artist, duration, thumbnail, mention, query_format)
+    ]
             create_task(playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention))
         else:
-            data = await meta_data(song_name)
             stream_url, title, artist, duration, thumbnail = data
-            queue_position[chat_id] += 1
-            create_task(queue_message(title, artist, duration, query_format, chat_id, queue_position[chat_id], mention))
             
-        queues[chat_id].append((stream_url, title, artist, duration, thumbnail, mention, query_format)) 
+            async with queue_locks[chat_id]:
+                queues[chat_id] = queues.get(chat_id, []) + [
+        (stream_url, title, artist, duration, thumbnail, mention, query_format)
+    ]
+            queue_position[chat_id] =             queue_position.get(chat_id, 0) + 1
+            create_task(queue_message(title, artist, duration, query_format, chat_id, queue_position[chat_id], mention))
         try:
             await status.delete()
         except Exception:
@@ -58,25 +76,29 @@ async def play_next(chat_id):
         is_playing.pop(chat_id, None)
         await music.leave_call(chat_id)
         await Alishan.send_message(chat_id, f"<b>𝖰ᴜᴇᴜᴇ ғɪɴɪsʜᴇᴅ,</b> {ASSISTANT_MENTION} ʟᴇᴀᴠɪɴɢ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ.", parse_mode="html")
-        queues.pop(chat_id, None)
-        queue_position.pop(chat_id, None)
-        current_ind.pop(chat_id, None)
+        async with queue_locks[chat_id]:
+            queues.pop(chat_id, None)
+            queue_position.pop(chat_id, None)
+            current_ind.pop(chat_id, None)
         return
     current_ind[chat_id] += 1
     index = current_ind[chat_id]
     if index >= len(queues[chat_id]):
         await music.leave_call(chat_id)
         await Alishan.send_message(chat_id, f"<b>𝖰ᴜᴇᴜᴇ ғɪɴɪsʜᴇᴅ,</b> {ASSISTANT_MENTION} ʟᴇᴀᴠɪɴɢ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ.", parse_mode="html")
-        queues.pop(chat_id, None)
-        queue_position.pop(chat_id, None)
-        current_ind.pop(chat_id, None)
+        async with queue_locks[chat_id]:
+            queues.pop(chat_id, None)
+            queue_position.pop(chat_id, None)
+            current_ind.pop(chat_id, None)
         is_playing.pop(chat_id, None)
         return
         
     try:
-        queue_position[chat_id] -= 1
+        queue_position[chat_id] = max(        queue_position.get(chat_id, 1) - 1, 0)
         
-        stream_url, title, artist, duration, thumbnail, mention, query_format = queues[chat_id][index]
+        async with queue_locks[chat_id]:
+            item = queues[chat_id][index]
+        stream_url, title, artist, duration, thumbnail, mention, query_format = item
             
         if query_format == "video":
             await Play_Video(chat_id, stream_url)
@@ -96,6 +118,7 @@ async def stream_end(_, update: Update):
         await play_next(chat_id)
         
 async def playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention):
+    duration = int(duration)
     if duration >= 3600:
         hours, remainder = divmod(duration, 3600)
         minutes, secs = divmod(remainder, 60)
@@ -214,17 +237,20 @@ async def replay(event):
     except Exception:
         mention = "ᴀɴᴏɴʏᴍᴏᴜs"
     chat = await event.get_chat()
-    chat_id = int(f"-100{chat.id}" if not str(chat.id).startswith("-100") else chat.id)
+    
+    chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
     if chat_id in queues and queues[chat_id]:
         status = await event.reply("**𝖱ᴇᴘʟᴀʏɪɴɢ ᴄᴜʀʀᴇɴᴛ 𝖳ʀᴀᴄᴋ...**")
         index = current_ind.get(chat_id, 0)
-        stream_url, title, artist, duration, thumbnail, requested_by, query_format = queues[chat_id][index]
+        async with queue_locks[chat_id]:
+            item = queues[chat_id][index]
+        stream_url, title, artist, duration, thumbnail, mention, query_format = item
         try:
             if query_format == "video":
                 await Play_Video(chat_id, stream_url)
             else:
                 await Play_Audio(chat_id, stream_url)
-            await playing_message(title, artist, duration, query_format, thumbnail, chat_id, requested_by)
+            await playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention)
             is_playing[chat_id] = True
             try:
                 await status.edit(f"<b>➭ 𝖳ʀᴀᴄᴋ ʀᴇᴘʟᴀʏ 𝖲ᴛᴀʀᴛᴇᴅ!\n\n𝖱ᴇǫᴜᴇsᴛᴇᴅ ʙʏ:</b> {mention}", parse_mode="html")
@@ -234,3 +260,5 @@ async def replay(event):
             await status.edit(f"Replay failed: {str(e)}")
     else:
         await event.reply(f"» {BOT_MENTION} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.", parse_mode="html")
+        
+__all__ = ["queues", "queue_position", "current_ind", "queue_locks"]        

@@ -14,6 +14,7 @@ BOT_TOKEN = getenv("BOT_TOKEN", "TOKEN")
 STRING_SESSION = getenv("STRING_SESSION", "session")
 MONGO_DB_URL = getenv("MONGO_DB_URL", "MONGO_DB_URL")
 EVENT_LOGS = int(getenv("EVENT_LOGS", -1003196237043))
+ROUTER_API = getenv("API_KEY", None)
 DURATION_LIMIT = 7200
 
 sudo_list = [OWNER_ID]

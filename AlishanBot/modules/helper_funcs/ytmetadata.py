@@ -21,7 +21,7 @@ async def meta_data(song_name):
         else:
             del CACHE[song_name]    
     ydl_opts = {
-            "format": "best",
+            "format": "bestaudio/best",
             "quiet": True,
             "no_warnings": True,
             "geo_bypass": True,
@@ -29,6 +29,7 @@ async def meta_data(song_name):
             "noplaylist": True,
             "cookiefile": cookie,
             "skip_download": True,
+            "extract_flat": False
         }
     
     with YoutubeDL(ydl_opts) as ydl:
@@ -46,7 +47,9 @@ async def meta_data(song_name):
         artist = info.get("uploader", "Unknown Artist")
         duration = int(info.get("duration", 0))
         thumbnail_url = info.get("thumbnail")
-        url = info.get("url")
+        url = info.get("url", None)
+        if not url or "googlevideo.com" not in url:
+            url = info.get("webpage_url")
 
         data = [url, title, artist, duration, thumbnail_url]
         CACHE[song_name] = {

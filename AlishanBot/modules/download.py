@@ -14,9 +14,10 @@ from telethon import Button
 
 @add_command("download")
 async def Download(event, command_used, song_name):
-    chat_id = event.chat_id
+    chat = await event.get_chat()
+    chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
     if chat_id in download_data:
-        song_name, METADATA_MSG, url, title, artist, display_duration, thumbnail_path, is_downloading = download_data[chat_id]
+        song_name, METADATA_MSG, url, title, artist, duration, thumbnail_path, is_downloading = download_data[chat_id]
         if is_downloading:
             return await event.respond("ᴀʟʀᴇᴀᴅʏ ᴅᴏᴡɴʟᴏᴀᴅ ɪɴ ᴘʀᴏɢʀᴇss, ᴘʟᴇᴀsᴇ ᴡᴀɪᴛ.. ")
         else:
@@ -32,7 +33,14 @@ async def Download(event, command_used, song_name):
 
     status = await event.reply(f"🔎 sᴇᴀʀᴄʜɪɴɢ ғᴏʀ **{song_name}** ...")
     data = await meta_data(song_name)
-    url, title, artist, display_duration, thumbnail_url = data
+    url, title, artist, duration, thumbnail_url = data
+    if duration >= 3600:
+        hours, remainder = divmod(duration, 3600)
+        minutes, secs = divmod(remainder, 60)
+        duration_text = f"{hours}:{minutes:02}:{secs:02}"
+    else:
+        minutes, secs = divmod(duration, 60)
+        display_duration = f"{minutes}:{secs:02}"
     await status.delete()
     thumbnail_path = await Thumbnail(thumbnail_url, title, artist, display_duration)
     METADATA_MSG = await Alishan.send_file(
@@ -55,7 +63,8 @@ async def Download(event, command_used, song_name):
 
 @callback_query("audio")
 async def Download_Audio(event):
-    chat_id = event.chat_id
+    chat = await event.get_chat()
+    chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
     song_name, METADATA_MSG, url, title, artist, display_duration, thumbnail_path, is_downloading = download_data[chat_id]
     await METADATA_MSG.delete()
 
@@ -85,7 +94,8 @@ async def Download_Audio(event):
 
 @callback_query("video")
 async def Download_Video(event):
-    chat_id = event.chat_id
+    chat = await event.get_chat()
+    chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
     song_name, METADATA_MSG, url, title, artist, display_duration, thumbnail_path, is_downloading = download_data[chat_id]
     await METADATA_MSG.delete()
 

@@ -1,7 +1,7 @@
 from telethon import events
 from telethon.tl.types import UpdateGroupCall, UpdateGroupCallParticipants, MessageActionGroupCall, UpdateNewChannelMessage
 from AlishanBot.core.bot import Alishan, music, Assistant
-from AlishanBot.modules.helper_funcs.queue import queues, current_ind, queue_position
+from AlishanBot.modules.helper_funcs.queue import queues, current_ind, queue_position, queue_locks
 from AlishanBot.utils.database import groups
 from AlishanBot.modules.helper_funcs.add_group import add_group
 from telethon.tl.functions.channels import LeaveChannelRequest
@@ -40,7 +40,7 @@ async def voice_chat_events(event):
 
     if isinstance(event, UpdateGroupCall):
         chat = getattr(event, "chat_id", None)
-        chat_id = int(f"-100{chat}" if chat and not str(chat).startswith("-100") else chat)
+        chat_id = int(f"-100{abs(chat)}") if not str(chat).startswith("-100") else int(chat)
         if not chat_id:
             return
 
@@ -60,7 +60,12 @@ async def voice_chat_events(event):
             active_calls.discard(chat_id)
 
             if chat_id in queues and len(queues[chat_id]) > 0:
-                msg = f"<b>📴 𝖵ɪᴅᴇᴏ𝖢ʜᴀᴛ 𝖤ɴᴅᴇᴅ! ᴀɴᴅ 𝖰ᴜᴇᴜᴇ 𝖢ʟᴇᴀʀᴇᴅ.</b>\n\n<b>⏰ 𝖣ᴜʀᴀᴛɪᴏɴ:</b> {human_time}"
+                async with queue_locks[chat_id]:
+                    queues.pop(chat_id, None)
+                    current_ind.pop(chat_id, None)
+                    queue_position.pop(chat_id, None)
+                    is_playing.pop(chat_id, None)
+                    msg = f"<b>📴 𝖵ɪᴅᴇᴏ𝖢ʜᴀᴛ 𝖤ɴᴅᴇᴅ! ᴀɴᴅ 𝖰ᴜᴇᴜᴇ 𝖢ʟᴇᴀʀᴇᴅ.</b>\n\n<b>⏰ 𝖣ᴜʀᴀᴛɪᴏɴ:</b> {human_time}"
             else:
                 msg = f"<b>📴 𝖵ɪᴅᴇᴏ𝖢ʜᴀᴛ 𝖤ɴᴅᴇᴅ!</b>\n\n<b>⏰ 𝖣ᴜʀᴀᴛɪᴏɴ:</b> {human_time}"
 
@@ -84,7 +89,12 @@ async def voice_chat_events(event):
                 active_calls.discard(chat_id)
 
                 if chat_id in queues and len(queues[chat_id]) > 0:
-                    msg = f"<b>📴 𝖵ɪᴅᴇᴏ𝖢ʜᴀᴛ 𝖤ɴᴅᴇᴅ! ᴀɴᴅ 𝖰ᴜᴇᴜᴇ 𝖢ʟᴇᴀʀᴇᴅ.</b>\n\n<b>⏰ 𝖣ᴜʀᴀᴛɪᴏɴ:</b> {human_time}"
+                    async with queue_locks[chat_id]:
+                        queues.pop(chat_id, None)
+                        current_ind.pop(chat_id, None)
+                        queue_position.pop(chat_id, None)
+                        is_playing.pop(chat_id, None)
+                        msg = f"<b>📴 𝖵ɪᴅᴇᴏ𝖢ʜᴀᴛ 𝖤ɴᴅᴇᴅ! ᴀɴᴅ 𝖰ᴜᴇᴜᴇ 𝖢ʟᴇᴀʀᴇᴅ.</b>\n\n<b>⏰ 𝖣ᴜʀᴀᴛɪᴏɴ:</b> {human_time}"
                 else:
                     msg = f"<b>📴 𝖵ɪᴅᴇᴏ𝖢ʜᴀᴛ 𝖤ɴᴅᴇᴅ!</b>\n\n<b>⏰ 𝖣ᴜʀᴀᴛɪᴏɴ:</b> {human_time}"
 
@@ -96,17 +106,18 @@ async def voice_chat_events(event):
 @music.on_update(filters.chat_update(ChatUpdate.Status.LEFT_CALL))
 async def on_call_ended(_, update: Update):
     chat = update.chat_id
-    chat_id = int(f"-100{chat}" if not str(chat).startswith("-100") else chat)
+    chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
     if chat_id in queues and len(queues[chat_id]) > 0:
-        queues.pop(chat_id, None)
-        current_ind.pop(chat_id, None)
-        queue_position.pop(chat_id, None)
-        is_playing.pop(chat_id, None)
+        async with queue_locks[chat_id]:
+            queues.pop(chat_id, None)
+            current_ind.pop(chat_id, None)
+            queue_position.pop(chat_id, None)
+            is_playing.pop(chat_id, None)
         
 @Assistant.on(events.ChatAction)
 async def on_bot_banned(event):
     chat = event.chat_id
-    chat_id = int(f"-100{chat}" if not str(chat).startswith("-100") else chat)
+    chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
     user = await event.get_user()
     if event.user_left or event.user_kicked:
         if user.id == BOT_ID:
@@ -114,10 +125,11 @@ async def on_bot_banned(event):
                 await Assistant(LeaveChannelRequest(chat_id))
                 await music.leave_call(chat_id)
                 if chat_id in queues and len(queues[chat_id]) > 0:
-                    queues.pop(chat_id, None)
-                    current_ind.pop(chat_id, None)
-                    queue_position.pop(chat_id, None)
-                    is_playing.pop(chat_id, None)
+                    async with queue_locks[chat_id]:
+                        queues.pop(chat_id, None)
+                        current_ind.pop(chat_id, None)
+                        queue_position.pop(chat_id, None)
+                        is_playing.pop(chat_id, None)
             except: 
                 pass
     if chat_id in queues:
@@ -138,7 +150,7 @@ async def on_bot_banned(event):
 @Alishan.on(events.ChatAction)  
 async def ChatAction(event):
     chat = event.chat_id
-    chat_id = int(f"-100{chat}" if not str(chat).startswith("-100") else chat)
+    chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
     if not groups.find_one({"chat_id": chat_id}):
         await add_group(event)
     user = await event.get_user()
@@ -146,7 +158,7 @@ async def ChatAction(event):
         if user.id == BOT_ID:
             added_by = await event.get_added_by()
             chat_title = event.chat.title or "Unknown"
-            if added_by.id:
+            if added_by:
                 mention = f"<a href=\"tg://user?id={added_by.id}\">{added_by.first_name}</a>"
             else:
                 mention = "ᴜɴᴋɴᴏᴡɴ"  

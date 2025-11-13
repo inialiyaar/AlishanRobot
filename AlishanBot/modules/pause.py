@@ -9,7 +9,7 @@ async def command_handler(event, command_used, args):
     if event.is_group or event.is_channel:
         user = await event.get_sender()
         chat = await event.get_chat()
-        chat_id = int(f"-100{chat.id}" if not str(chat.id).startswith("-100") else chat.id)
+        chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
         rights = await Alishan.get_permissions(chat.id, user.id)
         if not rights.is_admin:
             await event.reply("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.")
@@ -30,7 +30,7 @@ async def command_handler(event, command_used, args):
 async def pause_callback(event):
     user = await event.get_sender()
     chat = await event.get_chat()
-    chat_id = int(f"-100{chat.id}" if not str(chat.id).startswith("-100") else chat.id)
+    chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
     rights = await Alishan.get_permissions(chat.id, user.id)
     if not rights.is_admin:
         await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
@@ -40,7 +40,7 @@ async def pause_callback(event):
 
 async def pause(event):
     chat = await event.get_chat()
-    chat_id = int(f"-100{chat.id}" if not str(chat.id).startswith("-100") else chat.id)
+    chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
     user = await event.get_sender()
     if chat_id in queues and len(queues[chat_id]) > 0:
         try:
@@ -55,7 +55,7 @@ async def pause(event):
         else:
             await event.reply(f"<b>➭ sᴛʀᴇᴀᴍ ᴀʟʀᴇᴀᴅʏ ᴘᴀᴜsᴇᴅ.</b> {mention}", parse_mode="html")
     else:
-        await event.reply(f"» {BOT_MENTION} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.")
+        await event.reply(f"» {BOT_MENTION} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.", parse_mode="html")
 
     
 
@@ -63,7 +63,7 @@ async def pause(event):
 async def resume_callback(event):
     user = await event.get_sender()
     chat = await event.get_chat()
-    chat_id = int(f"-100{chat.id}" if not str(chat.id).startswith("-100") else chat.id)
+    chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
     rights = await Alishan.get_permissions(chat.id, user.id)
     if not rights.is_admin:
         await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
@@ -73,7 +73,7 @@ async def resume_callback(event):
 
 async def resume(event):
     chat = await event.get_chat()
-    chat_id = int(f"-100{chat.id}" if not str(chat.id).startswith("-100") else chat.id)
+    chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
     user = await event.get_sender()
     if chat_id in queues and len(queues[chat_id]) > 0:
         try:
@@ -87,4 +87,4 @@ async def resume(event):
         else:
             await event.reply(f"<b>➭ sᴛʀᴇᴀᴍ ᴀʟʀᴇᴀᴅʏ ʀᴇsᴜᴍᴇᴅ.</b> {mention}", parse_mode="html")
     else:
-        await event.reply(f"» {BOT_MENTION} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.")
+        await event.reply(f"» {BOT_MENTION} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.", parse_mode="html")

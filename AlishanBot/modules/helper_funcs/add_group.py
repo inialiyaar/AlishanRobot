@@ -9,7 +9,7 @@ from telethon.tl.functions.messages import ExportChatInviteRequest
 
 async def add_group(event):
     chat = await event.get_chat()
-    chat_id = int(f"-100{chat.id}" if not str(chat.id).startswith("-100") else chat.id)
+    chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
     groups.insert_one({"chat_id": chat_id})
     full_chat = await Alishan(GetFullChannelRequest(channel=chat_id))
     channel_obj = full_chat.chats[0]
@@ -27,7 +27,7 @@ async def add_group(event):
             [Button.inline("ɪɴᴠɪᴛᴇ ғᴀɪʟᴇᴅ", data=b"invite_failed")]
         ]
     added_by = await event.get_added_by()    
-    if added_by.id:
+    if added_by:
         mention = f"<a href=\"tg://user?id={added_by.id}\">{added_by.first_name}</a>"
     else:
         mention = "ᴜɴᴋɴᴏᴡɴ"  
