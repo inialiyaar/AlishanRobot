@@ -7,3 +7,4 @@ pymongo
 Telethon
 yt-dlp
 requests
+openai

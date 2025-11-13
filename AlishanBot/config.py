@@ -3,7 +3,7 @@ from os import getenv
 
 load_dotenv()
 
-START_IMG = "https://i.ibb.co/N2WRH1Zz/x.jpg"
+START_IMG = getenv("START_IMG", "https://i.ibb.co/N2WRH1Zz/x.jpg")
 SUPPORT_CHAT = "astrabotz_chat"
 SUPPORT_CHANNEL = "astrabotz"
 OWNER_ID = 8370504630

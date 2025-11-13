@@ -149,7 +149,7 @@ async def on_bot_banned(event):
     
 @Alishan.on(events.ChatAction)  
 async def ChatAction(event):
-    chat = event.chat_id
+    chat = await event.get_chat()
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
     if not groups.find_one({"chat_id": chat_id}):
         await add_group(event)
