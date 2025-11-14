@@ -5,10 +5,10 @@ import requests
 from AlishanBot import config
 import uuid
 from AlishanBot.__init__ import BOT_USERNAME
+
 import re
 
 os.makedirs("downloads", exist_ok=True)
-
 cleaned = BOT_USERNAME.replace("_", " ")
 cleaned = re.sub(r"(?i)\b(robot|bot)\b", "", cleaned)
 BOT_NAME = " ".join(cleaned.split())

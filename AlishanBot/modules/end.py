@@ -11,6 +11,10 @@ votes = {}
 @add_command("stop", "end")
 async def Stop(event, command_used, args):
     if event.is_group or event.is_channel:
+        try:
+            await event.delete()
+        except Exception:
+            pass
         user = await event.get_sender()
         chat = await event.get_chat()
         chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
@@ -55,10 +59,6 @@ async def stop_song(event):
         mention = f"<a href=\"tg://user?id={user.id}\">{user.first_name}</a>"
     except Exception:
         mention = "ᴀɴᴏɴʏᴍᴏᴜs"
-    try:
-        await event.delete()
-    except Exception:
-        pass
     
     chat = await event.get_chat()
     chat_id = int(f"-100{chat.id}" if not str(chat.id).startswith("-100") else chat.id)

@@ -1,32 +1,44 @@
 from telethon.tl.types import (
-    ChannelParticipantCreator,
     ChannelParticipantAdmin,
+    ChannelParticipantCreator,
+    ChatParticipantAdmin,
+    ChatParticipantCreator
 )
 from telethon.tl.functions.channels import GetParticipantRequest
+from AlishanBot.core.bot import Alishan
+from AlishanBot.modules.helper_funcs.ErrorLog import send_error
+import traceback
 
 async def check_rights(event, user, right):
     chat = await event.get_chat()
 
-    if not getattr(chat, "megagroup", False) and not getattr(chat, "gigagroup", False):
+    participant = await event.client(GetParticipantRequest(chat.id, user))
+    participant = participant.participant
+    
+    if isinstance(participant, (ChannelParticipantCreator, ChatParticipantCreator)):
         return True
 
-    try:
-        participant = await event.client(GetParticipantRequest(chat.id, user))
-    except Exception as e:
-        print(f"GetParticipantRequest failed: {e}")
-        return False
-
-    participant = participant.participant 
-
-    if isinstance(participant, ChannelParticipantCreator):
-        return True
-
-    if isinstance(participant, ChannelParticipantAdmin):
+    if isinstance(participant, (ChannelParticipantAdmin, ChatParticipantAdmin)):
         rights = getattr(participant, "admin_rights", None)
         if rights and getattr(rights, right, False):
             return True
 
     return False
+    
+async def get_target_user(event):
+    if event.is_reply:
+        reply_msg = await event.get_reply_message()
+        user = await Alishan.get_entity(reply_msg.sender_id)
+        return user 
+    else:
+        args = event.raw_text.split()
+        if len(args) >= 2:
+            try:
+                user = await Alishan.get_entity(args[1])
+                return user
+            except:
+                return None
+    return None        
     
 async def _build_effective_rights(event, rights_template: dict, bot_id: int, promoter_id: int):
     effective = {}
@@ -38,7 +50,7 @@ async def _build_effective_rights(event, rights_template: dict, bot_id: int, pro
         bot_has = await check_rights(event, bot_id, key)
         promoter_has = await check_rights(event, promoter_id, key)
         effective[key] = bool(bot_has and promoter_has)
-    return eeffectiv 
+    return effective
     
 async def is_admin(user, event):
     chat = await event.get_chat()
@@ -49,7 +61,8 @@ async def is_admin(user, event):
     try:
         participant = await event.client(GetParticipantRequest(chat.id, user))
     except Exception as e:
-        print(f"GetParticipantRequest failed: {e}")
+        error = traceback.format_exc()
+        await send_error(error)
         return False
 
     participant = participant.participant 

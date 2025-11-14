@@ -1,10 +1,10 @@
 from telethon import events
-from telethon.tl.types import UpdateGroupCall, UpdateGroupCallParticipants, MessageActionGroupCall, UpdateNewChannelMessage
+from telethon.tl.types import MessageService, MessageActionGroupCall, UpdateNewChannelMessage, MessageActionInviteToGroupCall, PeerUser
 from AlishanBot.core.bot import Alishan, music, Assistant
 from AlishanBot.modules.helper_funcs.queue import queues, current_ind, queue_position, queue_locks
 from AlishanBot.utils.database import groups
 from AlishanBot.modules.helper_funcs.add_group import add_group
-from telethon.tl.functions.channels import LeaveChannelRequest
+from telethon.tl.functions.channels import LeaveChannelRequest, GetFullChannelRequest
 from AlishanBot.__init__ import is_playing, BOT_ID, BOT_MENTION, BOT_USERNAME
 import asyncio
 from pytgcalls import filters
@@ -14,9 +14,6 @@ from AlishanBot import config
 from telethon import Button
 
 pending_check = set()
-call_starters = {}
-active_calls = set()
-last_end_event = {}
 
 def readable_time(seconds: int) -> str:
     seconds = int(seconds)
@@ -34,89 +31,46 @@ def readable_time(seconds: int) -> str:
         parts.append(f"{seconds} sᴇᴄᴏɴᴅ{'s' if seconds != 1 else ''}")
     return " ".join(parts)
 
-@Assistant.on(events.Raw)
-async def voice_chat_events(event):
-    now = datetime.utcnow()
-
-    if isinstance(event, UpdateGroupCall):
-        chat = getattr(event, "chat_id", None)
-        chat_id = int(f"-100{abs(chat)}") if not str(chat).startswith("-100") else int(chat)
-        if not chat_id:
-            return
-
-        if not hasattr(event.call, "duration") and chat_id not in active_calls:
-            active_calls.add(chat_id)
-            try:
-                await Alishan.send_message(chat_id, "**♻️ VɪᴅᴇᴏCʜᴀᴛ Sᴛᴀʀᴛᴇᴅ!**")
-            except:
-                pass
-
-        elif hasattr(event.call, "duration"):
-            if chat_id in last_end_event and (now - last_end_event[chat_id]) < timedelta(seconds=5):
-                return
-            last_end_event[chat_id] = now
-            duration = getattr(event.call, "duration", 0)
-            human_time = readable_time(duration)
-            active_calls.discard(chat_id)
-
-            if chat_id in queues and len(queues[chat_id]) > 0:
-                async with queue_locks[chat_id]:
-                    queues.pop(chat_id, None)
-                    current_ind.pop(chat_id, None)
-                    queue_position.pop(chat_id, None)
-                    is_playing.pop(chat_id, None)
-                    msg = f"<b>📴 𝖵ɪᴅᴇᴏ𝖢ʜᴀᴛ 𝖤ɴᴅᴇᴅ! ᴀɴᴅ 𝖰ᴜᴇᴜᴇ 𝖢ʟᴇᴀʀᴇᴅ.</b>\n\n<b>⏰ 𝖣ᴜʀᴀᴛɪᴏɴ:</b> {human_time}"
-            else:
-                msg = f"<b>📴 𝖵ɪᴅᴇᴏ𝖢ʜᴀᴛ 𝖤ɴᴅᴇᴅ!</b>\n\n<b>⏰ 𝖣ᴜʀᴀᴛɪᴏɴ:</b> {human_time}"
-
-            try:
-                await Alishan.send_message(chat_id, msg, parse_mode="html")
-            except:
-                pass
-
-    elif isinstance(event, UpdateNewChannelMessage):
-        if isinstance(event.message.action, MessageActionGroupCall):
-            if getattr(event.message.action, "duration", None):
-                chat = event.message.peer_id.channel_id
-                chat_id = int(f"-100{chat}" if not str(chat).startswith("-100") else chat)
-
-                if chat_id in last_end_event and (now - last_end_event[chat_id]) < timedelta(seconds=5):
-                    return
-                last_end_event[chat_id] = now
-
-                duration = event.message.action.duration
-                human_time = readable_time(duration)
-                active_calls.discard(chat_id)
-
-                if chat_id in queues and len(queues[chat_id]) > 0:
-                    async with queue_locks[chat_id]:
-                        queues.pop(chat_id, None)
-                        current_ind.pop(chat_id, None)
-                        queue_position.pop(chat_id, None)
-                        is_playing.pop(chat_id, None)
-                        msg = f"<b>📴 𝖵ɪᴅᴇᴏ𝖢ʜᴀᴛ 𝖤ɴᴅᴇᴅ! ᴀɴᴅ 𝖰ᴜᴇᴜᴇ 𝖢ʟᴇᴀʀᴇᴅ.</b>\n\n<b>⏰ 𝖣ᴜʀᴀᴛɪᴏɴ:</b> {human_time}"
-                else:
-                    msg = f"<b>📴 𝖵ɪᴅᴇᴏ𝖢ʜᴀᴛ 𝖤ɴᴅᴇᴅ!</b>\n\n<b>⏰ 𝖣ᴜʀᴀᴛɪᴏɴ:</b> {human_time}"
-
-                try:
-                    await Alishan.send_message(chat_id, msg, parse_mode="html")
-                except:
-                    pass
-                    
-@music.on_update(filters.chat_update(ChatUpdate.Status.LEFT_CALL))
-async def on_call_ended(_, update: Update):
-    chat = update.chat_id
-    chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
-    if chat_id in queues and len(queues[chat_id]) > 0:
-        async with queue_locks[chat_id]:
-            queues.pop(chat_id, None)
-            current_ind.pop(chat_id, None)
-            queue_position.pop(chat_id, None)
-            is_playing.pop(chat_id, None)
+@Alishan.on(events.Raw)
+async def GroupCallUpdate(event):
+    if not isinstance(event, UpdateNewChannelMessage):
+        return
+    msg = event.message   
+    chat = msg.peer_id.channel_id
+    chat_id = int(f"-100{abs(chat)}") if not str(chat).startswith("-100") else int(chat)
+    if not isinstance(msg,  MessageService):
+        return
+    action = msg.action
+    if isinstance(action, MessageActionGroupCall):
+        if action.duration is None:
+            return await Alishan.send_message(chat_id, "**♻️ VɪᴅᴇᴏCʜᴀᴛ Sᴛᴀʀᴛᴇᴅ!**")
+        duration = readable_time(action.duration)
+        if chat_id in queues and len(queues[chat_id]) > 0:
+            async with queue_locks[chat_id]:
+                queues.pop(chat_id, None)
+                current_ind.pop(chat_id, None)
+                queue_position.pop(chat_id, None)
+                is_playing.pop(chat_id, None)
+            return await Alishan.send_message(chat_id, f"<b>📴 𝖵ɪᴅᴇᴏ𝖢ʜᴀᴛ 𝖤ɴᴅᴇᴅ! ᴀɴᴅ 𝖰ᴜᴇᴜᴇ 𝖢ʟᴇᴀʀᴇᴅ.</b>\n\n<b>⏰ 𝖣ᴜʀᴀᴛɪᴏɴ:</b> {duration}", parse_mode="html")
+        else:
+            return await Alishan.send_message(chat_id, f"<b>📴 𝖵ɪᴅᴇᴏ𝖢ʜᴀᴛ 𝖤ɴᴅᴇᴅ!</b>\n\n<b>⏰ 𝖣ᴜʀᴀᴛɪᴏɴ:</b> {duration}", parse_mode="html")
+    if isinstance(action, MessageActionInviteToGroupCall):
+        inviter_id = msg.from_id.user_id
+        invited_users = msg.action.users
+        inviter = await Alishan.get_entity(inviter_id)
+        invited_entities = [await Alishan.get_entity(u) for u in invited_users]
+        inviter_mention = f"<a href='tg://user?id={inviter.id}'>{inviter.first_name}</a>"
+        for invited_user in invited_entities:
+            invited_mention = f"<a href='tg://user?id={invited_user.id}'>{invited_user.first_name}</a>"
+            await Alishan.send_message(
+                chat_id, 
+                f"{inviter_mention} ɪɴᴠɪᴛᴇᴅ {invited_mention}",
+                parse_mode="html"
+            )
         
 @Assistant.on(events.ChatAction)
 async def on_bot_banned(event):
-    chat = event.chat_id
+    chat = await event.get_chat()
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
     user = await event.get_user()
     if event.user_left or event.user_kicked:

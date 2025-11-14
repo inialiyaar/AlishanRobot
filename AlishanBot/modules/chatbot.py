@@ -2,6 +2,7 @@ import os
 import re
 import json
 import asyncio
+import random
 from telethon import events, Button
 from telethon.tl.functions.channels import GetParticipantRequest
 from openai import AsyncOpenAI
@@ -9,18 +10,20 @@ from AlishanBot.core.bot import Alishan
 from AlishanBot.core.decorators import add_command
 from AlishanBot.utils.database import chat_bot_groups
 from AlishanBot import config
+from AlishanBot.modules.helper_funcs.ErrorLog import send_error
+from telethon.tl.functions.messages import GetStickerSetRequest
+from telethon.tl.types import InputStickerSetShortName
+import traceback
 
+STICKER_PACKS = [
+    "f1_5458968679_by_KIRA_PROBOT", 
+    "Quby741", 
+    "HappiCATthings", 
+]
 client = AsyncOpenAI(
     api_key=config.ROUTER_API,
     base_url="https://openrouter.ai/api/v1" 
 )
-
-async def send_typing_action(chat_id, duration):
-    end_time = asyncio.get_event_loop().time() + duration
-    while asyncio.get_event_loop().time() < end_time:
-        async with Alishan.action(chat_id, "typing"):
-            await asyncio.sleep(4)
-
 
 async def is_admin(user_id, chat_id, bot):
     try:
@@ -54,7 +57,9 @@ async def router_reply(user_text: str) -> str:
             stream=False,
         )
         return response.choices[0].message.content
-    except Exception as e:
+    except Exception:
+        error = traceback.format_exc()
+        await send_error(error)
         return "Aww, I'm sorry~ something went wrong 😢💔"
 
 
@@ -110,16 +115,25 @@ async def chatbot_reply(event):
         return
 
     text = event.raw_text
-    if not text:
-        return
-
     if event.is_private:
-        typing_task = asyncio.create_task(send_typing_action(event.chat_id, 15))
-        reply = await router_reply(text)
-        typing_task.cancel()
-        if reply:
-            await event.reply(reply)
-        return
+        if not text:
+            async with Alishan.action(event.chat_id, "sticker"):
+                random_pack = random.choice(STICKER_PACKS)
+                stickers = await Alishan(
+                    GetStickerSetRequest(
+                        stickerset=InputStickerSetShortName(random_pack), 
+                        hash=0
+                    )
+                    )
+                random_sticker = random.choice(stickers.documents) 
+                await asyncio.sleep(6)
+                return await event.reply(file=random_sticker)
+        async with Alishan.action(event.chat_id, "typing"):
+            await asyncio.sleep(8)
+            reply = await router_reply(text)
+            if reply:
+                await event.reply(reply)
+            return
 
     chat = await event.get_chat()
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
@@ -134,9 +148,20 @@ async def chatbot_reply(event):
     ):
         clean_text = text.replace(f"@{me.username}", "").strip()
         if not clean_text:
-            return
-        typing_task = asyncio.create_task(send_typing_action(event.chat_id, 15))
-        reply = await router_reply(clean_text)
-        typing_task.cancel()
-        if reply:
-            await event.reply(reply)
+            async with Alishan.action(chat_id, "sticker"):
+                random_pack = random.choice(STICKER_PACKS)
+                stickers = await Alishan(
+                    GetStickerSetRequest(
+                        stickerset=InputStickerSetShortName(random_pack), 
+                        hash=0
+                    )
+                    )
+                random_sticker = random.choice(stickers.documents) 
+                await asyncio.sleep(6)
+                return await event.reply(file=random_sticker)
+        async with Alishan.action(chat_id, "typing"):
+            reply = await router_reply(clean_text)
+            await asyncio.sleep(8)
+            
+            if reply:
+                await event.reply(reply)

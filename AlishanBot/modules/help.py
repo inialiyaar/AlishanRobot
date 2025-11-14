@@ -136,6 +136,11 @@ async def callback_help(event):
                 
             ], 
             [
+                Button.inline("𝖥ᴜɴ", data=b"fun_help"), 
+                Button.inline("𝖠ᴅᴍɪɴs", data=b"admins_help"), 
+                Button.inline("𝖢ʜᴀᴛʙᴏᴛ", data=b"chatbot_help")
+            ],
+            [
            Button.inline("◁", data=b"management_preview"), 
            Button.inline("ʙᴀᴄᴋ", data=b"help_menu"), 
            Button.inline("▷", data=b"management_next"), 
@@ -146,7 +151,7 @@ async def callback_help(event):
     elif data == b"management_preview":
         pass  
     elif data == b"mute_help":
-        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ Mᴜᴛᴇ​ :\n\nᴀᴅᴍɪɴs ᴏɴʟʏ:</b>\n\n❍ /mute <ᴜsᴇʀʜᴀɴᴅʟᴇ>: sɪʟᴇɴᴄᴇs ᴀ ᴜsᴇʀ. ᴄᴀɴ ᴀʟsᴏ ʙᴇ ᴜsᴇᴅ ᴀs ᴀ ʀᴇᴘʟʏ, ᴍᴜᴛɪɴɢ ᴛʜᴇ ʀᴇᴘʟɪᴇᴅ ᴛᴏ ᴜᴘᴀss\n❍ /tmute <ᴜsᴇʀʜᴀɴᴅʟᴇ> x(ᴍ/ʜ/ᴅ): ᴍᴜᴛᴇs ᴀ ᴜsᴇʀ ғᴏʀ x ᴛɪᴍᴇ. (ᴠɪᴀ ʜᴀɴᴅʟᴇ, ᴏʀ ʀᴇᴘʟʏ). ᴍ = ᴍɪɴᴜᴛᴇs, ʜ = ʜᴏᴜʀs, ᴅ = ᴅᴀʏs.\n❍ /ᴜɴᴍᴜᴛᴇ <ᴜsᴇʀʜᴀɴᴅʟᴇ>: ᴜɴᴍᴜᴛᴇs ᴀ ᴜsᴇʀ. ᴄᴀɴ ᴀʟsᴏ ʙᴇ ᴜsᴇᴅ ᴀs ᴀ ʀᴇᴘʟʏ, ᴍᴜᴛɪɴɢ ᴛʜᴇ ʀᴇᴘʟɪᴇᴅ to ᴜsᴇʀ." 
+        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ Mᴜᴛᴇ​ :\n\nᴀᴅᴍɪɴs ᴏɴʟʏ</b>\n\n❍ /mute <ᴜsᴇʀʜᴀɴᴅʟᴇ>: sɪʟᴇɴᴄᴇs ᴀ ᴜsᴇʀ. ᴄᴀɴ ᴀʟsᴏ ʙᴇ ᴜsᴇᴅ ᴀs ᴀ ʀᴇᴘʟʏ, ᴍᴜᴛɪɴɢ ᴛʜᴇ ʀᴇᴘʟɪᴇᴅ ᴛᴏ ᴜᴘᴀss\n❍ /tmute <ᴜsᴇʀʜᴀɴᴅʟᴇ> x(ᴍ/ʜ/ᴅ): ᴍᴜᴛᴇs ᴀ ᴜsᴇʀ ғᴏʀ x ᴛɪᴍᴇ. (ᴠɪᴀ ʜᴀɴᴅʟᴇ, ᴏʀ ʀᴇᴘʟʏ). ᴍ = ᴍɪɴᴜᴛᴇs, ʜ = ʜᴏᴜʀs, ᴅ = ᴅᴀʏs.\n❍ /unmute <ᴜsᴇʀʜᴀɴᴅʟᴇ>: ᴜɴᴍᴜᴛᴇs ᴀ ᴜsᴇʀ. ᴄᴀɴ ᴀʟsᴏ ʙᴇ ᴜsᴇᴅ ᴀs ᴀ ʀᴇᴘʟʏ, ᴍᴜᴛɪɴɢ ᴛʜᴇ ʀᴇᴘʟɪᴇᴅ to ᴜsᴇʀ." 
         buttons = [
             [
                 Button.inline("ʙᴀᴄᴋ", data=b"management_help")
@@ -160,7 +165,28 @@ async def callback_help(event):
             ]
         ]
     elif data == b"download_help":
-        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ Bᴀɴs :\n\n𝖯ʀɪᴠᴀᴛᴇ ᴏɴʟʏ</b>\n❍ /download <𝖲ᴏɴɢ𝖭ᴀᴍᴇ/𝖸ᴏᴜᴛᴜʙᴇ𝖴ʀʟ> : 𝖥ᴇᴛᴄʜ 𝖣ᴏᴡɴʟᴏᴀᴅ ᴏᴘᴛɪᴏɴs ғᴏʀ ᴀ 𝖲ᴏɴɢ ᴏʀ 𝖵ɪᴅᴇᴏ ʙʏ ᴘʀᴏᴠɪᴅɪɴɢ ᴀ 𝖭ᴀᴍᴇ ᴏʀ ᴀ ᴅɪʀᴇᴄᴛ 𝖴ʀʟ,"
+        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ 𝖣ᴏᴡɴʟᴏᴀᴅ :\n\n𝖯ʀɪᴠᴀᴛᴇ ᴏɴʟʏ</b>\n❍ /download <𝖲ᴏɴɢ𝖭ᴀᴍᴇ/𝖸ᴏᴜᴛᴜʙᴇ𝖴ʀʟ> : 𝖥ᴇᴛᴄʜ 𝖣ᴏᴡɴʟᴏᴀᴅ ᴏᴘᴛɪᴏɴs ғᴏʀ ᴀ 𝖲ᴏɴɢ ᴏʀ 𝖵ɪᴅᴇᴏ ʙʏ ᴘʀᴏᴠɪᴅɪɴɢ ᴀ 𝖭ᴀᴍᴇ ᴏʀ ᴀ ᴅɪʀᴇᴄᴛ 𝖴ʀʟ,"
+        buttons = [
+            [
+                Button.inline("ʙᴀᴄᴋ", data=b"management_help")
+            ]
+        ]
+    elif data == b"fun_help":
+        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ 𝖥ᴜɴ :</b>\n\n❍ /truth : ᴛᴏ ɢɪᴠᴇ ᴀ ʀᴀɴᴅᴏᴍ ᴛʀᴜᴛʜ. \n❍ /dare : ᴛᴏ ɢɪᴠᴇ ᴀ ʀᴀɴᴅᴏᴍ ᴅᴀʀᴇ"
+        buttons = [
+            [
+                Button.inline("ʙᴀᴄᴋ", data=b"management_help")
+            ]
+        ]
+    elif data == b"admins_help":
+        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ 𝖠ᴅᴍɪɴs :\n\n𝖴sᴇʀ ᴄᴏᴍᴍᴀɴᴅs</b>\n❍ /admins: ʟɪsᴛ ᴏꜰ ᴀᴅᴍɪɴs ɪɴ ᴛʜᴇ ᴄʜᴀᴛ\n❍ /pinned: ᴛᴏ ɢᴇᴛ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴘɪɴɴᴇᴅ ᴍᴇssᴀɢᴇ.\n\n<b>𝖠ᴅᴍɪɴs ᴏɴʟʏ</b>\n❍ /pin: sɪʟᴇɴᴛʟʏ ᴘɪɴs ᴛʜᴇ ᴍᴇssᴀɢᴇ ʀᴇᴘʟɪᴇᴅ ᴛᴏ - ᴀᴅᴅ 'loud' ᴏʀ 'notify' ᴛᴏ ɢɪᴠᴇ ɴᴏᴛɪꜰs ᴛᴏ ᴜsᴇʀs\n❍ /unpin: ᴜɴᴘɪɴs ᴛʜᴇ ᴄᴜʀʀᴇɴᴛʟʏ ᴘɪɴɴᴇᴅ ᴍᴇssᴀɢᴇ\n❍ /invitelink: ɢᴇᴛs ɪɴᴠɪᴛᴇʟɪɴᴋ\n❍ /promote: ᴘʀᴏᴍᴏᴛᴇs ᴛʜᴇ ᴜsᴇʀ ʀᴇᴘʟɪᴇᴅ ᴛᴏ\n❍ /lowpromote: ᴘʀᴏᴍᴏᴛᴇs ᴛʜᴇ ᴜsᴇʀ ʀᴇᴘʟɪᴇᴅ ᴛᴏ ᴡɪᴛʜ ʜᴀʟꜰ ʀɪɢʜᴛs\n❍ /fullpromote: ᴘʀᴏᴍᴏᴛᴇs ᴛʜᴇ ᴜsᴇʀ ʀᴇᴘʟɪᴇᴅ ᴛᴏ ᴡɪᴛʜ ꜰᴜʟʟ ʀɪɢʜᴛs\n❍ /demote: ᴅᴇᴍᴏᴛᴇs ᴛʜᴇ ᴜsᴇʀ ʀᴇᴘʟɪᴇᴅ ᴛᴏ\n❍ /setgtitle <text>: sᴇᴛ ɢʀᴏᴜᴘ ᴛɪᴛʟᴇ\n❍ /setgpic: ʀᴇᴘʟʏ ᴛᴏ ᴀɴ ɪᴍᴀɢᴇ ᴛᴏ sᴇᴛ ᴀs ɢʀᴏᴜᴘ ᴘʜᴏᴛᴏ\n❍ /setdes: sᴇᴛ ɢʀᴏᴜᴘ ᴅᴇsᴄʀɪᴘᴛɪᴏɴ\n❍ /setsticker: sᴇᴛ ɢʀᴏᴜᴘ sᴛɪᴄᴋᴇʀ"
+        buttons = [
+            [
+                Button.inline("ʙᴀᴄᴋ", data=b"management_help")
+            ]
+        ]
+    elif data == b"chatbot_help":
+        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ Cʜᴀᴛʙᴏᴛ :</b>\n\n{BOT_MENTION} ʜᴀs ᴀɴ ᴄʜᴀᴛʙᴏᴛ ᴡʜɪᴄʜ ᴘʀᴏᴠɪᴅᴇs ʏᴏᴜ ᴀ sᴇᴇᴍɪɴɢʟᴇss ᴄʜᴀᴛᴛɪɴɢ ᴇxᴘᴇʀɪᴇɴᴄᴇ :\n\n❍  /chatbot : sʜᴏᴡs ᴄʜᴀᴛʙᴏᴛ ᴄᴏɴᴛʀᴏʟ ᴘᴀɴɴᴇʟ"
         buttons = [
             [
                 Button.inline("ʙᴀᴄᴋ", data=b"management_help")
@@ -187,7 +213,7 @@ async def callback_help(event):
             ]
         ] 
     elif data == b"music_admin_help":
-        caption= f"» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ 𝖠ᴅᴍɪɴ:\n\n❍ /pause : ᴩᴀᴜsᴇ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴩʟᴀʏɪɴɢ sᴛʀᴇᴀᴍ.\n\n❍ /resume : ʀᴇsᴜᴍᴇ ᴛʜᴇ ᴩᴀᴜsᴇᴅ sᴛʀᴇᴀᴍ.\n\n❍ /skip : sᴋɪᴩ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴩʟᴀʏɪɴɢ sᴛʀᴇᴀᴍ ᴀɴᴅ sᴛᴀʀᴛ sᴛʀᴇᴀᴍɪɴɢ ᴛʜᴇ ɴᴇxᴛ ᴛʀᴀᴄᴋ ɪɴ ǫᴜᴇᴜᴇ.\n\n/end ᴏʀ /stop : ᴄʟᴇᴀʀs ᴛʜᴇ ǫᴜᴇᴜᴇ ᴀɴᴅ ᴇɴᴅ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴩʟᴀʏɪɴɢ sᴛʀᴇᴀᴍ.\n\n❍ /replay : ʀᴇᴘʟᴀʏ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴘʟᴀʏɪɴɢ sᴛʀᴇᴀᴍ. " 
+        caption= f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ 𝖠ᴅᴍɪɴ:</b>\n\n❍ /pause : ᴩᴀᴜsᴇ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴩʟᴀʏɪɴɢ sᴛʀᴇᴀᴍ.\n\n❍ /resume : ʀᴇsᴜᴍᴇ ᴛʜᴇ ᴩᴀᴜsᴇᴅ sᴛʀᴇᴀᴍ.\n\n❍ /skip : sᴋɪᴩ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴩʟᴀʏɪɴɢ sᴛʀᴇᴀᴍ ᴀɴᴅ sᴛᴀʀᴛ sᴛʀᴇᴀᴍɪɴɢ ᴛʜᴇ ɴᴇxᴛ ᴛʀᴀᴄᴋ ɪɴ ǫᴜᴇᴜᴇ.\n\n/end ᴏʀ /stop : ᴄʟᴇᴀʀs ᴛʜᴇ ǫᴜᴇᴜᴇ ᴀɴᴅ ᴇɴᴅ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴩʟᴀʏɪɴɢ sᴛʀᴇᴀᴍ.\n\n❍ /replay : ʀᴇᴘʟᴀʏ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴘʟᴀʏɪɴɢ sᴛʀᴇᴀᴍ. " 
         buttons = [
             [
                 Button.inline("ʙᴀᴄᴋ", data=b"music_help")

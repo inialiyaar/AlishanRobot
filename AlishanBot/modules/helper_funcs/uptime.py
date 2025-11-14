@@ -6,7 +6,7 @@ def get_uptime():
     seconds = current_time - start_time
     count = 0
     time_list = []
-    time_suffix_list = ["s", "m", "h", "d"]
+    time_suffix_list = ["sᴇᴄᴏɴᴅ", "ᴍɪɴᴜᴛᴇ", "ʜᴏᴜʀ", "ᴅᴀʏ"]
 
     while count < 4 and seconds > 0:
         seconds, result = divmod(seconds, 60 if count < 2 else 24)

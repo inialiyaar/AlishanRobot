@@ -6,6 +6,10 @@ from telethon import Button
 from AlishanBot.core.decorators import callback_query
 from telethon.tl.functions.channels import GetFullChannelRequest
 from telethon.tl.functions.messages import ExportChatInviteRequest
+from telethon.tl.types import (
+    ChannelParticipantCreator, 
+    ChannelParticipantsAdmins, 
+)
 
 async def add_group(event):
     chat = await event.get_chat()
@@ -32,10 +36,14 @@ async def add_group(event):
     else:
         mention = "ᴜɴᴋɴᴏᴡɴ"  
     total_members = full_info.participants_count
-    creator_id = channel_obj.creator_id if hasattr(channel_obj, "creator_id") else None
-    if creator_id:
+    admins = await Alishan.get_participants(chat, filter=ChannelParticipantsAdmins)
+    for user in admins:
+        participant = user.participant
+        if isinstance(participant, ChannelParticipantCreator):
+            creator = user
+            break
+    if creator:
         try:
-            creator = await Alishan.get_entity(creator_id)
             creator = f"<a href=\"tg://user?id{creator.id}\">{creator.first_name}</a>"
         except:
             creator = "ᴜɴᴋɴᴏᴡɴ"

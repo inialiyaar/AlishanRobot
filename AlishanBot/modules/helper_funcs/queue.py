@@ -1,24 +1,27 @@
-from AlishanBot.modules.helper_funcs.play import Play_Audio, Play_Video
+from AlishanBot.modules.helper_funcs.play import Play_Audio, Play_Video, join_call
 from AlishanBot.core.bot import music, Alishan
 from AlishanBot.modules.helper_funcs.ytmetadata import meta_data
 from pytgcalls import filters
 from pytgcalls.types import Update
 from telethon import Button
 import os
-from asyncio import create_task, sleep
+from asyncio import create_task, sleep, Lock
 from AlishanBot.__init__ import is_playing
 from AlishanBot.modules.helper_funcs.thumbnail import Thumbnail
+from AlishanBot.modules.helper_funcs.metadata import get_meta
 from AlishanBot.__init__ import BOT_USERNAME, ASSISTANT_MENTION, BOT_MENTION
 from AlishanBot import config
 import asyncio
-from asyncio import Lock
 from collections import defaultdict
+import re
+from AlishanBot.modules.helper_funcs.ErrorLog import send_error
+import traceback
 
 queues = {}  
 queue_position = {}  
 current_ind = {}
 queue_locks = defaultdict(Lock) 
-
+active_bars = {}
 
 async def add_to_queue(song_name, chat_id, query_format, mention, download):
     status = await Alishan.send_message(chat_id, f"**sᴇᴀʀᴄʜɪɴɢ...🔎**")
@@ -30,16 +33,14 @@ async def add_to_queue(song_name, chat_id, query_format, mention, download):
     
     if download:
         stream_url = song_name
-        title = "𝖳ᴇʟᴇɢʀᴀᴍ ʟᴏᴄᴀʟ ᴘʟᴀʏʙᴀᴄᴋ"
-        artist = "ᴛᴇʟᴇɢʀᴀᴍ"
-        duration = "ɴᴏɴᴇ"
+        title,  artist, duration = get_meta(song_name)
         thumbnail = "https://i.ibb.co/gLNS8hC1/x.jpg"
     try:
         if not chat_id in is_playing:
             is_playing[chat_id] = True
+            await join_call(chat_id)
             if not download:
                 stream_url, title, artist, duration, thumbnail = data
-            await asyncio.sleep(4)    
             if query_format == "video":
                 await Play_Video(
                     chat_id, 
@@ -54,10 +55,14 @@ async def add_to_queue(song_name, chat_id, query_format, mention, download):
                 queues[chat_id] = queues.get(chat_id, []) + [
         (stream_url, title, artist, duration, thumbnail, mention, query_format)
     ]
-            create_task(playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention))
+            create_task(playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention, download))
         else:
-            stream_url, title, artist, duration, thumbnail = data
-            
+            if download:
+                stream_url = song_name
+                title,  artist, duration = get_meta(song_name)
+                thumbnail = "https://i.ibb.co/gLNS8hC1/x.jpg"
+            else:
+                stream_url, title, artist, duration, thumbnail = data
             async with queue_locks[chat_id]:
                 queues[chat_id] = queues.get(chat_id, []) + [
         (stream_url, title, artist, duration, thumbnail, mention, query_format)
@@ -68,8 +73,9 @@ async def add_to_queue(song_name, chat_id, query_format, mention, download):
             await status.delete()
         except Exception:
             pass    
-    except Exception as e:
-        await Alishan.send_message(chat_id, f"Error {str(e)}")
+    except Exception:
+        error = traceback.format_exc()
+        await send_error(error)
 
 async def play_next(chat_id):
     if chat_id not in queues or not queues[chat_id]:
@@ -104,8 +110,10 @@ async def play_next(chat_id):
             await Play_Video(chat_id, stream_url)
         else:
             await Play_Audio(chat_id, stream_url)
-          
-        create_task(playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention))
+            
+        if chat_id in active_bars:
+            active_bars[chat_id]["active"] = False  
+        create_task(playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention, download))
         is_playing[chat_id] = True
     except Exception as e:
         await Alishan.send_message(chat_id, f"Error: {str(e)}")
@@ -117,7 +125,7 @@ async def stream_end(_, update: Update):
     if chat_id in queues:
         await play_next(chat_id)
         
-async def playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention):
+async def playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention, download):
     duration = int(duration)
     if duration >= 3600:
         hours, remainder = divmod(duration, 3600)
@@ -126,8 +134,10 @@ async def playing_message(title, artist, duration, query_format, thumbnail, chat
     else:
         minutes, secs = divmod(duration, 60)
         duration_text = f"{minutes}:{secs:02}"
-
-    thumbnail_path = await Thumbnail(thumbnail, title, artist, duration_text)
+    if not download:
+        thumbnail_path = await Thumbnail(thumbnail, title, artist, duration_text)
+    else:
+        thumbnail_path = thumbnail  
     if query_format == "video":
         query_format = "𝖵ɪᴅᴇᴏ"
     else:
@@ -161,24 +171,34 @@ async def playing_message(title, artist, duration, query_format, thumbnail, chat
 
     if os.path.exists(thumbnail_path):
         os.remove(thumbnail_path)
+    if chat_id in active_bars:
+        active_bars[chat_id]["active"] = False
+    bar_state = {"active": True}
+    active_bars[chat_id] = bar_state
+    asyncio.create_task(update_duration_bar(msg, duration, chat_id, bar_state))
 
-    asyncio.create_task(update_duration_bar(msg, duration))
 
-
-async def update_duration_bar(msg, duration):
+async def update_duration_bar(msg, duration, chat_id=None, bar_state=None):
     elapsed = 0
     total_blocks = 9
-
+    
     while elapsed <= duration:
+        if chat_id not in is_playing or not bar_state.get("active", False):
+            break
+    
+        if not is_playing.get(chat_id, False):
+            await asyncio.sleep(2)
+            continue
+    
         filled = int((elapsed / duration) * total_blocks)
         empty = total_blocks - filled
         bar = "▰" * filled + "▱" * empty
-
+    
         current_min, current_sec = divmod(elapsed, 60)
         total_min, total_sec = divmod(duration, 60)
-
+    
         progress_text = f"{current_min:02}:{current_sec:02} {bar} {total_min:02}:{total_sec:02}"
-
+    
         try:
             await msg.edit(
                 buttons=[
@@ -198,8 +218,8 @@ async def update_duration_bar(msg, duration):
                 ]
             )
         except Exception:
-            break 
-
+            break
+    
         await asyncio.sleep(5)
         elapsed += 5
 
@@ -250,7 +270,9 @@ async def replay(event):
                 await Play_Video(chat_id, stream_url)
             else:
                 await Play_Audio(chat_id, stream_url)
-            await playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention)
+            if chat_id in active_bars:
+                active_bars[chat_id]["active"] = False    
+            create_task(playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention, download)) 
             is_playing[chat_id] = True
             try:
                 await status.edit(f"<b>➭ 𝖳ʀᴀᴄᴋ ʀᴇᴘʟᴀʏ 𝖲ᴛᴀʀᴛᴇᴅ!\n\n𝖱ᴇǫᴜᴇsᴛᴇᴅ ʙʏ:</b> {mention}", parse_mode="html")

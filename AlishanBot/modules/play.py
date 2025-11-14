@@ -1,7 +1,7 @@
 from AlishanBot.core.bot import Alishan, Assistant
 from AlishanBot.modules.helper_funcs.queue import add_to_queue
 from AlishanBot.core.decorators import add_command
-from AlishanBot.__init__ import BOT_MENTION, ASSISTANT_MENTION
+from AlishanBot.__init__ import BOT_MENTION, ASSISTANT_MENTION, is_playing
 from telethon.tl.functions.channels import GetParticipantRequest, EditBannedRequest, GetFullChannelRequest
 from telethon.tl.functions.messages import ExportChatInviteRequest, ImportChatInviteRequest
 from telethon.errors import UserNotParticipantError, ChatAdminRequiredError, UserAlreadyParticipantError
@@ -9,6 +9,9 @@ from telethon.tl.types import ChannelParticipantAdmin, ChannelParticipantBanned,
 from telethon import events
 from re import search
 import os
+from asyncio import create_task
+from AlishanBot.modules.helper_funcs.ErrorLog import send_error
+import traceback
 
 @add_command("play", "vplay")
 async def play_handler(event, command_used, song_name):
@@ -60,7 +63,10 @@ async def play_handler(event, command_used, song_name):
         return await event.reply("𝖯ʟᴇᴀsᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ **𝖲ᴏɴɢ 𝖭ᴀᴍᴇ** ᴏʀ **𝖸ᴏᴜᴛᴜʙᴇ 𝖴ʀʟ** ᴀғᴛᴇʀ /play")
     try:
         await Assistant(GetParticipantRequest(chat_id, assistant_entity.id))
-        await add_to_queue(song_name, chat_id, query_format, mention, download)
+        if not chat_id in is_playing:
+            await add_to_queue(song_name, chat_id, query_format, mention, download)
+        else:   
+            create_task(add_to_queue(song_name, chat_id, query_format, mention, download))     
         return
     except Exception:
         pass
@@ -90,7 +96,10 @@ async def play_handler(event, command_used, song_name):
                         invite_code = search(r"(?:joinchat/|\+)([a-zA-Z0-9_-]+)", chat_link).group(1)
                         await Assistant(ImportChatInviteRequest(invite_code))
                         await Assistant.send_message(chat_id, f"<b>{ASSISTANT_MENTION} 𝖴ɴʙᴀɴɴᴇᴅ! , 𝖱ᴇᴀᴅʏ?</b> 𝖨 ᴀᴍ ᴄᴏᴍᴍɪɴɢ ᴛᴏ 𝖵ᴏɪᴄᴇ 𝖢ʜᴀᴛ. .", parse_mode="html")
-                        await add_to_queue(song_name, chat_id, query_format, mention, download)
+                        if not chat_id in is_playing:
+                            await add_to_queue(song_name, chat_id, query_format, mention, download)
+                        else:   
+                            create_task(add_to_queue(song_name, chat_id, query_format, mention, download)) 
                     else:
                         return await event.reply(f"{BOT_MENTION} ʜᴀs ɴᴏ ᴀᴄᴄᴇss ᴛᴏ ɪɴᴠɪᴛᴇ {ASSISTANT_MENTION}, 𝖯ʟᴇᴀsᴇ ɢɪʙᴇ ᴍᴇ <b>(ᴄʀᴇᴀᴛᴇ ɪɴᴠɪᴛᴇ ʟɪɴᴋ)</b> ᴀᴅᴍɪɴ ʀɪɢʜᴛs", parse_mode="html")
                 else:
@@ -106,7 +115,10 @@ async def play_handler(event, command_used, song_name):
             invite_code = search(r"(?:joinchat/|\+)([a-zA-Z0-9_-]+)", chat_link).group(1)
             await Assistant(ImportChatInviteRequest(invite_code))
             await Assistant.send_message(chat_id, f"{ASSISTANT_MENTION} 𝖩ᴏɪɴᴇᴅ ᴛʜᴇ ɢʀᴏᴜᴘ! 𝖨 ᴀᴍ ᴄᴏᴍᴍɪɴɢ ɪɴ <b>𝖵ᴏɪᴄᴇ 𝖢ʜᴀᴛ</b>", parse_mode="html")
-            await add_to_queue(song_name, chat_id, query_format, mention, download)
+            if not chat_id in is_playing:
+                await add_to_queue(song_name, chat_id, query_format, mention, download)
+            else:   
+                create_task(add_to_queue(song_name, chat_id, query_format, mention, download)) 
     except UserNotParticipantError:
         try:
             export_link = await Alishan(ExportChatInviteRequest(chat_id))
@@ -116,10 +128,17 @@ async def play_handler(event, command_used, song_name):
         invite_code = search(r"(?:joinchat/|\+)([a-zA-Z0-9_-]+)", chat_link).group(1)
         await Assistant(ImportChatInviteRequest(invite_code))
         await Assistant.send_message(chat_id, f"{ASSISTANT_MENTION} 𝖩ᴏɪɴᴇᴅ ᴛʜᴇ ɢʀᴏᴜᴘ! 𝖨 ᴀᴍ ᴄᴏᴍᴍɪɴɢ ɪɴ <b>𝖵ᴏɪᴄᴇ 𝖢ʜᴀᴛ</b>", parse_mode="html")
-        await add_to_queue(song_name, chat_id, query_format, mention, download)
+        if not chat_id in is_playing:
+            await add_to_queue(song_name, chat_id, query_format, mention, download)
+        else:   
+            create_task(add_to_queue(song_name, chat_id, query_format, mention, download)) 
     except UserAlreadyParticipantError:
-        await add_to_queue(song_name, chat_id, query_format, mention, download)
+        if not chat_id in is_playing:
+            await add_to_queue(song_name, chat_id, query_format, mention, download)
+        else:   
+            create_task(add_to_queue(song_name, chat_id, query_format, mention, download)) 
     except Exception as e:
-        print(f"Error {str(e)}")
+        error = traceback.format_exc()
+        await send_error(error)
         return await event.reply(f"{BOT_MENTION} ʜᴀs ɴᴏᴛ ᴀᴄᴄᴇss ᴛᴏ ᴄʜᴇᴄᴋ {ASSISTANT_MENTION} ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ ᴏʀ ɴᴏᴛ, 𝖯ʟᴇᴀsᴇ ᴍᴀᴋᴇ ʏᴏᴜʀ ɢʀᴏᴜᴘ ʜɪsᴛᴏʀʏ ᴠɪsᴀʙʟᴇ <pre> ᴄᴏɴᴠᴇʀᴛ ᴛᴏ (sᴜᴘᴇʀ ɢʀᴏᴜᴘ)</pre>", parse_mode="html")
         

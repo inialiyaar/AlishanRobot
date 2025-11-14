@@ -15,13 +15,12 @@ from telethon.tl.functions.messages import (
     EditChatAboutRequest,
     EditChatPhotoRequest,
     ExportChatInviteRequest,
-    EditChatTitleRequest
+    EditChatTitleRequest, 
 )
 
 from telethon.tl.types import (
     InputChatUploadedPhoto,
     ChatAdminRights,
-    ChannelParticipantAdmin,
     ChannelParticipantCreator, 
     InputChatPhotoEmpty, 
     ChatBannedRights,
@@ -31,13 +30,15 @@ from telethon.tl.types import (
 
 from AlishanBot.core.bot import Alishan
 from AlishanBot.core.decorators import add_command
-from AlishanBot.modules.helper_funcs.check_rights import check_rights, _build_effective_rights
+from AlishanBot.modules.helper_funcs.helpers import check_rights, _build_effective_rights, is_admin, get_target_user
 import html
 from AlishanBot. __init__ import BOT_USERNAME, BOT_ID
 
 
 @add_command("setsticker")
 async def set_sticker(event, command_used, args):
+    if not event.is_group:
+        return await event.reply("» ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴄᴀɴ ʙᴇ ᴜsᴇᴅ ɪɴ ɢʀᴏᴜᴘs ᴏɴʟʏ.")
     chat = await event.get_chat()
     sender = await event.get_sender()
     
@@ -95,8 +96,10 @@ async def set_sticker(event, command_used, args):
         else:
             await event.reply(f"Error: {e}")
 
-@add_command("setchatpic")
+@add_command("setgpic")
 async def set_chat_pic(event, command_used, args):
+    if not event.is_group:
+        return await event.reply("» ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴄᴀɴ ʙᴇ ᴜsᴇᴅ ɪɴ ɢʀᴏᴜᴘs ᴏɴʟʏ.")
     chat = await event.get_chat()
     sender = await event.get_sender()
     
@@ -128,8 +131,10 @@ async def set_chat_pic(event, command_used, args):
             os.remove(file_path)
 
 
-@add_command("rmchatpic")
+@add_command("rmpic")
 async def rm_chat_pic(event, command_used, args):
+    if not event.is_group:
+        return await event.reply("» ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴄᴀɴ ʙᴇ ᴜsᴇᴅ ɪɴ ɢʀᴏᴜᴘs ᴏɴʟʏ.")
     chat = await event.get_chat()
     sender = await event.get_sender()
     
@@ -147,17 +152,25 @@ async def rm_chat_pic(event, command_used, args):
         await event.reply(f"Error: {e}")
 
 
-@add_command("setdesc")
+@add_command("setdes")
 async def set_desc(event, command_used, args):
+    if not event.is_group:
+        return await event.reply("» ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴄᴀɴ ʙᴇ ᴜsᴇᴅ ɪɴ ɢʀᴏᴜᴘs ᴏɴʟʏ.")
     chat = await event.get_chat()
     sender = await event.get_sender()
     if not await check_rights(event, BOT_ID, "change_info"):
         return await event.reply("» ɪ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴘᴇʀᴍɪssɪᴏɴ ᴛᴏ ᴄʜᴀɴɢᴇ ɢʀᴏᴜᴘ ɪɴғᴏ ʙᴀʙʏ!")    
     if not await check_rights(event, sender, "change_info"):
         return await event.reply("» ʏᴏʏ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴘᴇʀᴍɪssɪᴏɴ ᴛᴏ ᴄʜᴀɴɢᴇ ɢʀᴏᴜᴘ ɪɴғᴏ ʙᴀʙʏ!")
-
-    if not args:
+    reply = await event.get_reply_message()
+    if not args and not reply:
         return await event.reply("» ᴡʜᴀᴛ ᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ sᴇᴛ ᴀs ᴅᴇsᴄʀɪᴘᴛɪᴏɴ, ʜᴜʜ?")
+    if args:
+        pass
+    elif reply:
+        if reply.media:
+            return await event.reply(" ᴡᴀɪᴛ.. ᴡʜᴀᴛ?? ʏᴏᴜ ᴛʀʏɪɴɢ ᴛᴏ sᴇᴛ ᴍᴇᴅɪᴀ ᴀs ᴅᴇsᴄʀɪᴘᴛɪᴏɴ 🙃")
+        args = reply.text 
 
     desc = " ".join(args)
     if len(desc) > 255:
@@ -170,15 +183,14 @@ async def set_desc(event, command_used, args):
     except Exception as e:
         await event.reply(f"Error: {e}")
 
-
-@Alishan.on(events.NewMessage(pattern=r"^/settitle(@\w+)? (.+)$"))
-async def set_title(event):
-    match = event.pattern_match
-    mention = match.group(1)
-    title = match.group(2).strip()
-
-    if mention and mention.lower() != f"@{BOT_USERNAME.lower()}":
-        return 
+@add_command("setgtitle")
+async def set_title(event, command_used, args):
+    if not event.is_group:
+        return await event.reply("» ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴄᴀɴ ʙᴇ ᴜsᴇᴅ ɪɴ ɢʀᴏᴜᴘs ᴏɴʟʏ.")
+    reply = await event.get_reply_message()
+    sender = await event.get_sender()
+    if not args and not reply:
+        return await event.reply("» ᴡʜᴀᴛ ᴅᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ sᴇᴛ ᴀs ᴛɪᴛʟᴇ, ʜᴜʜ?")
     if not await check_rights(event, BOT_ID, "change_info"):
         return await event.reply("» ɪ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴘᴇʀᴍɪssɪᴏɴ ᴛᴏ ᴄʜᴀɴɢᴇ ɢʀᴏᴜᴘ ɪɴғᴏ ʙᴀʙʏ!")    
     if not await check_rights(event, sender, "change_info"):
@@ -186,7 +198,12 @@ async def set_title(event):
 
     if not event.is_group:
         return await event.reply("» ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪs ғᴏʀ ɢʀᴏᴜᴘs ᴏɴʟʏ.")
-
+    if args:
+        title = args
+    else:
+        if reply.media:
+            return await event.reply(" ᴡᴀɪᴛ.. ᴡʜᴀᴛ?? ʏᴏᴜ ᴛʀʏɪɴɢ ᴛᴏ sᴇᴛ ᴍᴇᴅɪᴀ ᴀs ᴛɪᴛʟᴇ 🙃")
+        title = reply.text 
     chat = await event.get_chat()
 
     if chat.title == title:
@@ -253,9 +270,9 @@ async def fullpromote(event, command_used, args):
     if not event.is_group:
         return await event.reply("» ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴡᴏʀᴋs ɪɴ ɢʀᴏᴜᴘs ᴏɴʟʏ")
 
-    reply = await event.get_reply_message()
-    if not reply:
-        return await event.reply("» ʀᴇᴩʟʏ ᴛᴏ ᴀ ᴜsᴇʀ ᴛᴏ ғᴜʟʟ ᴩʀᴏᴍᴏᴛᴇ")
+    user = await get_target_user(event)    
+    if not user:
+        return await event.reply("» ᴡʜᴀᴛ ᴛʜᴇ ʜᴇʟʟ 😒 ᴘʀᴏᴠɪᴅᴇ ᴜsᴇʀ ᴘʟᴢ..")
 
     if not await check_rights(event, event.sender.id, "add_admins"):
         return await event.reply("» ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴩᴇʀᴍɪssɪᴏɴs ᴛᴏ ғᴜʟʟ ᴩʀᴏᴍᴏᴛᴇ")
@@ -263,15 +280,15 @@ async def fullpromote(event, command_used, args):
     bot_id = BOT_ID
     effective = await _build_effective_rights(event, FULL_ADMIN_RIGHTS, bot_id, event.sender_id)
 
-    if not await is_admin(sender, event):
+    if await is_admin(user, event):
         return await event.reply("» ᴀᴄᴄᴏʀᴅɪɴɢ ᴛᴏ ᴍᴇ ᴛʜᴀᴛ ᴜsᴇʀ ɪs ᴀʟʀᴇᴀᴅʏ ᴀɴ ᴀᴅᴍɪɴ ʜᴇʀᴇ !")
         
     try:
-        await event.client.edit_admin(event.chat_id, reply.sender_id, **effective)
+        await event.client.edit_admin(event.chat_id, user.id, **effective)
         chat = await event.get_chat()
         await event.reply(
             f"» ғᴜʟʟᴩʀᴏᴍᴏᴛɪɴɢ ᴀ ᴜsᴇʀ ɪɴ <b>{chat.title}</b>\n\n"
-            f"ᴜsᴇʀ : ➥ <a href='tg://user?id={reply.sender_id}'>{reply.sender.first_name}</a>\n"
+            f"ᴜsᴇʀ : ➥ <a href='tg://user?id={user.id}'>{user.first_name}</a>\n"
             f"ᴩʀᴏᴍᴏᴛᴇʀ : ➥ <a href='tg://user?id={event.sender_id}'>{event.sender.first_name}</a>\n"
             f"ᴄʜᴀᴛ : ➥ {chat.title}",
             parse_mode="html"
@@ -287,9 +304,9 @@ async def promote(event, command_used, args):
     if not event.is_group:
         return await event.reply("» ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴡᴏʀᴋs ɪɴ ɢʀᴏᴜᴘs ᴏɴʟʏ")
 
-    reply = await event.get_reply_message()
-    if not reply:
-        return await event.reply("» ʀᴇᴩʟʏ ᴛᴏ ᴀ ᴜsᴇʀ ᴛᴏ ᴩʀᴏᴍᴏᴛᴇ")
+    user = await get_target_user(event)
+    if not user:
+        return await event.reply("» ᴡʜᴀᴛ ᴛʜᴇ ʜᴇʟʟ 😒 ᴘʀᴏᴠɪᴅᴇ ᴜsᴇʀ ᴘʟᴢ..")
 
     if not await check_rights(event, event.sender_id, "add_admins"):
         return await event.reply("» ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴩᴇʀᴍɪssɪᴏɴs ᴛᴏ ᴩʀᴏᴍᴏᴛᴇ")
@@ -297,19 +314,15 @@ async def promote(event, command_used, args):
     bot_id = BOT_ID
     effective = await _build_effective_rights(event, PROMOTE_RIGHTS, bot_id, event.sender_id)
 
-    try:
-        part = await event.client.get_participant(event.chat_id, reply.sender_id)
-        if getattr(part.participant, "admin_rights", None):
-            return await event.reply("» ᴀᴄᴄᴏʀᴅɪɴɢ ᴛᴏ ᴍᴇ ᴛʜᴀᴛ ᴜsᴇʀ ɪs ᴀʟʀᴇᴀᴅʏ ᴀɴ ᴀᴅᴍɪɴ ʜᴇʀᴇ !")
-    except Exception:
-        pass
+    if await is_admin(user, event):
+        return await event.reply("» ᴀᴄᴄᴏʀᴅɪɴɢ ᴛᴏ ᴍᴇ ᴛʜᴀᴛ ᴜsᴇʀ ɪs ᴀʟʀᴇᴀᴅʏ ᴀɴ ᴀᴅᴍɪɴ ʜᴇʀᴇ !")
 
     try:
-        await event.client.edit_admin(event.chat_id, reply.sender_id, **effective)
+        await event.client.edit_admin(event.chat_id, user.id, **effective)
         chat = await event.get_chat()
         await event.reply(
             f"» ᴩʀᴏᴍᴏᴛɪɴɢ ᴀ ᴜsᴇʀ ɪɴ <b>{chat.title}</b>\n\n"
-            f"ᴜsᴇʀ : ➥ <a href='tg://user?id={reply.sender_id}'>{reply.sender.first_name}</a>\n"
+            f"ᴜsᴇʀ : ➥ <a href='tg://user?id={user.id}'>{user.first_name}</a>\n"
             f"ᴩʀᴏᴍᴏᴛᴇʀ : ➥ <a href='tg://user?id={event.sender_id}'>{event.sender.first_name}</a>\n"
             f"ᴄʜᴀᴛ : ➥ {chat.title}",
             parse_mode="html"
@@ -322,30 +335,23 @@ async def promote(event, command_used, args):
 async def lowpromote(event, command_used, args):
     if not event.is_group:
         return await event.reply("» ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴡᴏʀᴋs ɪɴ ɢʀᴏᴜᴘs ᴏɴʟʏ")
-
-    reply = await event.get_reply_message()
-    if not reply:
-        return await event.reply("» ʀᴇᴩʟʏ ᴛᴏ ᴀ ᴜsᴇʀ ᴛᴏ ʟᴏᴡ ᴩʀᴏᴍᴏᴛᴇ")
-
+        
+    user = await get_target_user(event)
+    if not user:
+        return await event.reply("» ᴡʜᴀᴛ ᴛʜᴇ ʜᴇʟʟ 😒 ᴘʀᴏᴠɪᴅᴇ ᴜsᴇʀ ᴘʟᴢ..")
     if not await check_rights(event, event.sender_id, "add_admins"):
         return await event.reply("» ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴩᴇʀᴍɪssɪᴏɴs ᴛᴏ ʟᴏᴡ ᴩʀᴏᴍᴏᴛᴇ")
 
     bot_id = BOT_ID
     effective = await _build_effective_rights(event, LOW_ADMIN_RIGHTS, bot_id, event.sender_id)
-
+    if await is_admin(user, event):
+        return await event.reply("» ᴀᴄᴄᴏʀᴅɪɴɢ ᴛᴏ ᴍᴇ ᴛʜᴀᴛ ᴜsᴇʀ ɪs ᴀʟʀᴇᴀᴅʏ ᴀɴ ᴀᴅᴍɪɴ ʜᴇʀᴇ !")
     try:
-        part = await event.client.get_participant(event.chat_id, reply.sender_id)
-        if getattr(part.participant, "admin_rights", None):
-            return await event.reply("» ᴀᴄᴄᴏʀᴅɪɴɢ ᴛᴏ ᴍᴇ ᴛʜᴀᴛ ᴜsᴇʀ ɪs ᴀʟʀᴇᴀᴅʏ ᴀɴ ᴀᴅᴍɪɴ ʜᴇʀᴇ !")
-    except Exception:
-        pass
-
-    try:
-        await event.client.edit_admin(event.chat_id, reply.sender_id, **effective)
+        await event.client.edit_admin(event.chat_id, user.id, **effective)
         chat = await event.get_chat()
         await event.reply(
             f"» ʟᴏᴡᴩʀᴏᴍᴏᴛɪɴɢ ᴀ ᴜsᴇʀ ɪɴ <b>{chat.title}</b>\n\n"
-            f"ᴜsᴇʀ : ➥ <a href='tg://user?id={reply.sender_id}'>{reply.sender.first_name}</a>\n"
+            f"ᴜsᴇʀ : ➥ <a href='tg://user?id={user.id}'>{user.first_name}</a>\n"
             f"ᴩʀᴏᴍᴏᴛᴇʀ : ➥ <a href='tg://user?id={event.sender_id}'>{event.sender.first_name}</a>\n"
             f"ᴄʜᴀᴛ : ➥ {chat.title}",
             parse_mode="html"
@@ -359,9 +365,9 @@ async def demote(event, command_used, args):
     if not event.is_group:
         return await event.reply("» ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴡᴏʀᴋs ɪɴ ɢʀᴏᴜᴘs ᴏɴʟʏ")
 
-    reply = await event.get_reply_message()
-    if not reply:
-        return await event.reply("» ʀᴇᴩʟʏ ᴛᴏ ᴀ ᴜsᴇʀ ᴛᴏ ᴅᴇᴍᴏᴛᴇ")
+    user = await get_target_user(event)
+    if not user:
+        return await event.reply("» ᴡʜᴀᴛ ᴛʜᴇ ʜᴇʟʟ 😒 ᴘʀᴏᴠɪᴅᴇ ᴜsᴇʀ ᴘʟᴢ..")
 
     if not await check_rights(event, BOT_ID, "add_admins"):
         return await event.reply("» ɪ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴩᴇʀᴍɪssɪᴏɴs ᴛᴏ ᴅᴇᴍᴏᴛᴇ ᴜsᴇʀs")
@@ -370,38 +376,27 @@ async def demote(event, command_used, args):
         return await event.reply("» ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴩᴇʀᴍɪssɪᴏɴs ᴛᴏ ᴅᴇᴍᴏᴛᴇ ᴜsᴇʀs")
 
     try:
-        part = await event.client.get_participant(event.chat_id, reply.sender_id)
-        if not getattr(part.participant, "admin_rights", None):
-            return await event.reply("» sᴜᴄᴄᴇssғᴜʟʟʏ: ᴜsᴇʀ ɪs ɴᴏᴛ ᴀɴ ᴀᴅᴍɪɴ")
+        if not await is_admin(user, event):
+            return await event.reply("» ᴀᴄᴄᴏʀᴅɪɴɢ ᴛᴏ ᴍᴇ ᴛʜᴀᴛ ᴜsᴇʀ ɪs ɴᴏᴛ ᴀɴ ᴀᴅᴍɪɴ ʜᴇʀᴇ !")
 
-        promoter = getattr(part.participant, "promoted_by", None)
-        if promoter and promoter != event.sender_id:
-            sender_part = await event.client.get_participant(event.chat_id, event.sender_id)
-            if getattr(sender_part.participant, "admin_rights", None) == getattr(part.participant, "admin_rights", None):
-                return await event.reply("» ᴇQᴜᴀʟ ʀɪɢʜᴛs ᴅᴇᴛᴇᴄᴛᴇᴅ, ᴄᴀɴ'ᴛ ᴅᴇᴍᴏᴛᴇ ᴇQᴜᴀʟ ʀᴀɴᴋ ᴀᴅᴍɪɴ !")
-
-        await event.client.edit_admin(event.chat_id, reply.sender_id, is_admin=False)
+        await event.client.edit_admin(event.chat_id, user.id, is_admin=False)
         chat = await event.get_chat()
         await event.reply(
             f"» ᴅᴇᴍᴏᴛɪɴɢ ᴀ ᴜsᴇʀ ɪɴ <b>{chat.title}</b>\n\n"
-            f"ᴜsᴇʀ : ➥ <a href='tg://user?id={reply.sender_id}'>{reply.sender.first_name}</a>\n"
+            f"ᴜsᴇʀ : ➥ <a href='tg://user?id={user.id}'>{user.first_name}</a>\n"
             f"ᴅᴇᴍᴏᴛᴇʀ : ➥ <a href='tg://user?id={event.sender_id}'>{event.sender.first_name}</a>\n"
             f"ᴄʜᴀᴛ : ➥ {chat.title}",
             parse_mode="html"
         )
     except Exception as e:
         await event.reply(f"» ғᴀɪʟᴇᴅ: {e}")
-        
-@add_command("refreshadmin")
-async def refresh_admin(event, command_used, args):
-    await event.reply("» sᴜᴄᴄᴇssғᴜʟʟʏ ʀᴇғʀᴇsʜᴇᴅ ᴀᴅᴍɪɴ ᴄᴀᴄʜᴇ !") 
 
 @add_command("pin")
 async def pin_message(event, command_used, args):
     if not event.is_group:
         return await event.reply("» ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴄᴀɴ ʙᴇ ᴜsᴇᴅ ɪɴ ɢʀᴏᴜᴘs ᴏɴʟʏ.")
 
-    if not await check_rights(event, BOT_ID, "pinned_messages"):
+    if not await check_rights(event, BOT_ID, "pin_messages"):
         return await event.reply("» ɪ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴩᴇʀᴍɪssɪᴏɴs ᴛᴏ ᴘɪɴɴᴇᴅ ᴍᴇssᴀɢᴇs")
     if not await check_rights(event, event.sender_id, "pin_messages"):
         return await event.reply("» ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴩᴇʀᴍɪssɪᴏɴs ᴛᴏ ᴘɪɴ ᴍᴇssᴀɢᴇs")
@@ -429,7 +424,7 @@ async def unpin_message(event, command_used, args):
         return await event.reply("» ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴄᴀɴ ʙᴇ ᴜsᴇᴅ ɪɴ ɢʀᴏᴜᴘs ᴏɴʟʏ.")
 
     reply = await event.get_reply_message()
-    if not await check_rights(event, BOT_ID, "pinned_messages"):
+    if not await check_rights(event, BOT_ID, "pin_messages"):
         return await event.reply("» ɪ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴩᴇʀᴍɪssɪᴏɴs ᴛᴏ ᴘɪɴɴᴇᴅ ᴍᴇssᴀɢᴇs")
     if not await check_rights(event, event.sender_id, "pin_messages"):
         return await event.reply("» ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴩᴇʀᴍɪssɪᴏɴs ᴛᴏ ᴘɪɴ ᴍᴇssᴀɢᴇs")
@@ -449,10 +444,12 @@ async def get_pinned(event, command_used, args):
     if not event.is_group:
         return await event.reply("» ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴄᴀɴ ʙᴇ ᴜsᴇᴅ ɪɴ ɢʀᴏᴜᴘs ᴏɴʟʏ.")
     chat = await event.get_chat()
-    if not chat.pinned_msg_id:
+    group = await Alishan(GetFullChannelRequest(chat))
+    pinned_msg_id = group.full_chat.pinned_msg_id
+    if not pinned_msg_id:
         return await event.reply("» ɴᴏ ᴍᴇssᴀɢᴇ ɪs ᴩɪɴɴᴇᴅ ɪɴ ᴛʜɪs ᴄʜᴀᴛ.")
 
-    msg_link = f"https://t.me/c/{str(event.chat_id)[4:]}/{chat.pinned_msg_id}"
+    msg_link = f"https://t.me/c/{str(event.chat_id)[4:]}/{pinned_msg_id}"
     await event.reply(
         f"📌 <b>ᴘɪɴɴᴇᴅ ᴍᴇssᴀɢᴇ:</b>\n<a href='{msg_link}'>ᴠɪᴇᴡ ᴍᴇssᴀɢᴇ</a>",
         parse_mode="html",
@@ -460,7 +457,7 @@ async def get_pinned(event, command_used, args):
     )
 
 
-@add_command("invite")
+@add_command("invite", "link", "givelink")
 async def get_invite(event, command_used, args):
     if not event.is_group:
         return await event.reply("» ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴄᴀɴ ʙᴇ ᴜsᴇᴅ ɪɴ ɢʀᴏᴜᴘs ᴏɴʟʏ.")
@@ -480,43 +477,40 @@ async def get_invite(event, command_used, args):
 
 
 
-@add_command("adminlist", "admins")
+@add_command("adminlist", "admins", "staff", " invitelink")
 async def adminlist(event, command_used, args):
     if not event.is_group:
         return await event.reply("» ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴄᴀɴ ʙᴇ ᴜsᴇᴅ ɪɴ ɢʀᴏᴜᴘs ᴏɴʟʏ.")
-
+    chat = await event.get_chat()
     msg = await event.reply("» ғᴇᴛᴄʜɪɴɢ ᴀᴅᴍɪɴs ʟɪsᴛ...")
-    admins = await event.client.get_participants(event.chat_id, filter=ChannelParticipantsAdmins)
-    chat_title = html.escape((await event.get_chat()).title)
-    text = f"ᴀᴅᴍɪɴs ɪɴ: 𝗔𝘀𝘁𝗿𝗮𝗕𝗼𝘁𝘇 𝗖𝗵𝗮𝘁\n\n"
-
-    owner_text = "Owner:\n"
-    admins_text = "Admins:\n"
-
-    owner_found = False
-
-    for admin in admins:
-        mention = f"<a href='tg://user?id={admin.id}'>{html.escape(admin.first_name)}</a>"
-        title = getattr(admin.participant, "rank", "ADMIN") 
-
-        is_creator = getattr(admin.participant, "creator", False)
-        is_anonymous = getattr(admin.participant, "anonymous", False)
-
-        if is_creator and not owner_found:
-            owner_found = True
-            if is_anonymous:
-                owner_text += f"Anonymous\n    —\n"
-            else:
-                owner_text += f"{title}\n    {mention}\n"
-        else:
-            admins_text += f"{title}\n    {mention}\n"
-
-    if not owner_found:
-        owner_text += "—\n"
-
-    if admins_text.strip() == "Admins:":
-        admins_text += "—\n"
-
-    text += f"{owner_text}\n{admins_text}"
-
-    await msg.edit(text, parse_mode="html")
+    admins = await Alishan.get_participants(chat, filter=ChannelParticipantsAdmins)
+    full_chat = await Alishan(GetFullChannelRequest(chat))
+    owner_rank = "ᴏᴡɴᴇʀ"
+    owner = None
+    admin_list = []
+    
+    for user in admins:
+        participant = user.participant
+        if isinstance(participant, ChannelParticipantCreator):
+            owner = user
+            if getattr(participant, "rank", None):
+                owner_rank = participant. rank if participant.rank else "ᴏᴡɴᴇʀ"
+            break
+    for user in admins:
+        participant = user.participant
+        if getattr(participant, "admin_rights", None) or getattr(participant, "rank", None):
+            rank = participant.rank if participant.rank else "ᴀᴅᴍɪɴ"
+            if participant.admin_rights and getattr(participant, "is_admin", True):
+                if owner:
+                    if user.id == owner.id:
+                        continue
+                admin_list.append(f"╭⎋ <a href=\"tg://user?id={user.id}\">{user.first_name}</a>\n╰⊚ {rank}\n")
+        if getattr(participant, "admin_rights", None) is None and getattr(participant, "rank", None) is None:
+            pass
+    if owner:      
+        text = f"ᴀᴅᴍɪɴs ɪɴ <b>{chat.title}</b>:\nᴏᴡɴᴇʀ:\n╭⎋ <a href='tg://user?id={owner.id}'>{owner.first_name}</a>\n╰⊚ {owner_rank}\n\n"    
+    else:
+        text = f"ᴀᴅᴍɪɴs ɪɴ <b>{chat.title}</b>:\nᴏᴡɴᴇʀ:\n╭⎋ ᴀɴᴏɴʏᴍᴏᴜs\n╰⊚ ᴏᴡɴᴇʀ\n\n"    
+    if admin_list:
+        text += f"ᴀᴅᴍɪɴs:\n" + "\n".join(admin_list)
+    await msg.edit(text, parse_mode="html") 

@@ -10,6 +10,10 @@ async def replay_handler(event):
     if not rights.is_admin:
         await event.reply("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.")
         return
+    try:
+        await event.delete()
+    except:
+        pass    
     if event.is_group or event.is_channel:
     	await replay(event)
     else:

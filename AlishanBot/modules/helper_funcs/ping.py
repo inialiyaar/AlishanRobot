@@ -10,6 +10,6 @@ def get_ping(host="8.8.8.8", port=53, timeout=3):
         end = time.time()
         sock.close()
         ping_time = round((end - start) * 1000, 2)
-        return f"{ping_time}ms"
+        return f"{ping_time}ᴍs"
     except socket.error:
         return "Ping failed"
