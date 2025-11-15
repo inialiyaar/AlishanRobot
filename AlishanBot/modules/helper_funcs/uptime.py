@@ -3,14 +3,17 @@ from AlishanBot.__init__ import start_time
 
 def get_uptime():
     current_time = time.time()
-    seconds = current_time - start_time
-    count = 0
-    time_list = []
-    time_suffix_list = ["sᴇᴄᴏɴᴅ", "ᴍɪɴᴜᴛᴇ", "ʜᴏᴜʀ", "ᴅᴀʏ"]
-
-    while count < 4 and seconds > 0:
-        seconds, result = divmod(seconds, 60 if count < 2 else 24)
-        time_list.append(f"{int(result)}{time_suffix_list[count]}")
-        count += 1
-
-    return ":".join(reversed(time_list))
+    seconds = int(current_time - start_time)
+    days, seconds = divmod(seconds, 86400)
+    hours, seconds = divmod(seconds, 3600)
+    minutes, seconds = divmod(seconds, 60)
+    parts = []
+    if days > 0:
+        parts.append(f"{days} ᴅᴀʏ{'s' if days != 1 else ''}")
+    if hours > 0:
+        parts.append(f"{hours} ʜᴏᴜʀ{'s' if hours != 1 else ''}")
+    if minutes > 0:
+        parts.append(f"{minutes} ᴍɪɴᴜᴛᴇ{'s' if minutes != 1 else ''}")
+    if seconds > 0 or not parts:
+        parts.append(f"{seconds} sᴇᴄᴏɴᴅ{'s' if seconds != 1 else ''}")
+    return " ".join(parts)

@@ -1,17 +1,19 @@
 from telethon import events
 from telethon.tl.types import MessageService, MessageActionGroupCall, UpdateNewChannelMessage, MessageActionInviteToGroupCall, PeerUser
 from AlishanBot.core.bot import Alishan, music, Assistant
-from AlishanBot.modules.helper_funcs.queue import queues, current_ind, queue_position, queue_locks
+from AlishanBot.modules.helper_funcs.queue import queues, current_ind, queue_position
 from AlishanBot.utils.database import groups
 from AlishanBot.modules.helper_funcs.add_group import add_group
 from telethon.tl.functions.channels import LeaveChannelRequest, GetFullChannelRequest
-from AlishanBot.__init__ import is_playing, BOT_ID, BOT_MENTION, BOT_USERNAME
+from AlishanBot.__init__ import is_playing, BOT_ID, BOT_MENTION, BOT_USERNAME, ASSISTANT_MENTION, ASSISTANT_ID
 import asyncio
 from pytgcalls import filters
 from pytgcalls.types import ChatUpdate, Update
 from datetime import datetime, timedelta
 from AlishanBot import config
 from telethon import Button
+from AlishanBot.modules.helper_funcs.ErrorLog import send_error
+import traceback
 
 pending_check = set()
 
@@ -46,11 +48,10 @@ async def GroupCallUpdate(event):
             return await Alishan.send_message(chat_id, "**♻️ VɪᴅᴇᴏCʜᴀᴛ Sᴛᴀʀᴛᴇᴅ!**")
         duration = readable_time(action.duration)
         if chat_id in queues and len(queues[chat_id]) > 0:
-            async with queue_locks[chat_id]:
-                queues.pop(chat_id, None)
-                current_ind.pop(chat_id, None)
-                queue_position.pop(chat_id, None)
-                is_playing.pop(chat_id, None)
+            queues.pop(chat_id, None)
+            current_ind.pop(chat_id, None)
+            queue_position.pop(chat_id, None)
+            is_playing.pop(chat_id, None)
             return await Alishan.send_message(chat_id, f"<b>📴 𝖵ɪᴅᴇᴏ𝖢ʜᴀᴛ 𝖤ɴᴅᴇᴅ! ᴀɴᴅ 𝖰ᴜᴇᴜᴇ 𝖢ʟᴇᴀʀᴇᴅ.</b>\n\n<b>⏰ 𝖣ᴜʀᴀᴛɪᴏɴ:</b> {duration}", parse_mode="html")
         else:
             return await Alishan.send_message(chat_id, f"<b>📴 𝖵ɪᴅᴇᴏ𝖢ʜᴀᴛ 𝖤ɴᴅᴇᴅ!</b>\n\n<b>⏰ 𝖣ᴜʀᴀᴛɪᴏɴ:</b> {duration}", parse_mode="html")
@@ -79,14 +80,13 @@ async def on_bot_banned(event):
                 await Assistant(LeaveChannelRequest(chat_id))
                 await music.leave_call(chat_id)
                 if chat_id in queues and len(queues[chat_id]) > 0:
-                    async with queue_locks[chat_id]:
-                        queues.pop(chat_id, None)
-                        current_ind.pop(chat_id, None)
-                        queue_position.pop(chat_id, None)
-                        is_playing.pop(chat_id, None)
+                    queues.pop(chat_id, None)
+                    current_ind.pop(chat_id, None)
+                    queue_position.pop(chat_id, None)
+                    is_playing.pop(chat_id, None)
             except: 
                 pass
-    if chat_id in queues:
+    if chat_id in is_playing:
         return
     if chat_id in pending_check:
         return
@@ -108,6 +108,15 @@ async def ChatAction(event):
     if not groups.find_one({"chat_id": chat_id}):
         await add_group(event)
     user = await event.get_user()
+    if event.user_left or event.user_kicked:
+        if not user.id == ASSISTANT_ID:
+            return
+        if chat_id in queues and len(queues[chat_id]) > 0:
+            queues.pop(chat_id, None)
+            current_ind.pop(chat_id, None)
+            queue_position.pop(chat_id, None)
+            is_playing.pop(chat_id, None)
+            await event.reply(f"<b>{ASSISTANT_MENTION} ᴡᴀs ʙᴀɴɴᴇᴅ! 𝖰ᴜᴇᴜᴇ 𝖢ʟᴇᴀʀᴇᴅ.</b>", parse_mode="html")
     if event.user_added:
         if user.id == BOT_ID:
             added_by = await event.get_added_by()
@@ -131,8 +140,9 @@ async def ChatAction(event):
                     ], 
                     parse_mode="html", 
                 )
-            except Exception as e:
-                print(e)
+            except Exception:
+                error = traceback.format_exc()
+                await send_error(error)
                 try:
                     await Alishan.send_file(
                         chat_id, 
