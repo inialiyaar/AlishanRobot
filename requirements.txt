@@ -8,3 +8,5 @@ Telethon
 yt-dlp
 requests
 openai
+mutagen
+psutil

@@ -53,7 +53,7 @@ async def add_to_queue(song_name, chat_id, query_format, mention, download):
                     )
             async with queue_locks[chat_id]:
                 queues[chat_id] = queues.get(chat_id, []) + [
-        (stream_url, title, artist, duration, thumbnail, mention, query_format)
+        (stream_url, title, artist, duration, thumbnail, mention, query_format, download)
     ]
             create_task(playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention, download))
         else:
@@ -65,7 +65,7 @@ async def add_to_queue(song_name, chat_id, query_format, mention, download):
                 stream_url, title, artist, duration, thumbnail = data
             async with queue_locks[chat_id]:
                 queues[chat_id] = queues.get(chat_id, []) + [
-        (stream_url, title, artist, duration, thumbnail, mention, query_format)
+        (stream_url, title, artist, duration, thumbnail, mention, query_format, download)
     ]
             queue_position[chat_id] =             queue_position.get(chat_id, 0) + 1
             create_task(queue_message(title, artist, duration, query_format, chat_id, queue_position[chat_id], mention))
@@ -104,7 +104,7 @@ async def play_next(chat_id):
         
         async with queue_locks[chat_id]:
             item = queues[chat_id][index]
-        stream_url, title, artist, duration, thumbnail, mention, query_format = item
+        stream_url, title, artist, duration, thumbnail, mention, query_format, download = item
             
         if query_format == "video":
             await Play_Video(chat_id, stream_url)
@@ -264,7 +264,7 @@ async def replay(event):
         index = current_ind.get(chat_id, 0)
         async with queue_locks[chat_id]:
             item = queues[chat_id][index]
-        stream_url, title, artist, duration, thumbnail, mention, query_format = item
+        stream_url, title, artist, duration, thumbnail, mention, query_format, download = item
         try:
             if query_format == "video":
                 await Play_Video(chat_id, stream_url)
