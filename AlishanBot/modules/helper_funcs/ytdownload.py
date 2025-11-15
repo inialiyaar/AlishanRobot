@@ -8,7 +8,7 @@ COOKIE_FILE = "cookies/cookies.txt"
 def is_youtube_url(text):
     return text.startswith("http://") or text.startswith("https://")
     
-async def is_playlist(url):
+def is_playlist(url):
     return "list=" in url    
     
 def YTDownload(song_name, query_format, title=None, artist=None):
@@ -58,7 +58,7 @@ def YTDownload(song_name, query_format, title=None, artist=None):
                 ], 
         }
     query = song_name if is_youtube_url(song_name) else f"ytsearch1:{song_name}"       
-    if await is_youtube_url(song_name) and await is_playlist(song_name):
+    if is_youtube_url(song_name) and is_playlist(song_name):
         with YoutubeDL({"quiet": True, "extract_flat": True}) as ydl:
             playlist_info = ydl.extract_info(song_name, download=False)
             entries = playlist_info.get("entries", [])
