@@ -59,7 +59,7 @@ async def Start(event, command_used, args):
         await Alishan.send_file(
             event.chat_id,
             file=config.START_IMG,
-            caption=f"ʜᴇʏ ᴛʜᴇʀᴇ <a href=\"tg://user?Id={user_id}\">{full_name}</a>.\n\n{BOT_MENTION} ɪs ᴀʟɪᴠᴇ ʙᴀʙʏ! \n\nᴀ ғᴀsᴛ ᴀɴᴅ ᴘᴏᴡᴇʀғᴜʟ ᴛᴇʟᴇɢʀᴀᴍ ᴍᴜsɪᴄ ᴘʟᴜs ᴍᴀɴᴀɢᴇᴍᴇɴᴛ ʙᴏᴛ!\nᴡɪᴛʜ sᴏᴍᴇ ᴀᴡᴇsᴏᴍᴇ Ғᴇᴜᴛᴜʀᴇs.\n\n<b>➺ ᴘɪɴɢ:</b> {ping}\n<b>➺ ᴜᴘᴛɪᴍᴇ:</b> {uptime}\n\n<b>ᴄʟɪᴄᴋ ᴏɴ ʜᴇʟᴘ ᴛᴏ ʟᴇᴀʀɴ ᴍᴏʀᴇ. </b>",
+            caption=f"ʜᴇʏ ᴛʜᴇʀᴇ <a href=\"tg://user?Id={user_id}\">{full_name}</a>.\n\n{BOT_MENTION} ɪs ᴀʟɪᴠᴇ ʙᴀʙʏ! \n\nᴀ ғᴀsᴛ ᴀɴᴅ ᴘᴏᴡᴇʀғᴜʟ ᴛᴇʟᴇɢʀᴀᴍ ᴍᴜsɪᴄ ᴘʟᴜs ᴍᴀɴᴀɢᴇᴍᴇɴᴛ ʙᴏᴛ!\nᴡɪᴛʜ sᴏᴍᴇ ᴀᴡᴇsᴏᴍᴇ Ғᴇᴜᴛᴜʀᴇs.\n\n<b>➺ ᴘɪɴɢ :</b> {ping}\n<b>➺ ᴜᴘᴛɪᴍᴇ :</b> {uptime}\n\n<b>ᴄʟɪᴄᴋ ᴏɴ ʜᴇʟᴘ ᴛᴏ ʟᴇᴀʀɴ ᴍᴏʀᴇ. </b>",
             buttons = [
                 [
                     Button.url("ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ", f"https://t.me/{BOT_USERNAME}?startgroup=true")
@@ -87,7 +87,7 @@ async def Refresh(event):
      last_name = user.last_name or ""
      full_name = (first_name + " " + last_name).strip()
      await event.edit(
-         f"ʜᴇʏ <a href=\"tg://user?Id={user_id}\">{full_name}</a>.\n\nɪ ᴀᴍ {BOT_MENTION} ᴛʜᴇ ᴍᴏsᴛ ᴘᴏᴡᴇʀғᴜʟ ᴛᴇʟᴇɢʀᴀᴍ ᴍᴜsɪᴄ ᴀɴᴅ ɢʀᴏᴜᴘ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ ʙᴏᴛ ᴡʜɪᴄʜ ᴄᴀɴ ʜᴇʟᴘ ʏᴏᴜ ᴛᴏ ᴍᴀɴᴀɢᴇ ᴀɴᴅ sᴇᴄᴜʀᴇ ʏᴏᴜʀ ɢʀᴏᴜᴘ\n\n<b>➺ ᴘɪɴɢ:</b>{ping}\n<b>➺ ᴜᴘᴛɪᴍᴇ:</b> {uptime}\n\n<b>ᴄʟɪᴄᴋ ᴏɴ ʜᴇʟᴘ ᴛᴏ ʟᴇᴀʀɴ ᴍᴏʀᴇ. </b>", 
+         f"ʜᴇʏ <a href=\"tg://user?Id={user_id}\">{full_name}</a>.\n\nɪ ᴀᴍ {BOT_MENTION} ᴛʜᴇ ᴍᴏsᴛ ᴘᴏᴡᴇʀғᴜʟ ᴛᴇʟᴇɢʀᴀᴍ ᴍᴜsɪᴄ ᴀɴᴅ ɢʀᴏᴜᴘ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ ʙᴏᴛ ᴡʜɪᴄʜ ᴄᴀɴ ʜᴇʟᴘ ʏᴏᴜ ᴛᴏ ᴍᴀɴᴀɢᴇ ᴀɴᴅ sᴇᴄᴜʀᴇ ʏᴏᴜʀ ɢʀᴏᴜᴘ\n\n<b>➺ ᴘɪɴɢ :</b> {ping}\n<b>➺ ᴜᴘᴛɪᴍᴇ :</b> {uptime}\n\n<b>ᴄʟɪᴄᴋ ᴏɴ ʜᴇʟᴘ ᴛᴏ ʟᴇᴀʀɴ ᴍᴏʀᴇ. </b>", 
          buttons= [
                 [
                     Button.url("ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ", f"https://t.me/{BOT_USERNAME}?startgroup=true")

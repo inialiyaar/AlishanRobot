@@ -6,7 +6,26 @@ CACHE = {}
 CACHE_EXPIRY = 3600
 
 async def is_youtube_url(text):
-    return text.startswith("http://") or text.startswith("https://")
+    text = text.strip().lower()
+    if not (text.startswith("http://") or text.startswith("https://")):
+        return False
+
+    YT_DOMAINS = [
+        "youtube.com",
+        "youtu.be",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com"
+    ]
+
+    try:
+        from urllib.parse import urlparse
+        parsed = urlparse(text)
+        domain = parsed.netloc.lower()
+
+        return domain in YT_DOMAINS
+    except:
+        return False
     
 async def is_playlist(url):
     return "list=" in url
@@ -33,13 +52,15 @@ async def meta_data(song_name):
             "cookiefile": cookie,
             "skip_download": True,
         }
+    if (song_name.startswith("http://") or song_name.startswith("https://")) and not await is_youtube_url(song_name):
+        return "URLERROR"    
     query = song_name if await is_youtube_url(song_name) else f"ytsearch1:{song_name}"
     if await is_youtube_url(song_name) and await is_playlist(song_name):
         with YoutubeDL({"quiet": True, "extract_flat": True}) as ydl:
             playlist_info = ydl.extract_info(song_name, download=False)
             entries = playlist_info.get("entries", [])
             if not entries:
-                return "errorplaylist"
+                return "PLAYLISTERROR"
             else:
                 vid = entries[0]
                 query = vid.get("url") or vid.get("webpage_url")

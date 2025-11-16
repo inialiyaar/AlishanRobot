@@ -28,6 +28,10 @@ async def add_to_queue(song_name, chat_id, query_format, mention, download, forc
         status = await Alishan.send_message(chat_id, f"**sᴇᴀʀᴄʜɪɴɢ...🔎**")
         if not download:
             data = await meta_data(song_name)
+            if data == "URLERROR":
+                return await event.reply("ᴘʀᴏᴠɪᴅᴇᴅ ᴜʀʟ ɪs ɴᴏᴛ ʏᴏᴜᴛᴜʙᴇ ᴜʀʟ ᴘʟᴇᴀsᴇ ᴛʀʏ ᴏɴ ʏᴏᴜᴛᴜʙᴇ ᴜʀʟ. ")
+            if data == "PLAYLISTERROR":    
+                return await event.reply("ᴘʀᴏᴠɪᴅᴇᴅ ᴘʟᴀʏʟɪsᴛ ᴀʀᴇ ᴇᴍᴘᴛʏ ᴘʟᴇᴀsᴇ ᴛʀʏ ᴏᴛʜᴇʀ ᴘʟᴀʏʟɪsᴛ.")
         queues.setdefault(chat_id, [])
         queue_position.setdefault(chat_id, 0)
         current_ind.setdefault(chat_id, 0)
@@ -161,11 +165,11 @@ async def playing_message(title, artist, duration, query_format, thumbnail, chat
     msg = await Alishan.send_file(
         chat_id,
         file=thumbnail_path,
-        caption=f"<pre>‣ 𝖳ɪᴛʟᴇ:\n{title}</pre>\n"
-                f"<pre><b>‣ 𝖠ʀᴛɪsᴛ:<b> {artist}\n"
+        caption=f"<blockquote>‣ 𝖳ɪᴛʟᴇ:\n{title}</blockquote>\n"
+                f"<blockquote><b>‣ 𝖠ʀᴛɪsᴛ:<b> {artist}\n"
                 f"<b>‣ 𝖣ᴜʀᴀᴛɪᴏɴ:<b> {duration_text}\n"
-                f"<b>‣ 𝖲ᴛʀᴇᴀᴍ 𝖳ʏᴘᴇ :</b> {query_format}</pre>\n"
-                f"<b>𝖱ᴇǫᴜᴇsᴛᴇᴅ ʙʏ:</b> {mention}",
+                f"<b>‣ 𝖲ᴛʀᴇᴀᴍ 𝖳ʏᴘᴇ :</b> {query_format}\n"
+                f"<b>𝖱ᴇǫᴜᴇsᴛᴇᴅ ʙʏ:</b> {mention}</blockquote>\n",
         buttons=[
             [Button.inline("00:00 ▱▱▱▱▱▱▱▱▱ 00:00", data=b"ignore_bar")],
             [
@@ -252,7 +256,7 @@ async def queue_message(title, artist, duration, query_format, chat_id, queue_po
         query_format = "𝖠ᴜᴅɪᴏ"        
     await Alishan.send_message(
         chat_id,
-        f"<b>➲ 𝖠ᴅᴅᴇᴅ ᴛᴏ ǫᴜᴇᴜᴇ ᴀᴛ #{queue_pos}</b>\n\n<pre><b>‣ 𝖳ɪᴛʟᴇ :</b> {title}</pre>\n<pre><b>‣ 𝖠ʀᴛɪsᴛ :</b> {artist}\n<b>‣ 𝖣ᴜʀᴀᴛɪᴏɴ :</b> {duration_text}\n<b>‣ 𝖲ᴛʀᴇᴀᴍ 𝖳ʏᴘᴇ :</b> {query_format}</pre>\n<b>𝖱ᴇǫᴜᴇsᴛᴇᴅ ʙʏ:</b> {mention}",
+        f"<b>➲ 𝖠ᴅᴅᴇᴅ ᴛᴏ ǫᴜᴇᴜᴇ ᴀᴛ #{queue_pos}</b>\n\n<blockquote><b>‣ 𝖳ɪᴛʟᴇ :</b> {title}</blockquote>\n<blockquote><b>‣ 𝖠ʀᴛɪsᴛ :</b> {artist}\n<b>‣ 𝖣ᴜʀᴀᴛɪᴏɴ :</b> {duration_text}\n<b>‣ 𝖲ᴛʀᴇᴀᴍ 𝖳ʏᴘᴇ :</b> {query_format}\n<b>𝖱ᴇǫᴜᴇsᴛᴇᴅ ʙʏ:</b> {mention}</blockquote>",
         buttons = [
         [
             Button.inline("sᴋɪᴘ", data=b"skip"),

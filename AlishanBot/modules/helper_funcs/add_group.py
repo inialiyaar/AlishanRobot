@@ -12,6 +12,7 @@ from telethon.tl.types import (
 )
 
 async def add_group(event):
+    creator = None
     chat = await event.get_chat()
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
     groups.insert_one({"chat_id": chat_id})

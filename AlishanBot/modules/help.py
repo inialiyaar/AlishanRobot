@@ -99,7 +99,7 @@ async def callback_help(event):
         ]
     elif data == b"back_to_start":
         if event.is_private:
-            caption=f"ʜᴇʏ {mention}.\n\nɪ ᴀᴍ {BOT_MENTION} ᴛʜᴇ ᴍᴏsᴛ ᴘᴏᴡᴇʀғᴜʟ ᴛᴇʟᴇɢʀᴀᴍ ᴍᴜsɪᴄ ᴀɴᴅ ɢʀᴏᴜᴘ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ ʙᴏᴛ ᴡʜɪᴄʜ ᴄᴀɴ ʜᴇʟᴘ ʏᴏᴜ ᴛᴏ ᴍᴀɴᴀɢᴇ ᴀɴᴅ sᴇᴄᴜʀᴇ ʏᴏᴜʀ ɢʀᴏᴜᴘ\n\n<b>➺ ᴘɪɴɢ:</b>{ping}\n<b>➺ ᴜᴘᴛɪᴍᴇ:</b> {uptime}\n\n<b>ᴄʟɪᴄᴋ ᴏɴ ʜᴇʟᴘ ᴛᴏ ʟᴇᴀʀɴ ᴍᴏʀᴇ. </b>"
+            caption=f"ʜᴇʏ {mention}.\n\nɪ ᴀᴍ {BOT_MENTION} ᴛʜᴇ ᴍᴏsᴛ ᴘᴏᴡᴇʀғᴜʟ ᴛᴇʟᴇɢʀᴀᴍ ᴍᴜsɪᴄ ᴀɴᴅ ɢʀᴏᴜᴘ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ ʙᴏᴛ ᴡʜɪᴄʜ ᴄᴀɴ ʜᴇʟᴘ ʏᴏᴜ ᴛᴏ ᴍᴀɴᴀɢᴇ ᴀɴᴅ sᴇᴄᴜʀᴇ ʏᴏᴜʀ ɢʀᴏᴜᴘ\n\n<b>➺ ᴘɪɴɢ :</b> {ping}\n<b>➺ ᴜᴘᴛɪᴍᴇ :</b> {uptime}\n\n<b>ᴄʟɪᴄᴋ ᴏɴ ʜᴇʟᴘ ᴛᴏ ʟᴇᴀʀɴ ᴍᴏʀᴇ. </b>"
             buttons = [
                     [
                         Button.url("ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ", f"https://t.me/{BOT_USERNAME}?startgroup=true")
@@ -141,52 +141,57 @@ async def callback_help(event):
                 Button.inline("𝖢ʜᴀᴛʙᴏᴛ", data=b"chatbot_help")
             ],
             [
+                Button.inline("𝖨ɴғᴏs", data=b"info_help"), 
+                Button.inline("𝖠ғᴋ", data=b"afk_help"), 
+                Button.inline("𝖦ᴏᴏɢʟᴇ", data=b"google_help")
+            ], 
+            [
            Button.inline("◁", data=b"management_preview"), 
            Button.inline("ʙᴀᴄᴋ", data=b"help_menu"), 
            Button.inline("▷", data=b"management_next"), 
-           ]
+           ], 
         ]
     elif data == b"management_next":
         pass
     elif data == b"management_preview":
         pass  
     elif data == b"mute_help":
-        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ Mᴜᴛᴇ​ :\n\nᴀᴅᴍɪɴs ᴏɴʟʏ</b>\n\n❍ /mute <ᴜsᴇʀʜᴀɴᴅʟᴇ>: sɪʟᴇɴᴄᴇs ᴀ ᴜsᴇʀ. ᴄᴀɴ ᴀʟsᴏ ʙᴇ ᴜsᴇᴅ ᴀs ᴀ ʀᴇᴘʟʏ, ᴍᴜᴛɪɴɢ ᴛʜᴇ ʀᴇᴘʟɪᴇᴅ ᴛᴏ ᴜᴘᴀss\n❍ /tmute <ᴜsᴇʀʜᴀɴᴅʟᴇ> x(ᴍ/ʜ/ᴅ): ᴍᴜᴛᴇs ᴀ ᴜsᴇʀ ғᴏʀ x ᴛɪᴍᴇ. (ᴠɪᴀ ʜᴀɴᴅʟᴇ, ᴏʀ ʀᴇᴘʟʏ). ᴍ = ᴍɪɴᴜᴛᴇs, ʜ = ʜᴏᴜʀs, ᴅ = ᴅᴀʏs.\n❍ /unmute <ᴜsᴇʀʜᴀɴᴅʟᴇ>: ᴜɴᴍᴜᴛᴇs ᴀ ᴜsᴇʀ. ᴄᴀɴ ᴀʟsᴏ ʙᴇ ᴜsᴇᴅ ᴀs ᴀ ʀᴇᴘʟʏ, ᴍᴜᴛɪɴɢ ᴛʜᴇ ʀᴇᴘʟɪᴇᴅ to ᴜsᴇʀ." 
+        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ Mᴜᴛᴇ​ :\n\nᴀᴅᴍɪɴs ᴏɴʟʏ</b>\n\n❍ /mute <ᴜsᴇʀʜᴀɴᴅʟᴇ>: sɪʟᴇɴᴄᴇs ᴀ ᴜsᴇʀ. ᴄᴀɴ ᴀʟsᴏ ʙᴇ ᴜsᴇᴅ ᴀs ᴀ ʀᴇᴘʟʏ, ᴍᴜᴛɪɴɢ ᴛʜᴇ ʀᴇᴘʟɪᴇᴅ ᴛᴏ ᴜᴘᴀss. \n❍ /tmute <ᴜsᴇʀʜᴀɴᴅʟᴇ> x(ᴍ/ʜ/ᴅ): ᴍᴜᴛᴇs ᴀ ᴜsᴇʀ ғᴏʀ x ᴛɪᴍᴇ. (ᴠɪᴀ ʜᴀɴᴅʟᴇ, ᴏʀ ʀᴇᴘʟʏ). ᴍ = ᴍɪɴᴜᴛᴇs, ʜ = ʜᴏᴜʀs, ᴅ = ᴅᴀʏs.\n❍ /unmute <ᴜsᴇʀʜᴀɴᴅʟᴇ>: ᴜɴᴍᴜᴛᴇs ᴀ ᴜsᴇʀ. ᴄᴀɴ ᴀʟsᴏ ʙᴇ ᴜsᴇᴅ ᴀs ᴀ ʀᴇᴘʟʏ, ᴍᴜᴛɪɴɢ ᴛʜᴇ ʀᴇᴘʟɪᴇᴅ to ᴜsᴇʀ." 
         buttons = [
             [
                 Button.inline("ʙᴀᴄᴋ", data=b"management_help")
             ]
         ]
     elif data == b"ban_help":
-        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ Bᴀɴs :</b>\n\n❍ /kickme: ᴋɪᴄᴋs ᴛʜᴇ ᴜsᴇʀ ᴡʜᴏ ɪssᴜᴇᴅ ᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ\n\n<b>ᴀᴅᴍɪɴs ᴏɴʟʏ:</b>\n❍ /ban <ᴜsᴇʀʜᴀɴᴅʟᴅ>: ʙᴀɴs ᴀ ᴜsᴇʀ. (ᴠɪᴀ ʜᴀɴᴅʟᴇ, ᴏʀ ʀᴇᴘʟʏ)\n❍ /sban <ᴜsᴇʀʜᴀɴᴅʟᴇ>: sɪʟᴇɴᴛʟʏ ʙᴀɴ ᴀ ᴜsᴇʀ. ᴅᴇʟᴇᴛᴇs ᴄᴏᴍᴍᴀɴᴅ, ʀᴇᴘʟɪᴇᴅ ᴍᴇssᴀɢᴇ ᴀɴᴅ ᴅᴏᴇsɴ'ᴛ ʀᴇᴘʟʏ. (ᴠɪᴀ ʜᴀɴᴅʟᴇ, ᴏʀ ʀᴇᴘʟʏ)\n❍ /tban <ᴜsᴇʀʜᴀɴᴅʟᴇ> x(ᴍ/ʜ/ᴅ): ʙᴀɴs ᴀ ᴜsᴇʀ ғᴏʀ x ᴛɪᴍᴇ. (ᴠɪᴀ ʜᴀɴᴅʟᴇ, ᴏʀ ʀᴇᴘʟʏ). ᴍ = ᴍɪɴᴜᴛᴇs, ʜ = ʜᴏᴜʀs, ᴅ = ᴅᴀʏs.\n❍ /unban <ᴜsᴇʀʜᴀɴᴅʟᴇ>: ᴜɴʙᴀɴs ᴀ ᴜsᴇʀ. (ᴠɪᴀ ʜᴀɴᴅʟᴇ, ᴏʀ ʀᴇᴘʟʏ)\n❍ /kick <ᴜsᴇʀʜᴀɴᴅʟᴇ>: ᴋɪᴄᴋs ᴀ ᴜsᴇʀ ᴏᴜʀ ᴏғ ᴛʜᴇ ɢʀᴏᴜᴘ, (ᴠɪᴀ ʜᴀɴᴅʟᴇ, ᴏʀ ʀᴇᴘʟʏ)"
+        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ Bᴀɴs :</b>\n\n❍ /kickme: ᴋɪᴄᴋs ᴛʜᴇ ᴜsᴇʀ ᴡʜᴏ ɪssᴜᴇᴅ ᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ.\n\n<b>ᴀᴅᴍɪɴs ᴏɴʟʏ:</b>\n❍ /ban <ᴜsᴇʀʜᴀɴᴅʟᴅ>: ʙᴀɴs ᴀ ᴜsᴇʀ. (ᴠɪᴀ ʜᴀɴᴅʟᴇ, ᴏʀ ʀᴇᴘʟʏ).\n❍ /sban <ᴜsᴇʀʜᴀɴᴅʟᴇ>: sɪʟᴇɴᴛʟʏ ʙᴀɴ ᴀ ᴜsᴇʀ. ᴅᴇʟᴇᴛᴇs ᴄᴏᴍᴍᴀɴᴅ, ʀᴇᴘʟɪᴇᴅ ᴍᴇssᴀɢᴇ ᴀɴᴅ ᴅᴏᴇsɴ'ᴛ ʀᴇᴘʟʏ. (ᴠɪᴀ ʜᴀɴᴅʟᴇ, ᴏʀ ʀᴇᴘʟʏ).\n❍ /tban <ᴜsᴇʀʜᴀɴᴅʟᴇ> x(ᴍ/ʜ/ᴅ): ʙᴀɴs ᴀ ᴜsᴇʀ ғᴏʀ x ᴛɪᴍᴇ. (ᴠɪᴀ ʜᴀɴᴅʟᴇ, ᴏʀ ʀᴇᴘʟʏ). ᴍ = ᴍɪɴᴜᴛᴇs, ʜ = ʜᴏᴜʀs, ᴅ = ᴅᴀʏs.\n❍ /unban <ᴜsᴇʀʜᴀɴᴅʟᴇ>: ᴜɴʙᴀɴs ᴀ ᴜsᴇʀ. (ᴠɪᴀ ʜᴀɴᴅʟᴇ, ᴏʀ ʀᴇᴘʟʏ).\n❍ /kick <ᴜsᴇʀʜᴀɴᴅʟᴇ>: ᴋɪᴄᴋs ᴀ ᴜsᴇʀ ᴏᴜʀ ᴏғ ᴛʜᴇ ɢʀᴏᴜᴘ, (ᴠɪᴀ ʜᴀɴᴅʟᴇ, ᴏʀ ʀᴇᴘʟʏ)."
         buttons = [
             [
                 Button.inline("ʙᴀᴄᴋ", data=b"management_help")
             ]
         ]
     elif data == b"download_help":
-        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ 𝖣ᴏᴡɴʟᴏᴀᴅ :\n\n𝖯ʀɪᴠᴀᴛᴇ ᴏɴʟʏ</b>\n❍ /download <𝖲ᴏɴɢ𝖭ᴀᴍᴇ/𝖸ᴏᴜᴛᴜʙᴇ𝖴ʀʟ> : 𝖥ᴇᴛᴄʜ 𝖣ᴏᴡɴʟᴏᴀᴅ ᴏᴘᴛɪᴏɴs ғᴏʀ ᴀ 𝖲ᴏɴɢ ᴏʀ 𝖵ɪᴅᴇᴏ ʙʏ ᴘʀᴏᴠɪᴅɪɴɢ ᴀ 𝖭ᴀᴍᴇ ᴏʀ ᴀ ᴅɪʀᴇᴄᴛ 𝖴ʀʟ,"
+        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ 𝖣ᴏᴡɴʟᴏᴀᴅ :\n\n𝖯ʀɪᴠᴀᴛᴇ ᴏɴʟʏ</b>\n❍ /download <𝖲ᴏɴɢ𝖭ᴀᴍᴇ/𝖸ᴏᴜᴛᴜʙᴇ𝖴ʀʟ> : 𝖥ᴇᴛᴄʜ 𝖣ᴏᴡɴʟᴏᴀᴅ ᴏᴘᴛɪᴏɴs ғᴏʀ ᴀ 𝖲ᴏɴɢ ᴏʀ 𝖵ɪᴅᴇᴏ ʙʏ ᴘʀᴏᴠɪᴅɪɴɢ ᴀ 𝖭ᴀᴍᴇ ᴏʀ ᴀ ᴅɪʀᴇᴄᴛ 𝖴ʀʟ."
         buttons = [
             [
                 Button.inline("ʙᴀᴄᴋ", data=b"management_help")
             ]
         ]
     elif data == b"fun_help":
-        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ 𝖥ᴜɴ :</b>\n\n❍ /truth : ᴛᴏ ɢɪᴠᴇ ᴀ ʀᴀɴᴅᴏᴍ ᴛʀᴜᴛʜ. \n❍ /dare : ᴛᴏ ɢɪᴠᴇ ᴀ ʀᴀɴᴅᴏᴍ ᴅᴀʀᴇ"
+        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ 𝖥ᴜɴ :</b>\n\n❍ /truth : ᴛᴏ ɢɪᴠᴇ ᴀ ʀᴀɴᴅᴏᴍ ᴛʀᴜᴛʜ. \n❍ /dare : ᴛᴏ ɢɪᴠᴇ ᴀ ʀᴀɴᴅᴏᴍ ᴅᴀʀᴇ."
         buttons = [
             [
                 Button.inline("ʙᴀᴄᴋ", data=b"management_help")
             ]
         ]
     elif data == b"admins_help":
-        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ 𝖠ᴅᴍɪɴs :\n\n𝖴sᴇʀ ᴄᴏᴍᴍᴀɴᴅs</b>\n❍ /admins: ʟɪsᴛ ᴏꜰ ᴀᴅᴍɪɴs ɪɴ ᴛʜᴇ ᴄʜᴀᴛ\n❍ /pinned: ᴛᴏ ɢᴇᴛ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴘɪɴɴᴇᴅ ᴍᴇssᴀɢᴇ.\n\n<b>𝖠ᴅᴍɪɴs ᴏɴʟʏ</b>\n❍ /pin: sɪʟᴇɴᴛʟʏ ᴘɪɴs ᴛʜᴇ ᴍᴇssᴀɢᴇ ʀᴇᴘʟɪᴇᴅ ᴛᴏ - ᴀᴅᴅ 'loud' ᴏʀ 'notify' ᴛᴏ ɢɪᴠᴇ ɴᴏᴛɪꜰs ᴛᴏ ᴜsᴇʀs\n❍ /unpin: ᴜɴᴘɪɴs ᴛʜᴇ ᴄᴜʀʀᴇɴᴛʟʏ ᴘɪɴɴᴇᴅ ᴍᴇssᴀɢᴇ\n❍ /invitelink: ɢᴇᴛs ɪɴᴠɪᴛᴇʟɪɴᴋ\n❍ /promote: ᴘʀᴏᴍᴏᴛᴇs ᴛʜᴇ ᴜsᴇʀ ʀᴇᴘʟɪᴇᴅ ᴛᴏ\n❍ /lowpromote: ᴘʀᴏᴍᴏᴛᴇs ᴛʜᴇ ᴜsᴇʀ ʀᴇᴘʟɪᴇᴅ ᴛᴏ ᴡɪᴛʜ ʜᴀʟꜰ ʀɪɢʜᴛs\n❍ /fullpromote: ᴘʀᴏᴍᴏᴛᴇs ᴛʜᴇ ᴜsᴇʀ ʀᴇᴘʟɪᴇᴅ ᴛᴏ ᴡɪᴛʜ ꜰᴜʟʟ ʀɪɢʜᴛs\n❍ /demote: ᴅᴇᴍᴏᴛᴇs ᴛʜᴇ ᴜsᴇʀ ʀᴇᴘʟɪᴇᴅ ᴛᴏ\n❍ /setgtitle <text>: sᴇᴛ ɢʀᴏᴜᴘ ᴛɪᴛʟᴇ\n❍ /setgpic: ʀᴇᴘʟʏ ᴛᴏ ᴀɴ ɪᴍᴀɢᴇ ᴛᴏ sᴇᴛ ᴀs ɢʀᴏᴜᴘ ᴘʜᴏᴛᴏ\n❍ /setdes: sᴇᴛ ɢʀᴏᴜᴘ ᴅᴇsᴄʀɪᴘᴛɪᴏɴ\n❍ /setsticker: sᴇᴛ ɢʀᴏᴜᴘ sᴛɪᴄᴋᴇʀ"
+        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ 𝖠ᴅᴍɪɴs :\n\n𝖴sᴇʀ ᴄᴏᴍᴍᴀɴᴅs</b>\n❍ /admins: ʟɪsᴛ ᴏꜰ ᴀᴅᴍɪɴs ɪɴ ᴛʜᴇ ᴄʜᴀᴛ.\n❍ /pinned: ᴛᴏ ɢᴇᴛ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴘɪɴɴᴇᴅ ᴍᴇssᴀɢᴇ.\n\n<b>𝖠ᴅᴍɪɴs ᴏɴʟʏ</b>\n❍ /pin: sɪʟᴇɴᴛʟʏ ᴘɪɴs ᴛʜᴇ ᴍᴇssᴀɢᴇ ʀᴇᴘʟɪᴇᴅ ᴛᴏ - ᴀᴅᴅ 'loud' ᴏʀ 'notify' ᴛᴏ ɢɪᴠᴇ ɴᴏᴛɪꜰs ᴛᴏ ᴜsᴇʀs. \n❍ /unpin: ᴜɴᴘɪɴs ᴛʜᴇ ᴄᴜʀʀᴇɴᴛʟʏ ᴘɪɴɴᴇᴅ ᴍᴇssᴀɢᴇ.\n❍ /invitelink: ɢᴇᴛs ɪɴᴠɪᴛᴇʟɪɴᴋ.\n❍ /promote: ᴘʀᴏᴍᴏᴛᴇs ᴛʜᴇ ᴜsᴇʀ ʀᴇᴘʟɪᴇᴅ ᴛᴏ.\n❍ /lowpromote: ᴘʀᴏᴍᴏᴛᴇs ᴛʜᴇ ᴜsᴇʀ ʀᴇᴘʟɪᴇᴅ ᴛᴏ ᴡɪᴛʜ ʜᴀʟꜰ ʀɪɢʜᴛs.\n❍ /fullpromote: ᴘʀᴏᴍᴏᴛᴇs ᴛʜᴇ ᴜsᴇʀ ʀᴇᴘʟɪᴇᴅ ᴛᴏ ᴡɪᴛʜ ꜰᴜʟʟ ʀɪɢʜᴛs.\n❍ /demote: ᴅᴇᴍᴏᴛᴇs ᴛʜᴇ ᴜsᴇʀ ʀᴇᴘʟɪᴇᴅ ᴛᴏ.\n❍ /setgtitle <text>: sᴇᴛ ɢʀᴏᴜᴘ ᴛɪᴛʟᴇ.\n❍ /setgpic: ʀᴇᴘʟʏ ᴛᴏ ᴀɴ ɪᴍᴀɢᴇ ᴛᴏ sᴇᴛ ᴀs ɢʀᴏᴜᴘ ᴘʜᴏᴛᴏ.\n❍ /setdes: sᴇᴛ ɢʀᴏᴜᴘ ᴅᴇsᴄʀɪᴘᴛɪᴏɴ.\n❍ /setsticker: sᴇᴛ ɢʀᴏᴜᴘ sᴛɪᴄᴋᴇʀ."
         buttons = [
             [
                 Button.inline("ʙᴀᴄᴋ", data=b"management_help")
             ]
         ]
     elif data == b"chatbot_help":
-        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ Cʜᴀᴛʙᴏᴛ :</b>\n\n{BOT_MENTION} ʜᴀs ᴀɴ ᴄʜᴀᴛʙᴏᴛ ᴡʜɪᴄʜ ᴘʀᴏᴠɪᴅᴇs ʏᴏᴜ ᴀ sᴇᴇᴍɪɴɢʟᴇss ᴄʜᴀᴛᴛɪɴɢ ᴇxᴘᴇʀɪᴇɴᴄᴇ :\n\n❍  /chatbot : sʜᴏᴡs ᴄʜᴀᴛʙᴏᴛ ᴄᴏɴᴛʀᴏʟ ᴘᴀɴɴᴇʟ"
+        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ Cʜᴀᴛʙᴏᴛ :\n\nɢʀᴏᴜᴘ ᴏɴʟʏ</b>\n{BOT_MENTION} ʜᴀs ᴀɴ ᴄʜᴀᴛʙᴏᴛ ᴡʜɪᴄʜ ᴘʀᴏᴠɪᴅᴇs ʏᴏᴜ ᴀ sᴇᴇᴍɪɴɢʟᴇss ᴄʜᴀᴛᴛɪɴɢ ᴇxᴘᴇʀɪᴇɴᴄᴇ :\n\n❍  /chatbot : sʜᴏᴡs ᴄʜᴀᴛʙᴏᴛ ᴄᴏɴᴛʀᴏʟ ᴘᴀɴɴᴇʟ."
         buttons = [
             [
                 Button.inline("ʙᴀᴄᴋ", data=b"management_help")
@@ -206,7 +211,7 @@ async def callback_help(event):
              ]
          ]
     elif data == b"play_help":
-        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ 𝖯ʟᴀʏ:\n\nv : sᴛᴀɴᴅs ғᴏʀ ᴠɪᴅᴇᴏ ᴩʟᴀʏ.</b>\n❍ play ᴏʀ /vplay : sᴛᴀʀᴛs sᴛʀᴇᴀᴍɪɴɢ ᴛʜᴇ ʀᴇǫᴜᴇsᴛᴇᴅ ᴛʀᴀᴄᴋ ᴏɴ ᴠɪᴅᴇᴏᴄʜᴀᴛ."
+        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ 𝖯ʟᴀʏ:\n\nv : sᴛᴀɴᴅs ғᴏʀ ᴠɪᴅᴇᴏ ᴩʟᴀʏ.\nforce : sᴛᴀɴᴅs ғᴏʀ ғᴏʀᴄᴇ ᴩʟᴀʏ.</b>\n\n❍ play ᴏʀ /vplay : sᴛᴀʀᴛs sᴛʀᴇᴀᴍɪɴɢ ᴛʜᴇ ʀᴇǫᴜᴇsᴛᴇᴅ ᴛʀᴀᴄᴋ ᴏɴ ᴠɪᴅᴇᴏᴄʜᴀᴛ.\n\n<b>ᴀᴅᴍɪɴs ᴏɴʟʏ</b>\n❍ /playforce ᴏʀ /vplayforce : sᴛᴏᴩs ᴛʜᴇ ᴏɴɢᴏɪɴɢ sᴛʀᴇᴀᴍ ᴀɴᴅ sᴛᴀʀᴛs sᴛʀᴇᴀᴍɪɴɢ ᴛʜᴇ ʀᴇǫᴜᴇsᴛᴇᴅ ᴛʀᴀᴄᴋ."
         buttons = [
             [
                 Button.inline("ʙᴀᴄᴋ", data=b"music_help")
