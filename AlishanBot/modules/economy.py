@@ -100,7 +100,7 @@ async def economy_system(event, command_used, args):
                     "dead": False
                 }
                 economy.insert_one(user)
-            if user["dead"]:
+            if user.get("dead", False):
                  status = "☠️ <b>sᴛᴀᴛᴜs :</b> ᴅᴇᴀᴅ"
             else:
                 status = "♥ <b>sᴛᴀᴛᴜs :</b> ᴀʟɪᴠᴇ"

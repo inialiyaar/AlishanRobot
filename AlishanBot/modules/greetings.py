@@ -19,6 +19,11 @@ last_greetings = {}
 async def Welcome_Handler(event, command_used, args):
     if event.is_private:
         return await event.reply("ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪs ᴍᴀᴅᴇ ᴛᴏ ʙᴇ ᴜsᴇᴅ ɪɴ ɢʀᴏᴜᴘs! ")
+    user = await event.get_sender()
+    if not user:
+        return await event.reply("ᴀɴᴏɴʏᴍᴏᴜs ᴄᴀɴ'ᴛ ᴜsᴇ ᴛʜᴇsᴇ ᴄᴏᴍᴍᴀɴᴅ.")
+    if not await is_admin(user, event):
+        return await event.reply("ʏᴏᴜ ɴᴇᴇᴅ ᴛᴏ ʙᴇ ᴀɴᴅ ᴀᴅᴍɪɴ ᴛᴏ ᴅᴏ ᴛʜɪs.")
     chat = await event.get_chat()
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)    
     group_greetings = greetings.find_one({"chat_id": chat_id})     
@@ -72,6 +77,11 @@ async def Welcome_Handler(event, command_used, args):
 async def Welcome_Handler(event, command_used, args):
     if event.is_private:
         return await event.reply("ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪs ᴍᴀᴅᴇ ᴛᴏ ʙᴇ ᴜsᴇᴅ ɪɴ ɢʀᴏᴜᴘs! ")
+    user = await event.get_sender()
+    if not user:
+        return await event.reply("ᴀɴᴏɴʏᴍᴏᴜs ᴄᴀɴ'ᴛ ᴜsᴇ ᴛʜᴇsᴇ ᴄᴏᴍᴍᴀɴᴅ.")
+    if not await is_admin(user, event):
+        return await event.reply("ʏᴏᴜ ɴᴇᴇᴅ ᴛᴏ ʙᴇ ᴀɴᴅ ᴀᴅᴍɪɴ ᴛᴏ ᴅᴏ ᴛʜɪs.")    
     chat = await event.get_chat()
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)    
     group_greetings = greetings.find_one({"chat_id": chat_id})     
@@ -82,7 +92,7 @@ async def Welcome_Handler(event, command_used, args):
     else:
         goodbye = group_greetings.get("goodbye", True)
         gb_clean_up = group_greetings.get("wel_clean_up", False)
-        msg_id = group_greetings.get("gb_msg_id", 3)
+        msg_id = group_greetings.get("gb_msg_id", 10)
     if not args:
         stats = await event.reply(f"ɪ ᴀᴍ ᴄᴜʀʀᴇɴᴛʟʏ ɢᴏᴏᴅʙʏᴇ ᴛᴏ ᴜsᴇʀs: {goodbye}\nɪ ᴀᴍ ᴄᴜʀʀᴇɴᴛʟʏ ᴅᴇʟᴇᴛɪɴɢ ᴏʟᴅ ɢᴏᴏᴅʙʏᴇs: {gb_clean_up}\n\nᴍᴇᴍʙᴇʀs ᴀʀᴇ ᴄᴜʀʀᴇɴᴛʟʏ ɢᴏᴏᴅʙʏᴇ ᴡɪᴛʜ:")
         msg = await Alishan.get_messages(DATABASE, ids=msg_id)
@@ -125,6 +135,11 @@ async def Welcome_Handler(event, command_used, args):
 async def set_new_welcome(event, command_used, args):
     if event.is_private:
         return await event.reply("ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪs ᴍᴀᴅᴇ ᴛᴏ ʙᴇ ᴜsᴇᴅ ɪɴ ɢʀᴏᴜᴘs!")
+    user = await event.get_sender()
+    if not user:
+        return await event.reply("ᴀɴᴏɴʏᴍᴏᴜs ᴄᴀɴ'ᴛ ᴜsᴇ ᴛʜᴇsᴇ ᴄᴏᴍᴍᴀɴᴅ.")
+    if not await is_admin(user, event):
+        return await event.reply("ʏᴏᴜ ɴᴇᴇᴅ ᴛᴏ ʙᴇ ᴀɴᴅ ᴀᴅᴍɪɴ ᴛᴏ ᴅᴏ ᴛʜɪs.")    
     chat = await event.get_chat()
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)       
     sender = await event.get_sender()
@@ -160,7 +175,7 @@ async def set_new_welcome(event, command_used, args):
             )   
         msg_id = msg.id
     else:
-        msg_id = group_greetings["wel_msg_id"]
+        msg_id = group_greetings.get("wel_msg_id", 3) 
         if msg_id == 3:
             if not media: 
                 msg = await Alishan.send_message(
@@ -212,10 +227,15 @@ async def set_new_welcome(event, command_used, args):
         )
     return await event.reply("ʏᴇss!! ᴛʜɪs ɴᴇᴡ ᴡᴇʟᴄᴏᴍᴇ ᴍᴇssᴀɢᴇ ʜᴀs ʙᴇᴇɴ sᴀᴠᴇᴅ ɪɴ ᴍʏ ᴅᴀᴛᴀʙᴀsᴇ. ") 
     
-@add_command("setgoodbye", "setwel")   
+@add_command("setgoodbye", "setgb")   
 async def set_new_welcome(event, command_used, args):
     if event.is_private:
         return await event.reply("ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪs ᴍᴀᴅᴇ ᴛᴏ ʙᴇ ᴜsᴇᴅ ɪɴ ɢʀᴏᴜᴘs!")
+    user = await event.get_sender()
+    if not user:
+        return await event.reply("ᴀɴᴏɴʏᴍᴏᴜs ᴄᴀɴ'ᴛ ᴜsᴇ ᴛʜᴇsᴇ ᴄᴏᴍᴍᴀɴᴅ.")
+    if not await is_admin(user, event):
+        return await event.reply("ʏᴏᴜ ɴᴇᴇᴅ ᴛᴏ ʙᴇ ᴀɴᴅ ᴀᴅᴍɪɴ ᴛᴏ ᴅᴏ ᴛʜɪs.")    
     chat = await event.get_chat()
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)       
     sender = await event.get_sender()
@@ -251,7 +271,7 @@ async def set_new_welcome(event, command_used, args):
             )   
         msg_id = msg.id
     else:
-        msg_id = group_greetings["gb_msg_id"]
+        msg_id = group_greetings.get("gb_msg_id", 10) 
         if msg_id == 10:
             if not media: 
                 msg = await Alishan.send_message(
@@ -348,12 +368,12 @@ async def Greetings_Handler(event):
             msg = await Alishan.get_messages(DATABASE, ids=10)
         else:
             goodbye = group_greetings.get("goodbye", True)
-            if not welcoming:
+            if not goodbye:
                 return
         if group_greetings:
             if not goodbye:
                 return
-            msg_id = group_greetings["gb_msg_id"] 
+            msg_id = group_greetings.get("gb_msg_id", 10) 
             msg = await Alishan.get_messages(DATABASE, ids=msg_id)
         text = msg.text if msg.text else None
         if text:
