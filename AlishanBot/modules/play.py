@@ -79,7 +79,9 @@ async def Play(event, song_name, query_format, chat_id, download, force_play=Fal
     bot = await Alishan.get_me()
     assistant = await Assistant.get_me()    
     if not await is_admin(bot, event):
-        return await event.reply(f"{BOT_MENTION} ɪs ɴᴏᴛ ᴀᴅᴍɪɴ, 𝖯ʟᴇᴀsᴇ ɢɪʙᴇ ᴍᴇ ᴀᴅᴍɪɴ ᴡɪᴛʜ <b>(ᴄʀᴇᴀᴛᴇ ɪɴᴠɪᴛᴇ ʟɪɴᴋ)</b> ᴀᴅᴍɪɴ ʀɪɢʜᴛs.", parse_mode="html")    
+        return await event.reply(f"{BOT_MENTION} ɪs ɴᴏᴛ ᴀᴅᴍɪɴ, 𝖯ʟᴇᴀsᴇ ɢɪʙᴇ ᴍᴇ ᴀᴅᴍɪɴ ᴡɪᴛʜ <b>(ᴄʀᴇᴀᴛᴇ ɪɴᴠɪᴛᴇ ʟɪɴᴋ)</b> ᴀᴅᴍɪɴ ʀɪɢʜᴛs.", parse_mode="html")
+    if chat_id in is_playing:
+        await add_to_queue(song_name, chat_id, query_format, mention, download, force_play)
     try:
         await Assistant(GetParticipantRequest(chat.id, assistant.id))
         await add_to_queue(song_name, chat_id, query_format, mention, download, force_play)
@@ -87,8 +89,22 @@ async def Play(event, song_name, query_format, chat_id, download, force_play=Fal
     except:
         pass  
     try:
-        result = await Alishan(GetParticipantRequest(chat_id, assistant.id))
+        try:
+            result = await Alishan(GetParticipantRequest(chat_id, assistant.id))
+        except UserNotParticipantError:
+            if chat_id in is_playing:
+                is_playing.pop(chat_id, None)
+            if not await check_rights(event, BOT_ID, "invite_users"):      
+                return await event.reply(f"{BOT_MENTION} ʜᴀs ɴᴏ ᴀᴄᴄᴇss ᴛᴏ ɪɴᴠɪᴛᴇ {ASSISTANT_MENTION}, 𝖯ʟᴇᴀsᴇ ɢɪʙᴇ ᴍᴇ <b>(ᴄʀᴇᴀᴛᴇ ɪɴᴠɪᴛᴇ ʟɪɴᴋ)</b> ᴀᴅᴍɪɴ ʀɪɢʜᴛs", parse_mode="html")
+            await Alishan(EditBannedRequest(chat_id, assistant.id, UNBAN_RIGHTS))   
+            export_link = await Alishan(ExportChatInviteRequest(chat_id))
+            chat_link = export_link.link
+            invite_code = search(r"(?:joinchat/|\+)([a-zA-Z0-9_-]+)", chat_link).group(1)
+            await Assistant(ImportChatInviteRequest(invite_code))
+            await Assistant.send_message(chat_id, f"<b>{ASSISTANT_MENTION} 𝖴ɴʙᴀɴɴᴇᴅ! , 𝖱ᴇᴀᴅʏ?</b> 𝖨 ᴀᴍ ᴄᴏᴍᴍɪɴɢ ᴛᴏ 𝖵ᴏɪᴄᴇ 𝖢ʜᴀᴛ. .", parse_mode="html")
+            return await add_to_queue(song_name, chat_id, query_format, mention, download, force_play)    
         assistant_status = result.participant
+        
         if isinstance(assistant_status, ChannelParticipantBanned):
             if not await check_rights(event, BOT_ID, "ban_users"):
                 return await event.reply(f"{BOT_MENTION} ʜᴀs ɴᴏ ᴀᴄᴄᴇss ᴛᴏ ɪɴᴠɪᴛᴇ {ASSISTANT_MENTION}, 𝖯ʟᴇᴀsᴇ ɢɪʙᴇ ᴍᴇ <b>(ᴄʀᴇᴀᴛᴇ ɪɴᴠɪᴛᴇ ʟɪɴᴋ)</b> ᴀᴅᴍɪɴ ʀɪɢʜᴛs", parse_mode="html")
@@ -107,9 +123,12 @@ async def Play(event, song_name, query_format, chat_id, download, force_play=Fal
                 await Assistant(GetParticipantRequest(chat_id, assistant.id))
                 await add_to_queue(song_name, chat_id, query_format, mention, download, force_play)
                 return
-            except Exception as e:
-                print(e)
-                pass  
+            except UserNotParticipantError:
+                pass
+            except Exception:
+                error = traceback.format_exc()
+                return await send_error(error)
+                
             export_link = await Alishan(ExportChatInviteRequest(chat_id))
             chat_link = export_link.link
             invite_code = search(r"(?:joinchat/|\+)([a-zA-Z0-9_-]+)", chat_link).group(1)

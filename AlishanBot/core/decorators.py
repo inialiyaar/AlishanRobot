@@ -28,7 +28,6 @@ def add_command(*command_names):
 
     return decorator
 
-
 def callback_query(data):
     def decorator(func):
         Alishan.add_event_handler(

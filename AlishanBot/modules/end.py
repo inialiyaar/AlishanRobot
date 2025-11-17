@@ -4,6 +4,7 @@ from telethon import events
 from AlishanBot.modules.helper_funcs.queue import queues, current_ind, queue_position
 from AlishanBot.__init__ import is_playing, BOT_MENTION
 from telethon import Button
+from AlishanBot.modules.helper_funcs.helpers import is_admin
 
 
 votes = {}
@@ -18,8 +19,7 @@ async def Stop(event, command_used, args):
         user = await event.get_sender()
         chat = await event.get_chat()
         chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
-        rights = await Alishan.get_permissions(chat.id, user.id)
-        if not rights.is_admin:
+        if not await is_admin(user, event):
             votes_target = 5
             msg = await event.reply(
                 f"**𝖠ᴅᴍɪɴ ʀɪɢʜᴛs ɴᴇᴇᴅᴇᴅ**\n\n⧽ {votes_target} ᴠᴏᴛᴇs ɴᴇᴇᴅᴇᴅ ғᴏʀ ᴘᴇʀғᴏʀᴍɪɴɢ ᴛʜɪs ᴀᴄᴛɪᴏɴ.",
@@ -44,8 +44,7 @@ async def Stop(event, command_used, args):
 async def Stop_Callback(event):
     user = await event.get_sender()
     chat = await event.get_chat()
-    rights = await Alishan.get_permissions(chat.id, user.id)
-    if not rights.is_admin:
+    if not await is_admin(user, event):
         await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
         return
     try:

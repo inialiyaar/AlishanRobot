@@ -56,6 +56,8 @@ async def GroupCallUpdate(event):
         else:
             return await Alishan.send_message(chat_id, f"<b>📴 𝖵ɪᴅᴇᴏ𝖢ʜᴀᴛ 𝖤ɴᴅᴇᴅ!</b>\n\n<b>⏰ 𝖣ᴜʀᴀᴛɪᴏɴ:</b> {duration}", parse_mode="html")
     if isinstance(action, MessageActionInviteToGroupCall):
+        if not msg.from_id:
+            return
         inviter_id = msg.from_id.user_id
         invited_users = msg.action.users
         inviter = await Alishan.get_entity(inviter_id)
@@ -74,6 +76,8 @@ async def on_bot_banned(event):
     chat = await event.get_chat()
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
     user = await event.get_user()
+    if not user:
+        return
     if event.user_left or event.user_kicked:
         if user.id == BOT_ID:
             try:
@@ -108,6 +112,8 @@ async def ChatAction(event):
     if not groups.find_one({"chat_id": chat_id}):
         await add_group(event)
     user = await event.get_user()
+    if not user:
+        return
     if event.user_left or event.user_kicked:
         if not user.id == ASSISTANT_ID:
             return

@@ -33,10 +33,10 @@ async def mute_user(event, command_used, args):
     if user.id == config.OWNER_ID:
         return await event.reply("ᴛʀʏɪɴɢ ᴛᴏ ᴍᴜᴛᴇ ᴀ ɢᴏᴅ ʟᴇᴠᴇʟ ᴅɪsᴀsᴛᴇʀ ʜᴜʜ?")
 
-    if not await check_rights(event, BOT_ID, "change_info"):
+    if not await check_rights(event, BOT_ID, "ban_users"):
         return await event.reply("Ohh shit!! I don't have mute rights!")
 
-    if (sender.id not in config.sudo_list) and not await check_rights(event, sender.id, "change_info"):
+    if (sender.id not in config.sudo_list) and not await check_rights(event, sender.id, "ban_users"):
         return await event.reply("ᴄᴀɴ'ᴛ ᴍᴜᴛᴇ! ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴍᴜᴛᴇ ᴘᴇʀᴍɪssɪᴏɴ")
 
     if await is_admin(user, event):
@@ -71,10 +71,10 @@ async def temp_mute_user(event, command_used, args):
     sender = await event.get_sender()
     chat = await event.get_chat()
 
-    if not await check_rights(event, BOT_ID, "change_info"):
+    if not await check_rights(event, BOT_ID, "ban_users"):
         return await event.reply("Ohh shit!! I don't have mute rights!")
 
-    if (sender.id not in config.sudo_list) and not await check_rights(event, sender.id, "change_info"):
+    if (sender.id not in config.sudo_list) and not await check_rights(event, sender.id, "ban_users"):
         return await event.reply("ᴄᴀɴ'ᴛ ᴍᴜᴛᴇ! ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴍᴜᴛᴇ ᴘᴇʀᴍɪssɪᴏɴ")
 
     if not args and not event.is_reply:
@@ -141,10 +141,10 @@ async def unmute_user(event, command_used, args):
     sender = await event.get_sender()
     chat = await event.get_chat()
 
-    if not await check_rights(event, BOT_ID, "change_info"):
+    if not await check_rights(event, BOT_ID, "ban_users"):
         return await event.reply("ɪ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴍᴜᴛᴇ ʀɪɢʜᴛs!")
 
-    if (sender.id not in config.sudo_list) and not await check_rights(event, sender.id, "change_info"):
+    if (sender.id not in config.sudo_list) and not await check_rights(event, sender.id, "ban_users"):
         return await event.reply("ᴄᴀɴ'ᴛ ᴜɴᴍᴜᴛᴇ! ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴘᴇʀᴍɪssɪᴏɴ")
 
     if not args and not event.is_reply:

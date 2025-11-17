@@ -25,7 +25,8 @@ async def help(event, command, args):
     ))
     caption = f"{BOT_MENTION}'s ʜᴇʟᴘ ᴍᴇɴᴜ\n\nᴄʜᴏꜱᴇ ᴛʜᴇ ᴄᴀᴛᴇɢᴏʀʏ ꜰᴏʀ ᴡʜɪᴄʜ ʏᴏᴜ ᴡᴀɴɴᴀ ɢᴇᴛ ʜᴇʟᴘ. ᴡɪᴛʜ {BOT_MENTION}\n<b>ᴀɴʏ ᴘʀᴏʙʟᴇᴍ ᴀsᴋ ʏᴏᴜʀ ᴅᴏᴜʙᴛs ᴀᴛ</b> <a href=\"https://t.me/{SUPPORT_CHAT}\">sᴜᴘᴘᴏʀᴛ chat</a>.\n\nᴀʟʟ ᴄᴏᴍᴍᴀɴᴅꜱ ᴄᴀɴ ʙᴇ ᴜꜱᴇᴅ ᴡɪᴛʜ : /"
     if event.is_private:
-        await event.reply(
+        await Alishan.send_file(
+            event.chat_id, 
             file=START_IMG, 
             caption=caption, 
             buttons = [
@@ -34,7 +35,7 @@ async def help(event, command, args):
                     Button.inline("ᴍᴜsɪᴄ", data=b"music_help"), 
                 ], 
                 [
-                    Button.url("ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ᴄʜᴀᴛ", f"https://t.me/{BOT_USERNAME}?startgroup=true")
+                    Button.url("ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ᴄʜᴀᴛ", f"https://t.me/{BOT_USERNAME}?startgroup=true"), 
                 ], 
                 
             ], 

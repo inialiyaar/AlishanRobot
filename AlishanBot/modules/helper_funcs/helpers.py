@@ -4,6 +4,7 @@ from telethon.tl.types import (
     ChatParticipantAdmin,
     ChatParticipantCreator
 )
+from telethon.errors import UserNotParticipantError
 from telethon.tl.functions.channels import GetParticipantRequest
 from AlishanBot.core.bot import Alishan
 from AlishanBot.modules.helper_funcs.ErrorLog import send_error
@@ -61,8 +62,6 @@ async def is_admin(user, event):
     try:
         participant = await event.client(GetParticipantRequest(chat.id, user))
     except Exception as e:
-        error = traceback.format_exc()
-        await send_error(error)
         return False
 
     participant = participant.participant 

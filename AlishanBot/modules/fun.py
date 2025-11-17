@@ -134,6 +134,8 @@ async def set_afk(event, command_used, args):
 @Alishan.on(events.NewMessage)
 async def remove_afk(event):
     sender = await event.get_sender()
+    if not sender:
+        return
     if sender.id not in AFK_USERS:
         return
 

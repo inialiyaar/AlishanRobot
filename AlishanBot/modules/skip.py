@@ -5,6 +5,7 @@ from AlishanBot.modules.helper_funcs.queue import play_next, queues
 from asyncio import create_task
 from AlishanBot.__init__ import is_playing, 𝖡𝖮𝖳_𝖬𝖤𝖭𝖳𝖨𝖮𝖭
 from telethon import Button
+from AlishanBot.modules.helper_funcs.helpers import is_admin
 
 votes = {}
 
@@ -14,8 +15,7 @@ async def skip_handler(event, command_used, args):
         user = await event.get_sender()
         chat = await event.get_chat()
         chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
-        rights = await Alishan.get_permissions(chat.id, user.id)
-        if not rights.is_admin:
+        if not await is_admin(user, event):
             votes_target = 5
             msg = await event.reply(
                 f"**𝖠ᴅᴍɪɴ ʀɪɢʜᴛs ɴᴇᴇᴅᴇᴅ**\n\n⧽ {votes_target} ᴠᴏᴛᴇs ɴᴇᴇᴅᴇᴅ ғᴏʀ ᴘᴇʀғᴏʀᴍɪɴɢ ᴛʜɪs ᴀᴄᴛɪᴏɴ.",
@@ -53,8 +53,7 @@ async def callback_skip(event):
     user = await event.get_sender()
     chat = await event.get_chat()
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
-    rights = await Alishan.get_permissions(chat.id, user.id)
-    if not rights.is_admin:
+    if not await is_admin(user, event):
         await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
         return
     mention = f"<a href=\"tg://user?id={user.id}\">{user.first_name}</a>"

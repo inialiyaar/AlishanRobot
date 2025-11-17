@@ -137,6 +137,10 @@ async def play_next(chat_id):
 @music.on_update(filters.stream_end())
 async def stream_end(_, update: Update):
     try:
+        pass
+    except:
+        return   
+    try:
         chat_id = update.chat_id
         chat_id = int(f"-100{chat_id}" if not str(chat_id).startswith("-100") else chat_id)
         if chat_id in queues:

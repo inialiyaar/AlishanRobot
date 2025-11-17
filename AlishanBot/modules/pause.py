@@ -2,6 +2,7 @@ from AlishanBot.core.bot import Alishan, music
 from AlishanBot.modules.helper_funcs.queue import queues
 from AlishanBot.__init__ import is_playing, BOT_MENTION
 from AlishanBot.core.decorators import add_command, callback_query
+from AlishanBot.modules.helper_funcs.helpers import is_admin
 
 
 @add_command("pause", "resume")
@@ -10,8 +11,7 @@ async def command_handler(event, command_used, args):
         user = await event.get_sender()
         chat = await event.get_chat()
         chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
-        rights = await Alishan.get_permissions(chat.id, user.id)
-        if not rights.is_admin:
+        if not await is_admin(user, event):
             await event.reply("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.")
             return
         try:
@@ -31,8 +31,7 @@ async def pause_callback(event):
     user = await event.get_sender()
     chat = await event.get_chat()
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
-    rights = await Alishan.get_permissions(chat.id, user.id)
-    if not rights.is_admin:
+    if not await is_admin(user, event):
         await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
         return
     await pause(event)
@@ -64,8 +63,7 @@ async def resume_callback(event):
     user = await event.get_sender()
     chat = await event.get_chat()
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
-    rights = await Alishan.get_permissions(chat.id, user.id)
-    if not rights.is_admin:
+    if not await is_admin(user, event):
         await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
         return
     await resume(event)
