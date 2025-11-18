@@ -99,6 +99,10 @@ async def add_to_queue(song_name, chat_id, query_format, mention, download, forc
             await send_error(error)
 
 async def play_next(chat_id):
+    try:
+        await music.mute(chat_id)
+    except:
+        pass      
     if chat_id not in queues or not queues[chat_id]:
         is_playing.pop(chat_id, None)
         await music.leave_call(chat_id)
@@ -117,7 +121,6 @@ async def play_next(chat_id):
         current_ind.pop(chat_id, None)
         is_playing.pop(chat_id, None)
         return
-        
     try:
         queue_position[chat_id] -=1
         
@@ -283,6 +286,10 @@ async def replay(event):
     
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
     if chat_id in queues and queues[chat_id]:
+        try:
+            await music.mute(chat_id)
+        except:
+            pass     
         status = await event.reply("**𝖱ᴇᴘʟᴀʏɪɴɢ ᴄᴜʀʀᴇɴᴛ 𝖳ʀᴀᴄᴋ...**")
         index = current_ind.get(chat_id, 0)
         stream_url, title, artist, duration, thumbnail, mention, query_format, download = queues[chat_id][index]

@@ -4,6 +4,10 @@ from pytgcalls.types.raw import AudioParameters
 from asyncio import sleep
 
 async def Play_Audio(chat_id, url):
+    try:
+        await music.unmute(chat_id)
+    except:
+        pass    
     await music.play(
         chat_id,
         MediaStream(
@@ -14,6 +18,10 @@ async def Play_Audio(chat_id, url):
         )
         
 async def Play_Video(chat_id, url):
+    try:
+        await music.unmute(chat_id)
+    except:
+        pass    
     await music.play(
         chat_id, 
         MediaStream(
@@ -33,4 +41,8 @@ async def join_call(chat_id):
             )
         )
     )
+    try:
+        await music.mute(chat_id)
+    except:
+        pass     
     await sleep(2)

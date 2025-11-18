@@ -82,6 +82,7 @@ async def Play(event, song_name, query_format, chat_id, download, force_play=Fal
         return await event.reply(f"{BOT_MENTION} ɪs ɴᴏᴛ ᴀᴅᴍɪɴ, 𝖯ʟᴇᴀsᴇ ɢɪʙᴇ ᴍᴇ ᴀᴅᴍɪɴ ᴡɪᴛʜ <b>(ᴄʀᴇᴀᴛᴇ ɪɴᴠɪᴛᴇ ʟɪɴᴋ)</b> ᴀᴅᴍɪɴ ʀɪɢʜᴛs.", parse_mode="html")
     if chat_id in is_playing:
         await add_to_queue(song_name, chat_id, query_format, mention, download, force_play)
+        return
     try:
         await Assistant(GetParticipantRequest(chat.id, assistant.id))
         await add_to_queue(song_name, chat_id, query_format, mention, download, force_play)
