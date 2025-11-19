@@ -24,59 +24,71 @@ async def download_thumbnail(thumb_url):
 
 async def Thumbnail(thumb_url, title, artist, duration):
     thumb_path = await download_thumbnail(thumb_url)
+    earphones_path = "earphones.png"
     bg = Image.open(thumb_path).convert("RGBA").resize((1280, 720), Image.LANCZOS)
-    blurred_bg = bg.filter(ImageFilter.GaussianBlur(radius=6))
-    overlay = Image.new("RGBA", blurred_bg.size, (0, 0, 0, 100))
-    blurred_bg = Image.alpha_composite(blurred_bg, overlay)
-    card_w, card_h = 460, 230
-    card = Image.new("RGBA", (card_w, card_h), (0, 0, 0, 0))
+    blurred = bg.filter(ImageFilter.GaussianBlur(18))
+    dim = Image.new("RGBA", (1280, 720), (0, 0, 0, 120))
+    blurred = Image.alpha_composite(blurred, dim)
+    card_w, card_h = 1050, 350
+    card = Image.new("RGBA", (card_w, card_h), (255,255,255,0))
+    cx = (1280 - card_w) // 2
+    cy = (720 - card_h) // 2
+    cut = blurred.crop((cx, cy, cx+card_w, cy+card_h))
+    cut = cut.filter(ImageFilter.GaussianBlur(10))
+    cut.putalpha(160)
+
+    mask = Image.new("L", (card_w, card_h), 0)
+    m = ImageDraw.Draw(mask)
+    m.rounded_rectangle((0, 0, card_w, card_h), radius=40, fill=255)
+
+    card = Image.composite(cut, card, mask)
     draw = ImageDraw.Draw(card)
-    draw.rounded_rectangle([(0, 0), (card_w, card_h)], radius=30, fill=(30, 30, 30, 200))
-    thumb = Image.open(thumb_path).convert("RGBA").resize((120, 120), Image.LANCZOS)
-    mask = Image.new('L', thumb.size, 0)
-    mask_draw = ImageDraw.Draw(mask)
-    mask_draw.rounded_rectangle([0, 0, 120, 120], radius=20, fill=255)
-    thumb.putalpha(mask)
-    card.paste(thumb, (20, 20), thumb)
-    title_font = ImageFont.truetype("fonts/Bold.otf", 20)
-    artist_font = ImageFont.truetype("fonts/Regular.otf", 17)
-    small_font = ImageFont.truetype("fonts/Regular.otf", 16)
-    zhunehra_font = ImageFont.truetype("fonts/Regular.otf", 18)
-    draw.text((160, 20), f"{BOT_NAME}", font=zhunehra_font, fill="white")
-    wrapped_title = wrap(title, width=26)[:2]
-    for i, line in enumerate(wrapped_title):
-        draw.text((160, 40 + i * 20), line, font=title_font, fill="white")
-    draw.text((160, 90), artist, font=artist_font, fill=(255, 255, 255, 160))
-    bar_y = 120
-    bar_start = 160
-    bar_end = card_w - 30
-    draw.line([(bar_start, bar_y), (bar_end, bar_y)], fill="white", width=2)
-    draw.text((bar_start, bar_y + 6), "0:00", font=small_font, fill="white")
-    draw.text((bar_end - 35, bar_y + 6), duration, font=small_font, fill="white")
-    btn_y = bar_y + 60
-    btn_size = 16
-    gap = 50
-    center_x = (bar_start + bar_end) // 2
-    prev_x = center_x - gap - btn_size - 10
-    draw.polygon([
-        (prev_x, btn_y),
-        (prev_x + btn_size, btn_y - btn_size),
-        (prev_x + btn_size, btn_y + btn_size)
-    ], fill="white")
-    draw.rectangle([(center_x - 8, btn_y - btn_size), (center_x - 2, btn_y + btn_size)], fill="white")
-    draw.rectangle([(center_x + 2, btn_y - btn_size), (center_x + 8, btn_y + btn_size)], fill="white")
-    next_x = center_x + gap + 10
-    draw.polygon([
-        (next_x, btn_y - btn_size),
-        (next_x, btn_y + btn_size),
-        (next_x + btn_size, btn_y)
-    ], fill="white")
-    final = blurred_bg.copy()
-    final.paste(card, ((1280 - card_w) // 2, (720 - card_h) // 2), card)
-    output_path = thumb_path.replace(".png", "_final.png")
-    final.save(output_path, format="PNG")
-    try:
-        os.remove(thumb_path)
-    except:   
-        pass   
-    return output_path
+
+    title_font = ImageFont.truetype("fonts/Bold.otf", 46)
+    artist_font = ImageFont.truetype("fonts/Regular.otf", 33)
+    small_font = ImageFont.truetype("fonts/Regular.otf", 26)
+    bot_font = ImageFont.truetype("fonts/Bold.otf", 28)
+
+    thumb = Image.open(thumb_path).convert("RGBA").resize((300, 300), Image.LANCZOS)
+
+    glow = Image.new("RGBA", (300, 300), (255,255,255,0))
+    g = ImageDraw.Draw(glow)
+    g.ellipse((0, 0, 300, 300), fill=(255,255,255,120))
+    glow = glow.filter(ImageFilter.GaussianBlur(40))
+    card.paste(glow, (40, 25), glow)
+
+    tmask = Image.new("L", (300, 300), 0)
+    ImageDraw.Draw(tmask).rounded_rectangle((0,0,300,300), radius=40, fill=255)
+    thumb.putalpha(tmask)
+    card.paste(thumb, (40, 25), thumb)
+
+    if os.path.exists(earphones_path):
+        ear = Image.open(earphones_path).convert("RGBA").resize((240, 240), Image.LANCZOS)
+        ear.putalpha(200)
+        card.paste(ear, (250, 40), ear)
+
+    draw.text((370, 30), BOT_NAME, font=bot_font, fill="white")
+
+    wrapped = wrap(title, 20)[:2]
+    for i, line in enumerate(wrapped):
+        draw.text((370, 80 + (i*50)), line, font=title_font, fill="white")
+
+    draw.text((370, 180), artist, font=artist_font, fill=(240,240,240,230))
+    bar_y = 260
+    bar_s = 370
+    bar_e = card_w - 60
+
+    draw.line([(bar_s, bar_y), (bar_e, bar_y)], fill=(255,255,255,180), width=5)
+
+    cursor_x = bar_s + 200
+    draw.ellipse((cursor_x-12, bar_y-12, cursor_x+12, bar_y+12), fill=(255,255,255,200))
+    draw.ellipse((cursor_x-8, bar_y-8, cursor_x+8, bar_y+8), fill="white")
+
+    draw.text((bar_s, bar_y+15), "0:00", font=small_font, fill="white")
+    draw.text((bar_e-70, bar_y+15), duration, font=small_font, fill="white")
+    final = blurred.copy()
+    final.paste(card, (cx, cy), card)
+
+    output = thumb_path.replace(".png", "_final.png")
+    final.save(output, "PNG")
+    return output

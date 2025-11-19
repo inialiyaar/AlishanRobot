@@ -231,9 +231,6 @@ async def set_new_welcome(event, command_used, args):
 async def set_new_welcome(event, command_used, args):
     if event.is_private:
         return await event.reply("ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪs ᴍᴀᴅᴇ ᴛᴏ ʙᴇ ᴜsᴇᴅ ɪɴ ɢʀᴏᴜᴘs!")
-    user = await event.get_sender()
-    if not user:
-        return await event.reply("ᴀɴᴏɴʏᴍᴏᴜs ᴄᴀɴ'ᴛ ᴜsᴇ ᴛʜᴇsᴇ ᴄᴏᴍᴍᴀɴᴅ.")
     if not await is_admin(user, event):
         return await event.reply("ʏᴏᴜ ɴᴇᴇᴅ ᴛᴏ ʙᴇ ᴀɴᴅ ᴀᴅᴍɪɴ ᴛᴏ ᴅᴏ ᴛʜɪs.")    
     chat = await event.get_chat()
@@ -411,3 +408,40 @@ async def Greetings_Handler(event):
             buttons=buttons_list, 
             parse_mode="html"
         )
+        
+@add_command("cleanservice")  
+async def clean_service(event, command_used, args):
+    if event.is_private:
+        return await event.reply("ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪs ᴍᴀᴅᴇ ᴛᴏ ʙᴇ ᴜsᴇᴅ ɪɴ ɢʀᴏᴜᴘs!")
+    user = await event.get_sender()
+    if not user:
+        return await event.reply("ᴀɴᴏɴʏᴍᴏᴜs ᴄᴀɴ'ᴛ ᴜsᴇ ᴛʜᴇsᴇ ᴄᴏᴍᴍᴀɴᴅ.")
+    if not await is_admin(user, event):
+        return await event.reply("ʏᴏᴜ ɴᴇᴇᴅ ᴛᴏ ʙᴇ ᴀɴᴅ ᴀᴅᴍɪɴ ᴛᴏ ᴅᴏ ᴛʜɪs.")    
+    chat = await event.get_chat()
+    chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)  
+    if not args:
+        return await event.reply("ɪ ᴜɴᴅᴇʀsᴛᴀɴᴅ ᴏɴʟʏ 'on/yes' ᴏʀ 'off/no'")
+    if args.lower() in ["yes", "on"]:
+        greetings.update_one(
+                {"chat_id": chat_id}, 
+                {
+                    "$set": {
+                 "wel_clean_up": True,
+                 "gb_clean_up": True,
+                    }, 
+                }, 
+                upsert=True, 
+            )
+    else:        
+        greetings.update_one(
+                {"chat_id": chat_id}, 
+                {
+                    "$set": {
+                 "wel_clean_up": False,
+                 "gb_clean_up": False,
+                    }, 
+                }, 
+                upsert=True, 
+            )
+        return await event.reply("ɪ'ʟʟ ɢᴏ ʟᴏᴀғ ᴀʀᴏᴜɴᴅ ᴀɴᴅ ɴᴏ ᴀɴʏᴏɴᴇ ᴛʜᴇ.") 
