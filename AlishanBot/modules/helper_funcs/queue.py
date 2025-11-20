@@ -6,10 +6,9 @@ from pytgcalls.types import Update
 from telethon import Button
 import os
 from asyncio import create_task, sleep, Lock
-from AlishanBot.__init__ import is_playing
+from AlishanBot.__init__ import is_playing, playing_lofi, BOT_USERNAME, ASSISTANT_MENTION, BOT_MENTION
 from AlishanBot.modules.helper_funcs.thumbnail import Thumbnail
 from AlishanBot.modules.helper_funcs.metadata import get_meta
-from AlishanBot.__init__ import BOT_USERNAME, ASSISTANT_MENTION, BOT_MENTION
 from AlishanBot import config
 import asyncio
 from collections import defaultdict
@@ -99,6 +98,8 @@ async def add_to_queue(song_name, chat_id, query_format, mention, download, forc
             await send_error(error)
 
 async def play_next(chat_id):
+    if chat_id in playing_lofi:
+        playing_lofi.pop(chat_id, None)
     try:
         await music.mute(chat_id)
     except:
@@ -147,6 +148,8 @@ async def stream_end(_, update: Update):
         chat_id = update.chat_id
         chat_id = int(f"-100{chat_id}" if not str(chat_id).startswith("-100") else chat_id)
         if chat_id in queues:
+            if chat_id in playing_lofi:
+                playing_lofi.pop(chat_id, None)
             await play_next(chat_id)
     except:
         pass
@@ -180,17 +183,20 @@ async def playing_message(title, artist, duration, query_format, thumbnail, chat
         buttons=[
             [Button.inline("00:00 ▱▱▱▱▱▱▱▱▱ 00:00", data=b"ignore_bar")],
             [
-                Button.inline("ᴘᴀᴜsᴇ", data=b"pause"),
-                Button.inline("ʀᴇᴘʟᴀʏ", data=b"replay"),
-                Button.inline("ʀᴇsᴜᴍᴇ", data=b"resume"),
+                Button.inline("▷", data=b"resume"),
+                Button.inline("II", data=b"pause"),
+                Button.inline("ʟᴏғɪ", data=b"instent_lofi"), 
+                Button.inline("‣‣I", data=b"skip"),
+                Button.inline("▢", data=b"stop"),
             ],
             [
-                Button.inline("sᴋɪᴘ", data=b"skip"),
-                Button.inline("sᴛᴏᴘ", data=b"stop"),
-            ],
+                Button.inline("≪ -20s", data=b"seek_backward"), 
+                Button.inline("↻", data=b"replay"),
+                Button.inline("+20s ≫", data=b"seek_forward")
+            ], 
             [
-                Button.url("ᴜᴘᴅᴀᴛᴇs", f"https://t.me/{config.SUPPORT_CHANNEL}"),
-            ],
+                Button.url("ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ", f"https://t.me/{BOT_USERNAME}?startgroup=true")
+            ]
         ],
         parse_mode="html"
     )
@@ -205,50 +211,61 @@ async def playing_message(title, artist, duration, query_format, thumbnail, chat
 
 
 async def update_duration_bar(msg, duration, chat_id=None, bar_state=None):
-    elapsed = 0
     total_blocks = 9
     
-    while elapsed <= duration:
+    while True:
         if chat_id not in is_playing or not bar_state.get("active", False):
             break
-    
+
+        try:
+            elapsed_ms = await music.time(chat_id)
+            elapsed = elapsed_ms // 1000
+        except:
+            await asyncio.sleep(2)
+            continue
+
+        if elapsed >= duration:
+            break
+            
         if not is_playing.get(chat_id, False):
             await asyncio.sleep(2)
             continue
-    
+
         filled = int((elapsed / duration) * total_blocks)
         empty = total_blocks - filled
         bar = "▰" * filled + "▱" * empty
-    
-        current_min, current_sec = divmod(elapsed, 60)
-        total_min, total_sec = divmod(duration, 60)
-    
-        progress_text = f"{current_min:02}:{current_sec:02} {bar} {total_min:02}:{total_sec:02}"
-    
+
+        cur_m, cur_s = divmod(elapsed, 60)
+        tot_m, tot_s = divmod(duration, 60)
+
+        progress_text = f"{cur_m:02}:{cur_s:02} {bar} {tot_m:02}:{tot_s:02}"
+
         try:
             await msg.edit(
                 buttons=[
                     [Button.inline(progress_text, data=b"ignore_bar")],
                     [
-                        Button.inline("ᴘᴀᴜsᴇ", data=b"pause"),
-                        Button.inline("ʀᴇᴘʟᴀʏ", data=b"replay"),
-                        Button.inline("ʀᴇsᴜᴍᴇ", data=b"resume"),
+                        Button.inline("▷", data=b"resume"),
+                        Button.inline("II", data=b"pause"),
+                        Button.inline("ʟᴏғɪ", data=b"instent_lofi"), 
+                        Button.inline("‣‣I", data=b"skip"),
+                        Button.inline("▢", data=b"stop"),
                     ],
                     [
-                        Button.inline("sᴋɪᴘ", data=b"skip"),
-                        Button.inline("sᴛᴏᴘ", data=b"stop"),
-                    ],
+                        Button.inline("≪ -20s", data=b"seek_backward"), 
+                        Button.inline("↻", data=b"replay"),
+                        Button.inline("+20s ≫", data=b"seek_forward")
+                    ], 
                     [
-                        Button.url("ᴜᴘᴅᴀᴛᴇs", f"https://t.me/{config.SUPPORT_CHANNEL}"),
-                    ],
+                        Button.url("ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ", f"https://t.me/{BOT_USERNAME}?startgroup=true")
+                    ], 
                 ]
             )
-        except Exception:
+        except:
             break
-    
-        await asyncio.sleep(5)
-        elapsed += 5
 
+        await asyncio.sleep(5)
+        
 async def queue_message(title, artist, duration, query_format, chat_id, queue_pos, mention):
     if duration >= 3600:
             hours, remainder = divmod(duration, 3600)
@@ -266,8 +283,8 @@ async def queue_message(title, artist, duration, query_format, chat_id, queue_po
         f"<b>➲ 𝖠ᴅᴅᴇᴅ ᴛᴏ ǫᴜᴇᴜᴇ ᴀᴛ #{queue_pos}</b>\n\n<blockquote><b>‣ 𝖳ɪᴛʟᴇ :</b> {title}</blockquote>\n<blockquote><b>‣ 𝖠ʀᴛɪsᴛ :</b> {artist}\n<b>‣ 𝖣ᴜʀᴀᴛɪᴏɴ :</b> {duration_text}\n<b>‣ 𝖲ᴛʀᴇᴀᴍ 𝖳ʏᴘᴇ :</b> {query_format}\n<b>𝖱ᴇǫᴜᴇsᴛᴇᴅ ʙʏ:</b> {mention}</blockquote>",
         buttons = [
         [
-            Button.inline("sᴋɪᴘ", data=b"skip"),
-            Button.inline("sᴛᴏᴘ", data=b"stop")
+            Button.inline("‣‣I", data=b"skip"),
+            Button.inline("▢", data=b"stop")
         ],
         [
             Button.url("ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ", f"https://t.me/{BOT_USERNAME}?startgroup=true")
@@ -275,40 +292,3 @@ async def queue_message(title, artist, duration, query_format, chat_id, queue_po
     ],
     parse_mode="html"
     )
-
-async def replay(event):
-    user = await event.get_sender()
-    try:
-        mention = f"<a href=\"tg://user?id={user.id}\">{user.first_name}</a>"
-    except Exception:
-        mention = "ᴀɴᴏɴʏᴍᴏᴜs"
-    chat = await event.get_chat()
-    
-    chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
-    if chat_id in queues and queues[chat_id]:
-        try:
-            await music.mute(chat_id)
-        except:
-            pass     
-        status = await event.reply("**𝖱ᴇᴘʟᴀʏɪɴɢ ᴄᴜʀʀᴇɴᴛ 𝖳ʀᴀᴄᴋ...**")
-        index = current_ind.get(chat_id, 0)
-        stream_url, title, artist, duration, thumbnail, mention, query_format, download = queues[chat_id][index]
-        try:
-            if query_format == "video":
-                await Play_Video(chat_id, stream_url)
-            else:
-                await Play_Audio(chat_id, stream_url)
-            if chat_id in active_bars:
-                active_bars[chat_id]["active"] = False    
-            create_task(playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention, download)) 
-            is_playing[chat_id] = True
-            try:
-                await status.edit(f"<b>➭ 𝖳ʀᴀᴄᴋ ʀᴇᴘʟᴀʏ 𝖲ᴛᴀʀᴛᴇᴅ!\n\n𝖱ᴇǫᴜᴇsᴛᴇᴅ ʙʏ:</b> {mention}", parse_mode="html")
-            except Exception:
-                await event.reply(f"<b>➭ 𝖳ʀᴀᴄᴋ ʀᴇᴘʟᴀʏ 𝖲ᴛᴀʀᴛᴇᴅ! \n\n𝖱ᴇǫᴜᴇsᴛᴇᴅ ʙʏ:</b> {mention}", parse_mode="html")
-        except Exception as e:
-            await status.edit(f"Replay failed: {str(e)}")
-    else:
-        await event.reply(f"» {BOT_MENTION} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.", parse_mode="html")
-        
-__all__ = ["queues", "queue_position", "current_ind", "queue_locks"]        

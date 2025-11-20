@@ -5,6 +5,7 @@ start_time = time.time()
 is_playing = {}
 download_data = {}
 info = get_info()
+playing_lofi = {}
 BOT_MENTION = info["BOT_MENTION"]
 BOT_USERNAME = info["BOT_USERNAME"]
 BOT_ID = info["BOT_ID"]

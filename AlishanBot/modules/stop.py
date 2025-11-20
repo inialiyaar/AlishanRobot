@@ -2,7 +2,7 @@ from AlishanBot.core.bot import Alishan,music
 from AlishanBot.core.decorators import add_command, callback_query
 from telethon import events
 from AlishanBot.modules.helper_funcs.queue import queues, current_ind, queue_position
-from AlishanBot.__init__ import is_playing, BOT_MENTION
+from AlishanBot.__init__ import is_playing, BOT_MENTION, playing_lofi
 from telethon import Button
 from AlishanBot.modules.helper_funcs.helpers import is_admin
 
@@ -62,6 +62,8 @@ async def stop_song(event):
     chat = await event.get_chat()
     chat_id = int(f"-100{chat.id}" if not str(chat.id).startswith("-100") else chat.id)
     if chat_id in is_playing:
+        if chat_id in playing_lofi:
+            playing_lofi.pop(chat_id, None)
         queues.pop(chat_id, None)
         queue_position.pop(chat_id, None)
         current_ind.pop(chat_id, None)
@@ -87,6 +89,8 @@ async def end_vote_callback(event):
     vote_data["count"] +=1
     if vote_data["count"] >= vote_data["target"]:
         if chat_id in is_playing:
+            if chat_id in playing_lofi:
+                playing_lofi.pop(chat_id, None)
             queues.pop(chat_id, None)
             queue_position.pop(chat_id, None)
             current_ind.pop(chat_id, None)

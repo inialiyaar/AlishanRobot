@@ -3,7 +3,7 @@ from AlishanBot.core.decorators import add_command, callback_query
 from telethon import events
 from AlishanBot.modules.helper_funcs.queue import play_next, queues
 from asyncio import create_task
-from AlishanBot.__init__ import is_playing, 𝖡𝖮𝖳_𝖬𝖤𝖭𝖳𝖨𝖮𝖭
+from AlishanBot.__init__ import is_playing, 𝖡𝖮𝖳_𝖬𝖤𝖭𝖳𝖨𝖮𝖭, playing_lofi
 from telethon import Button
 from AlishanBot.modules.helper_funcs.helpers import is_admin
 
@@ -58,6 +58,8 @@ async def callback_skip(event):
         return
     mention = f"<a href=\"tg://user?id={user.id}\">{user.first_name}</a>"
     if chat_id in queues and len(queues[chat_id]) > 0:
+        if chat_id in playing_lofi:
+            playing_lofi.pop(chat_id, None)
         try:
             await play_next(chat_id)
         except Exception:
@@ -82,6 +84,8 @@ async def skip_vote_callback(event):
     vote_data["count"] +=1
     if vote_data["count"] >= vote_data["target"]:
         if chat_id in queues and len(queues[chat_id]) > 0:
+            if chat_id in playing_lofi:
+                playing_lofi.pop(chat_id, None)
             try:
                 await play_next(chat_id)
             except Exception:
