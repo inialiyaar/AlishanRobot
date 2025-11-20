@@ -48,6 +48,7 @@ async def pause(event):
             mention = "ᴀɴᴏɴʏᴍᴏᴜs"
 
         if is_playing.get(chat_id, True):
+            await music.mute(chat_id)
             await music.pause(chat_id)
             is_playing[chat_id] = False
             await event.reply(f"<b>➭ sᴛʀᴇᴀᴍ ᴘᴀᴜsᴇᴅ. \nᴘᴀᴜsᴇᴅ ʙʏ :</b> {mention}", parse_mode="html")
@@ -79,6 +80,7 @@ async def resume(event):
         except Exception:
             mention = "ᴀɴᴏɴʏᴍᴏᴜs"
         if not is_playing.get(chat_id, True):
+            await music.unmute(chat_id)
             await music.resume(chat_id)
             is_playing[chat_id] = True
             await event.reply(f"<b>➭ sᴛʀᴇᴀᴍ ʀᴇsᴜᴍᴇᴅ. \nʀᴇsᴜᴍᴇᴅ ʙʏ :</b> {mention}", parse_mode="html")

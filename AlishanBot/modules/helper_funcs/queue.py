@@ -21,6 +21,8 @@ queue_position = {}
 current_ind = {}
 active_bars = {}
 queue_locks = defaultdict(asyncio.Lock)
+seek_offset = defaultdict(int)
+
 
 async def add_to_queue(song_name, chat_id, query_format, mention, download, force_play):
     async with queue_locks[chat_id]:
@@ -100,10 +102,6 @@ async def add_to_queue(song_name, chat_id, query_format, mention, download, forc
 async def play_next(chat_id):
     if chat_id in playing_lofi:
         playing_lofi.pop(chat_id, None)
-    try:
-        await music.mute(chat_id)
-    except:
-        pass      
     if chat_id not in queues or not queues[chat_id]:
         is_playing.pop(chat_id, None)
         await music.leave_call(chat_id)
@@ -212,24 +210,30 @@ async def playing_message(title, artist, duration, query_format, thumbnail, chat
 
 async def update_duration_bar(msg, duration, chat_id=None, bar_state=None):
     total_blocks = 9
-    
+
+    start_time = asyncio.get_event_loop().time()  # base timer
+
     while True:
         if chat_id not in is_playing or not bar_state.get("active", False):
             break
 
-        try:
-            elapsed_ms = await music.time(chat_id)
-            elapsed = elapsed_ms // 1000
-        except:
-            await asyncio.sleep(2)
-            continue
+        # Calculate elapsed based only on time + seek_offset
+        now = asyncio.get_event_loop().time()
+        elapsed = int(now - start_time)
+
+        # Apply LOFI slow-down effect
+        if chat_id in playing_lofi:
+            elapsed = int(elapsed * 0.92)   # slow effect from your filter
+
+        # Apply seek offset
+        elapsed += seek_offset.get(chat_id, 0)
+
+        # Bounds
+        if elapsed < 0:
+            elapsed = 0
 
         if elapsed >= duration:
             break
-            
-        if not is_playing.get(chat_id, False):
-            await asyncio.sleep(2)
-            continue
 
         filled = int((elapsed / duration) * total_blocks)
         empty = total_blocks - filled
@@ -257,7 +261,10 @@ async def update_duration_bar(msg, duration, chat_id=None, bar_state=None):
                         Button.inline("+20s ≫", data=b"seek_forward")
                     ], 
                     [
-                        Button.url("ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ", f"https://t.me/{BOT_USERNAME}?startgroup=true")
+                        Button.url(
+                            "ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ", 
+                            f"https://t.me/{BOT_USERNAME}?startgroup=true"
+                        )
                     ], 
                 ]
             )

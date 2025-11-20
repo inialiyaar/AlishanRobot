@@ -5,10 +5,6 @@ from asyncio import sleep
 
 
 async def Play_Audio(chat_id, url, eco=False, seek=False, to_seek=None):
-    try:
-        await music.unmute(chat_id)
-    except:
-        pass    
     if to_seek:
           play_sec = await music.time(chat_id)
           if to_seek > 0:
@@ -82,10 +78,6 @@ async def Play_Audio(chat_id, url, eco=False, seek=False, to_seek=None):
             )
         
 async def Play_Video(chat_id, url, eco=False, seek=False, to_seek=None):
-    try:
-        await music.unmute(chat_id)
-    except:
-        pass    
     if to_seek:
           play_sec = await music.time(chat_id)
           if to_seek > 0:
@@ -169,8 +161,4 @@ async def join_call(chat_id):
             )
         )
     )
-    try:
-        await music.mute(chat_id)
-    except:
-        pass     
     await sleep(2)

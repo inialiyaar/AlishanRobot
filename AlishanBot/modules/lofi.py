@@ -35,8 +35,8 @@ async def instent_lofi_handler_callback(event):
         else:
             await Play_Audio(chat_id, stream_url, eco, seek)
         if eco:
-            await event.reply(f"{mention} ᴛᴜʀɴᴇᴅ ᴏɴ ᴛʜᴇ ʟᴏғʏ ᴍᴏᴅᴇ. ", parse_mode="html")
+            await event.reply(f"{mention} ᴛᴜʀɴᴇᴅ ᴏɴ ᴛʜᴇ ʟᴏғɪ ᴍᴏᴅᴇ. ", parse_mode="html")
         else:
-            await event.reply(f"{mention} ᴛᴜʀɴᴇᴅ ᴏғ ᴛʜᴇ ʟᴏғɪ ᴍᴏᴅᴇ.", parse_mode="html")
+            await event.reply(f"{mention} ᴛᴜʀɴᴇᴅ ᴏғғ ᴛʜᴇ ʟᴏғɪ ᴍᴏᴅᴇ.", parse_mode="html")
     else:
-        await event.reply(f"» {BOT_MENTION} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.", parse_mode="html")   
+        await event.answer(f"» {BOT_FULLNAME} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.", parse_mode="html", alert=true)   

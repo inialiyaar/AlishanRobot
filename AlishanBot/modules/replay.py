@@ -1,9 +1,10 @@
 from AlishanBot.core.bot import Alishan
+from AlishanBot.modules.helper_funcs.play import Play_Audio, Play_Video
 from AlishanBot.core.decorators import add_command, callback_query
-from AlishanBot.modules.helper_funcs.queue import replay
 from AlishanBot.modules.helper_funcs.helpers import is_admin
-from AlishanBot.__init__ is_playing, playing_lofi
-from AlishanBot.modules.helper_funcs.queue import queues, current_ind
+from AlishanBot.__init__ import is_playing, playing_lofi
+from AlishanBot.modules.helper_funcs.queue import queues, current_ind, active_bars, playing_message, seek_offset
+from asyncio import create_task
 
 @add_command("replay")
 async def replay_handler(event):
@@ -46,13 +47,10 @@ async def replay(event):
     if chat_id in queues and queues[chat_id]:
         if chat_id in playing_lofi:
             playing_lofi.pop(chat_id, None)
-        try:
-            await music.mute(chat_id)
-        except:
-            pass     
         status = await event.reply("**𝖱ᴇᴘʟᴀʏɪɴɢ ᴄᴜʀʀᴇɴᴛ 𝖳ʀᴀᴄᴋ...**")
         index = current_ind.get(chat_id, 0)
         stream_url, title, artist, duration, thumbnail, mention, query_format, download = queues[chat_id][index]
+        seek_offset[chat_id] = 0
         try:
             if query_format == "video":
                 await Play_Video(chat_id, stream_url)

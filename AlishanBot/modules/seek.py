@@ -1,4 +1,4 @@
-from AlishanBot.modules.helper_funcs.queue import queue_position, current_ind, queues
+from AlishanBot.modules.helper_funcs.queue import queue_position, current_ind, queues, seek_offset
 from AlishanBot.core.bot import Alishan, music
 from AlishanBot.__init__ import is_playing, BOT_MENTION, playing_lofi
 from AlishanBot.core.decorators import add_command, callback_query
@@ -28,6 +28,7 @@ async def forward_handler(event):
         is_playing[chat_id] = True
         index = current_ind.get(chat_id, 0)
         stream_url, title, artist, duration, thumbnail, mention, query_format, download = queues[chat_id][index]
+        seek_offset[chat_id] += 20
         if query_format == "video":
             await Play_Video(chat_id, stream_url, eco, seek, 20)
         else:
@@ -58,6 +59,7 @@ async def forward_handler(event):
         is_playing[chat_id] = True
         index = current_ind.get(chat_id, 0)
         stream_url, title, artist, duration, thumbnail, mention, query_format, download = queues[chat_id][index]
+        seek_offset[chat_id] -= 20
         if query_format == "video":
             await Play_Video(chat_id, stream_url, eco, seek, -20)
         else:
