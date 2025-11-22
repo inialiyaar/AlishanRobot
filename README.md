@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  **A powerful blend of Music, Group Management, and AI interaction.**
+  A powerful blend of Music, Group Management, and AI interaction.
 </p>
 
 ---
