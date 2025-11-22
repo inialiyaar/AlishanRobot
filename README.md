@@ -18,11 +18,11 @@
 
 ### 🖼️ Visual Showcase
 
-![AlishanRobot Project Image](PLACEHOLDER_PROJECT_IMAGE_URL)
+![AlishanRobot Project Image](https://i.ibb.co/hRtNhLC8/x.jpg)
 
 ![Developer Profile](https://i.ibb.co/X6yx8LC/x.jpg)
 
-<p align="center">Developed with passion by **inialiyaar**</p>
+<p> align="center">Developed with passion by **inialiyaar**</p>
 
 ---
 
