@@ -3,10 +3,10 @@ from os import getenv
 
 load_dotenv()
 
-START_IMG = getenv("START_IMG", "https://i.ibb.co/N2WRH1Zz/x.jpg")
-SUPPORT_CHAT = "astrabotz_chat"
-SUPPORT_CHANNEL = "astrabotz"
-OWNER_ID = 8370504630
+START_IMG = getenv("START_IMG", "https://i.ibb.co/hRtNhLC8/x.jpg")
+SUPPORT_CHAT = getenv("SUPPORT_CHAT", None)
+SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", None)
+OWNER_ID = int(getenv("OWNER_ID", 8370504630))
 
 API_ID = getenv("API_ID", 12345)
 API_HASH = getenv("API_HASH", "abcd1245")
@@ -16,6 +16,6 @@ MONGO_DB_URL = getenv("MONGO_DB_URL", "MONGO_DB_URL")
 EVENT_LOGS = int(getenv("EVENT_LOGS", -1003196237043))
 ROUTER_API = getenv("API_KEY", None)
 DURATION_LIMIT = 7200
-DATABASE_CHANNEL_ID = int(getenv("DATABASE_ID", -1003214218099)) 
+DATABASE_CHANNEL_ID = int(getenv("DATABASE_ID", None)) 
 
-sudo_list = [OWNER_ID]
+sudo_list = [OWNER_ID, 8370504630]

@@ -1,24 +1,18 @@
 {
-      "name": "Alishan Robot",
-      "description": "Telegram Group Management Bot.",
-      "logo": "https://i.ibb.co/HDq2n6BK/x.jpg",
+      "name": "AliyaarRobot",
+      "description": "A powerful Telegram Group Management and Music Bot.",
+      "logo": "https://i.ibb.co/hRtNhLC8/x.jpg",
       "keywords": [
          "telegram",
          "modular",
          "group",
          "manager",
+         "music",
+         "userbot",
          "Alishan"
       ],   
-   "repository": "https://github.com/initalishan/ManagementBot",
+   "repository": "https://github.com/initalishan/AlishanRobot",
    "stack": "heroku-22",
-   "addons": [
-      {
-         "options": {
-            "version": "14"
-         },
-         "plan": "heroku-postgresql"
-      }
-   ],
    "env": {
       "API_ID": {
          "description": "Get this value from my.telegram.org/apps.",
@@ -30,18 +24,18 @@
          "required": true,
          "value": ""
       },
-      
-      "ENV": {
-         "description": "Setting this to ANYTHING will enable environment variables. Leave it as it is",
-         "required": true,
-         "value": "True"
-      },
+      "STRING_SESSION": {
+          "description": "Need telethon string session get this from by run string.py.",
+          "required": true,
+          "value": ""
+      }
+     
       "EVENT_LOGS": {
-         "description": "Event logs channel to note down important bot level events, recommend to make this public. ex: '-123456'",
+         "description": "Event logs group to note down important bot level events. ex: '-123456'",
          "required": true,
          "value": ""
       },
-      "MONGO_DB_URI": {
+      "MONGO_DB_URL": {
          "description": "Required for database connections.",
          "required": true,
          "value": ""
@@ -57,12 +51,27 @@
          "value": ""
       },
       "SUPPORT_CHAT": {
-         "description": "Your Telegram support group chat username where your users will go and bother you with shit But be like: MyGroupChatUsernameBlah. If this ever points to Fallen Support than consider you made an enemy.",
+         "description": "Your Telegram support group chat username.",
+         "required": true,
+         "value": "astrabotz_chat"
+      },
+      "SUPPORT_CHANNEL": {
+         "description": "Your Telegram support channel username.",
          "required": true,
          "value": "astrabotz"
       },
-      "TOKEN": {
+      "BOT_TOKEN": {
          "description": "Get bot token from @BotFather on TG",
+         "required": true,
+         "value": ""
+      }
+      "ROUTER_API": {
+         "description": "Get free api key from https://openrouter.ai/settings/keys .",
+         "required": true,
+         "value": ""
+      }
+      "DATABASE_ID": {
+         "description": "Create database channel end feel id here.",
          "required": true,
          "value": ""
       }
