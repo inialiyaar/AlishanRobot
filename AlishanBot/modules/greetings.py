@@ -15,6 +15,10 @@ import time
 DATABASE = config.DATABASE_CHANNEL_ID
 last_greetings = {}
 
+DEFAULT_WELCOME_TEXT = "Hey there {first}, and welcome to {chatname}! How are you?"
+DEFAULT_GOODBYE_TEXT = "Nice Knowing you {fullname}! See you soon later."
+
+
 @add_command("welcome", "wel")
 async def Welcome_Handler(event, command_used, args):
     if event.is_private:
@@ -30,16 +34,20 @@ async def Welcome_Handler(event, command_used, args):
     if not group_greetings:
         welcoming = True
         wel_clean_up = False
-        msg_id = 3
+        msg_id = None
     else:
         welcoming = group_greetings.get("welcoming", True)
         wel_clean_up = group_greetings.get("wel_clean_up", False)
-        msg_id = group_greetings.get("wel_msg_id", 3)
+        msg_id = group_greetings.get("wel_msg_id", None)
     if not args:
         stats = await event.reply(f"ɪ ᴀᴍ ᴄᴜʀʀᴇɴᴛʟʏ ᴡᴇʟᴄᴏᴍɪɴɢ ᴜsᴇʀs: {welcoming}\nɪ ᴀᴍ ᴄᴜʀʀᴇɴᴛʟʏ ᴅᴇʟᴇᴛɪɴɢ ᴏʟᴅ ᴡᴇʟᴄᴏᴍᴇs: {wel_clean_up}\n\nᴍᴇᴍʙᴇʀs ᴀʀᴇ ᴄᴜʀʀᴇɴᴛʟʏ ᴡᴇʟᴄᴏᴍᴇ ᴡɪᴛʜ:")
-        msg = await Alishan.get_messages(DATABASE, ids=msg_id)
+        if not msg_id:
+            text = DEFAULT_WELCOME_TEXT
+        else:    
+            msg = await Alishan.get_messages(DATABASE, ids=msg_id)
+            text = msg.text
         await stats.reply(
-            message=msg.text if msg.text else None,
+            message=text,
             file=msg.media if msg.media else None, 
             buttons=msg.buttons if msg.buttons else None,
         )
@@ -88,16 +96,20 @@ async def Welcome_Handler(event, command_used, args):
     if not group_greetings:
         goodbye = True
         gb_clean_up = False
-        msg_id = 10
+        msg_id = None
     else:
         goodbye = group_greetings.get("goodbye", True)
         gb_clean_up = group_greetings.get("wel_clean_up", False)
-        msg_id = group_greetings.get("gb_msg_id", 10)
+        msg_id = group_greetings.get("gb_msg_id", None)
     if not args:
         stats = await event.reply(f"ɪ ᴀᴍ ᴄᴜʀʀᴇɴᴛʟʏ ɢᴏᴏᴅʙʏᴇ ᴛᴏ ᴜsᴇʀs: {goodbye}\nɪ ᴀᴍ ᴄᴜʀʀᴇɴᴛʟʏ ᴅᴇʟᴇᴛɪɴɢ ᴏʟᴅ ɢᴏᴏᴅʙʏᴇs: {gb_clean_up}\n\nᴍᴇᴍʙᴇʀs ᴀʀᴇ ᴄᴜʀʀᴇɴᴛʟʏ ɢᴏᴏᴅʙʏᴇ ᴡɪᴛʜ:")
-        msg = await Alishan.get_messages(DATABASE, ids=msg_id)
+        if not msg_id:
+            text = DEFAULT_GOODBYE_TEXT
+        else:    
+            msg = await Alishan.get_messages(DATABASE, ids=msg_id)
+            text = msg.text
         await stats.reply(
-            message=msg.text if msg.text else None,
+            message=text,
             file=msg.media if msg.media else None, 
             buttons=msg.buttons if msg.buttons else None,
         )
@@ -175,8 +187,8 @@ async def set_new_welcome(event, command_used, args):
             )   
         msg_id = msg.id
     else:
-        msg_id = group_greetings.get("wel_msg_id", 3) 
-        if msg_id == 3:
+        msg_id = group_greetings.get("wel_msg_id", None) 
+        if not msg_id:
             if not media: 
                 msg = await Alishan.send_message(
                     DATABASE, 
@@ -268,8 +280,8 @@ async def set_new_welcome(event, command_used, args):
             )   
         msg_id = msg.id
     else:
-        msg_id = group_greetings.get("gb_msg_id", 10) 
-        if msg_id == 10:
+        msg_id = group_greetings.get("gb_msg_id", None) 
+        if not msg_id:
             if not media: 
                 msg = await Alishan.send_message(
                     DATABASE, 
@@ -362,7 +374,7 @@ async def Greetings_Handler(event):
         if user.id == BOT_ID:
             return
         if not group_greetings:
-            msg = await Alishan.get_messages(DATABASE, ids=10)
+            text = DEFAULT_GOODBYE_TEXT
         else:
             goodbye = group_greetings.get("goodbye", True)
             if not goodbye:
@@ -370,9 +382,15 @@ async def Greetings_Handler(event):
         if group_greetings:
             if not goodbye:
                 return
-            msg_id = group_greetings.get("gb_msg_id", 10) 
-            msg = await Alishan.get_messages(DATABASE, ids=msg_id)
-        text = msg.text if msg.text else None
+            msg_id = group_greetings.get("gb_msg_id", None) 
+            if not msg_id:
+                text = DEFAULT_GOODBYE_TEXT
+            else:    
+                msg = await Alishan.get_messages(DATABASE, ids=msg_id)
+        if msg_id:        
+            text = msg.text if msg.text else None
+        else:
+            pass
         if text:
             text = text.format_map(safe_data)
         media = msg.media if msg.media else None
@@ -387,7 +405,7 @@ async def Greetings_Handler(event):
         if user.id == BOT_ID:
             return
         if not group_greetings:
-            msg = await Alishan.get_messages(DATABASE, ids=3)
+            text = DEFAULT_WELCOME_TEXT
         else:
             welcoming = group_greetings.get("welcoming", True)
             if not welcoming:
@@ -396,8 +414,12 @@ async def Greetings_Handler(event):
             if not welcoming:
                 return
             msg_id = group_greetings["wel_msg_id"] 
-            msg = await Alishan.get_messages(DATABASE, ids=msg_id)
-        text = msg.text if msg.text else None
+            if not msg_id:
+                text = DEFAULT_WELCOME_TEXT
+            else:    
+                msg = await Alishan.get_messages(DATABASE, ids=msg_id)
+        if msg_id:        
+            text = msg.text if msg.text else None
         if text:
             text = text.format_map(safe_data)
         media = msg.media if msg.media else None
