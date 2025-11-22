@@ -51,6 +51,10 @@ async def Start(event, command_used, args):
                 [
                     Button.url("sᴜᴘᴘᴏʀᴛ", f"https://t.me/{config.SUPPORT_CHAT}"), 
                     Button.url("ᴜᴘᴅᴀᴛᴇs", f"https://t.me/{config.SUPPORT_CHANNEL}")
+                ],
+                [
+                    Button.url("Source Code",
+                    "https://github.com/inialiyaar/AlishanRobot.git"),
                 ]
             ], 
             parse_mode="html"
@@ -102,6 +106,10 @@ async def Refresh(event):
                 [
                     Button.url("sᴜᴘᴘᴏʀᴛ", f"https://t.me/{config.SUPPORT_CHAT}"), 
                     Button.url("ᴜᴘᴅᴀᴛᴇs", f"https://t.me/{config.SUPPORT_CHANNEL}")
+                ],
+                [
+                    Button.url("Source Code",
+                    "https://github.com/inialiyaar/AlishanRobot.git"),
                 ]
             ], 
          parse_mode="html"

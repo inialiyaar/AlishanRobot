@@ -95,6 +95,10 @@ async def callback_help(event):
                 Button.url("ᴜᴘᴅᴀᴛᴇs", f"https://t.me/{SUPPORT_CHANNEL}")
             ], 
             [
+                Button.url("Source Code",
+                    "https://github.com/inialiyaar/AlishanRobot.git"),
+            ],
+            [
                 Button.inline("• ʜᴏᴍᴇ •", data=b"back_to_start")
             ]
         ]
