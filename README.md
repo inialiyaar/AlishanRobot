@@ -20,7 +20,7 @@
 
 ![AlishanRobot Project Image](PLACEHOLDER_PROJECT_IMAGE_URL)
 
-![Developer Profile](PLACEHOLDER_PROFILE_IMAGE_URL)
+![Developer Profile](https://i.ibb.co/X6yx8LC/x.jpg)
 
 <p align="center">Developed with passion by **inialiyaar**</p>
 
