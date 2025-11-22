@@ -19,7 +19,6 @@ async def main():
     print("Starting Bot... ")
     bot = await Alishan.get_me()
     bot_name = f"{bot.first_name or ''} {bot.last_name or ''}"
-    """
     await Alishan.send_file(
         config.EVENT_LOGS,
         file=config.START_IMG, 
@@ -27,7 +26,6 @@ async def main():
         parse_mode="html"
         )
     await Assistant.send_message(config.EVENT_LOGS, "**ɪ ᴀᴍ ʀᴇᴀᴅʏ ғᴏʀ ᴘʟᴀʏ ᴛʀᴀᴄᴋs ʙᴀʙʏ!**")  
-    """
     print("BOT RUNNING.. ")
     await Alishan.run_until_disconnected()
     
