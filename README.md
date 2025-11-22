@@ -1,12 +1,26 @@
-# ✨ AlishanRobot ✨
+# 𝐀𝐥𝐢𝐬𝐡𝐚𝐧𝐑𝐨𝐛𝐨𝐭 ✨
 
 ## The Ultimate Multifunctional Telegram Bot: Music, Management, and AI Chat
 
-**AlishanRobot** is an advanced, high-performance Telegram bot built on the powerful **Telethon** and **PyTgCalls** libraries. It is designed to be the complete solution for your Telegram groups, combining essential administrative tools with top-tier music playback and engaging chat features.
+**AlishanRobot** is an advanced, high-performance Telegram utility built on **Python**, leveraging **Telethon** for robust chat management and **PyTgCalls** for high-fidelity audio streaming in Voice Chats. It is engineered to be the complete, all-in-one solution for your Telegram groups.
 
 ---
 
-### 📊 Project Status & Stats
+### 🖼️ Project Showcase
+
+<p align="center">
+  <a href="https://github.com/inialiyaar/AlishanRobot">
+    <img src="https://i.ibb.co/hRtNhLC8/x.jpg" alt="AlishanRobot Project Banner" width="600"/>
+  </a>
+</p>
+
+<p align="center">
+  **A powerful blend of Music, Group Management, and AI interaction.**
+</p>
+
+---
+
+### 📊 Project Stats
 
 [![GitHub stars](https://img.shields.io/github/stars/inialiyaar/AlishanRobot.svg?style=social&label=Stars)](https://github.com/inialiyaar/AlishanRobot/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/inialiyaar/AlishanRobot.svg?style=social&label=Fork)](https://github.com/inialiyaar/AlishanRobot/network)
@@ -16,55 +30,52 @@
 
 ---
 
-### 🖼️ Visual Showcase
-
-![AlishanRobot Project Image](https://i.ibb.co/hRtNhLC8/x.jpg)
-
-![Developer Profile](https://i.ibb.co/X6yx8LC/x.jpg)
-
-<p> align="center">Developed with passion by **inialiyaar**</p>
-
----
-
 ### 🚀 Key Features
 
-AlishanRobot is engineered to provide three core functionalities seamlessly:
+AlishanRobot provides three distinct, robust functionalities:
 
-#### 🎧 Music Capabilities (Powered by PyTgCalls)
+#### 🎧 Music Capabilities (Voice Chat)
 
-* **High Fidelity Audio:** Stream music to Voice Chats in crystal clear quality.
-* **Source Versatility:** Play media from various sources (YouTube, local files, links).
-* **Queue Management:** Manage track queues with commands like `/queue`, `/skip`, and `/loop`.
-* **Intuitive Controls:** Full control over playback with `/pause`, `/resume`, and `/stop`.
+The bot features a high-performance audio module using PyTgCalls, supporting both video and audio streaming:
 
-#### 🛡️ Group Management (Powered by Telethon)
+| Command | Function |
+| :--- | :--- |
+| `/play` | Starts audio streaming to the VC. |
+| `/vplay` | Starts video streaming to the VC. |
+| `/skip` | Skips the current track. |
+| `/pause` | Pauses the playback. |
+| `/resume` | Resumes the playback. |
+| `/end` | Stops and leaves the Voice Chat. |
 
-* **Administrative Tools:** Comprehensive commands for `/ban`, `/kick`, `/mute`, and `/unmute` users.
-* **Welcome/Goodbye System:** Customizable messages for new and leaving members.
-* **Anti-Flood & Anti-Spam:** Automated defense mechanisms to keep your chat clean.
-* **Custom Filters:** Set up automatic replies or actions based on specific keywords.
+#### 🛡️ Group Management (Administration)
+
+Comprehensive tools to maintain a safe and orderly group environment:
+
+* **Moderation:** Essential commands like `/ban`, `/kick`, and `/promote` for user control.
+* **Safety:** Anti-Flood and Anti-Spam protection.
+* **Customization:** Welcome/Goodbye messages and custom filter setup.
 
 #### 🤖 Chat Bot & Engagement
 
-* **Smart Replies:** The bot interacts with users, providing answers and handling basic queries.
-* **Fun Commands:** A suite of commands designed to increase group engagement and entertainment.
-* **Extensible Architecture:** Easy to add new custom commands and AI integrations.
+Leverages AI to keep the group interactive and provide helpful replies:
+
+* **Smart Replies:** Handles basic queries and natural language interactions.
+* **Fun Commands:** A suite of commands for user engagement and entertainment.
+* **Extensible Architecture:** Designed for easy integration of new AI models via the Router API.
 
 ---
 
 ### 🛠️ Deployment
 
-You have two primary options for deploying your AlishanRobot instance.
+#### 1. Quick Deploy to Heroku (Recommended)
 
-#### 1. Deploy on Heroku (Recommended for quick setup)
-
-Click the button below to deploy the bot directly to your Heroku account. You will be prompted to enter the necessary configuration variables.
+Click the button below to deploy the bot directly. Ensure you have your configuration variables ready.
 
 [![Deploy To Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/inialiyaar/AlishanRobot/tree/master)
 
 #### 2. VPS/Local Deployment
 
-For advanced control and self-hosting:
+For self-hosting and advanced control:
 
 1.  **Clone the Repository:**
     ```bash
@@ -75,37 +86,43 @@ For advanced control and self-hosting:
     ```bash
     pip install -r requirements.txt
     ```
-3.  **Run:** Set your environment variables and execute the main bot file.
+3.  **Run:** Set the environment variables (listed below) and execute the main bot file.
 
 ---
 
-### ⚙️ Configuration Variables (Required)
+### ⚙️ Required Configuration Variables
 
-You must set the following environment variables for the bot to run:
+The following Environment Variables **must** be set for the bot to run correctly.
 
-| Variable | Description | Source |
+| Variable | Description | Type |
 | :--- | :--- | :--- |
-| `API_ID` | Your Telegram API ID. | My.Telegram |
-| `API_HASH` | Your Telegram API Hash. | My.Telegram |
-| `BOT_TOKEN` | The token generated by BotFather. | BotFather |
-| `STRING_SESSION` | Telethon's User Session String (for account access). | Generate via helper code |
+| `API_ID` | Your Telegram API ID. | **Required** |
+| `API_HASH` | Your Telegram API Hash. | **Required** |
+| `BOT_TOKEN` | The token generated by BotFather. | **Required** |
+| `STRING_SESSION` | Telethon User Session String for full account access. | **Required** |
+| `MONGO_DB_URL` | MongoDB connection string for database operations. | **Required** |
+| `ROUTER_API` | API Key for OpenRouter (used for AI/Chatbot features). | **Required** |
+| `OWNER_ID` | Telegram User ID of the bot owner. | Optional / Important |
+| `EVENT_LOGS` | Channel ID for logging all events/errors. | Optional / Important |
+| `START_IMG` | URL for the custom image displayed on the `/start` command. | Optional |
+| `SUPPORT_CHAT` | Public Telegram link/username for the support group. | Optional |
+| `SUPPORT_CHANNEL` | Public Telegram link/username for the update channel. | Optional |
+| `DATABASE_ID` | Channel ID used for storing data/files (if applicable). | Optional / Important |
 
 ---
 
-### 🤝 Support & Community
+### 🧑‍💻 Credits & Developer
 
-If you have questions, need assistance, or want to suggest new features, feel free to join our official community:
+<p align="center">
+  <img src="https://i.ibb.co/X6yx8LC/x.jpg" alt="Developer Profile" width="100"/>
+  <br>
+  Developed with passion by <b>inialiyaar</b>
+</p>
 
-* [Support Group (Telegram Link)](PLACEHOLDER_SUPPORT_GROUP_URL)
-* [Update Channel (Telegram Link)](PLACEHOLDER_SUPPORT_CHANNEL_URL)
+This project would not be possible without the foundational work of:
 
----
+* **Telethon** (LonamiWebs)
+* **PyTgCalls**
+* **OpenRouter** for AI integration
 
-### 📜 Credits
-
-This project would not be possible without the foundational work of these great libraries and contributors:
-
-* **LonamiWebs** for the incredible **Telethon** library.
-* **PyTgCalls** developers for handling Voice Chat streaming.
-* **inialiyaar** (The Author) for the development of **AlishanRobot**.
-* And all **Contributors** who have helped make AlishanRobot better!
+And all **Contributors** who have helped make AlishanRobot better!
