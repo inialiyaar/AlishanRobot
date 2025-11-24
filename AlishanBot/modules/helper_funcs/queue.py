@@ -1,301 +1,141 @@
-from AlishanBot.modules.helper_funcs.play import Play_Audio, Play_Video, join_call
-from AlishanBot.core.bot import music, Alishan
-from AlishanBot.modules.helper_funcs.ytmetadata import meta_data
-from pytgcalls import filters
-from pytgcalls.types import Update
-from telethon import Button
-import os
-from asyncio import create_task, sleep, Lock
-from AlishanBot.__init__ import is_playing, playing_lofi, BOT_USERNAME, ASSISTANT_MENTION, BOT_MENTION
-from AlishanBot.modules.helper_funcs.thumbnail import Thumbnail
-from AlishanBot.modules.helper_funcs.metadata import get_meta
-from AlishanBot import config
-import asyncio
-from collections import defaultdict
-import re
+from AlishanBot.core.bot import Alishan, Assistant
+from AlishanBot.modules.helper_funcs.queue import add_to_queue
+from AlishanBot.core.decorators import add_command
+from AlishanBot.modules.helper_funcs.helpers import check_rights, is_admin
+from AlishanBot.__init__ import BOT_MENTION, BOT_ID, ASSISTANT_MENTION, ASSISTANT_ID, is_playing
 from AlishanBot.modules.helper_funcs.ErrorLog import send_error
+
+from telethon.tl.functions.messages import ExportChatInviteRequest, ImportChatInviteRequest
+from telethon.tl.functions.channels import GetParticipantRequest, EditBannedRequest, GetFullChannelRequest
+from telethon.errors import UserNotParticipantError, ChatAdminRequiredError
+from telethon.tl.types import ChannelParticipantBanned, ChatBannedRights
+
+from asyncio import create_task
+from re import search
 import traceback
 
-queues = {}  
-queue_position = {}  
-current_ind = {}
-active_bars = {}
-queue_locks = defaultdict(asyncio.Lock)
-seek_offset = defaultdict(int)
+UNBAN_RIGHTS = ChatBannedRights(until_date=None, view_messages=False)
 
 
-async def add_to_queue(song_name, chat_id, query_format, mention, download, force_play):
-    async with queue_locks[chat_id]:
-        status = await Alishan.send_message(chat_id, f"**sᴇᴀʀᴄʜɪɴɢ...🔎**")
-        if not download:
-            data = await meta_data(song_name)
-            if data == "URLERROR":
-                return await event.reply("ᴘʀᴏᴠɪᴅᴇᴅ ᴜʀʟ ɪs ɴᴏᴛ ʏᴏᴜᴛᴜʙᴇ ᴜʀʟ ᴘʟᴇᴀsᴇ ᴛʀʏ ᴏɴ ʏᴏᴜᴛᴜʙᴇ ᴜʀʟ. ")
-            if data == "PLAYLISTERROR":    
-                return await event.reply("ᴘʀᴏᴠɪᴅᴇᴅ ᴘʟᴀʏʟɪsᴛ ᴀʀᴇ ᴇᴍᴘᴛʏ ᴘʟᴇᴀsᴇ ᴛʀʏ ᴏᴛʜᴇʀ ᴘʟᴀʏʟɪsᴛ.")
-        queues.setdefault(chat_id, [])
-        queue_position.setdefault(chat_id, 0)
-        current_ind.setdefault(chat_id, 0)
-        
-        if download:
-            stream_url = song_name
-            title,  artist, duration = get_meta(song_name)
-            thumbnail = "https://i.ibb.co/gLNS8hC1/x.jpg"
-        try:
-            if force_play:
-                is_playing[chat_id] = True
-                await join_call(chat_id)
-                if not download:
-                    stream_url, title, artist, duration, thumbnail = data
-                if query_format == "video":
-                    await Play_Video(
-                        chat_id, 
-                        stream_url
-                    )
-                if query_format == "audio":
-                    await Play_Audio(
-                        chat_id,
-                        stream_url
-                        )
-                create_task(playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention, download))
-                try:
-                    await status.delete()
-                except Exception:
-                    pass    
-                return    
-                
-            if not chat_id in is_playing:
-                is_playing[chat_id] = True
-                await join_call(chat_id)
-                if not download:
-                    stream_url, title, artist, duration, thumbnail = data
-                if query_format == "video":
-                    await Play_Video(
-                        chat_id, 
-                        stream_url
-                    )
-                if query_format == "audio":
-                    await Play_Audio(
-                        chat_id,
-                        stream_url
-                        )
-                queues[chat_id].append((stream_url, title, artist, duration, thumbnail, mention, query_format, download)) 
-                create_task(playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention, download))
-            else:
-                if download:
-                    stream_url = song_name
-                    title,  artist, duration = get_meta(song_name)
-                    thumbnail = "https://i.ibb.co/gLNS8hC1/x.jpg"
-                else:
-                    stream_url, title, artist, duration, thumbnail = data
-                queues[chat_id].append((stream_url, title, artist, duration, thumbnail, mention, query_format, download)) 
-                queue_position[chat_id] +=1
-                create_task(queue_message(title, artist, duration, query_format, chat_id, queue_position[chat_id], mention))
-            try:
-                await status.delete()
-            except Exception:
-                pass    
-        except Exception:
-            error = traceback.format_exc()
-            await send_error(error)
+@add_command("vplay", "play", "playforce", "vplayforce")
+async def Play_Handler(event, command_used, song_name):
 
-async def play_next(chat_id):
-    if chat_id in playing_lofi:
-        playing_lofi.pop(chat_id, None)
-    if chat_id not in queues or not queues[chat_id]:
-        is_playing.pop(chat_id, None)
-        await music.leave_call(chat_id)
-        await Alishan.send_message(chat_id, f"<b>𝖰ᴜᴇᴜᴇ ғɪɴɪsʜᴇᴅ,</b> {ASSISTANT_MENTION} ʟᴇᴀᴠɪɴɢ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ.", parse_mode="html")
-        queues.pop(chat_id, None)
-        queue_position.pop(chat_id, None)
-        current_ind.pop(chat_id, None)
+    force_play = command_used in ["playforce", "vplayforce"]
+    query_format = "video" if command_used in ["vplay", "vplayforce"] else "audio"
+
+    try: await event.delete()
+    except: pass
+
+    if event.is_private:
+        return await event.reply("𝖸ᴏᴜ ᴄᴀɴ ᴜsᴇ ɪɴ ɢʀᴏᴜᴘs ᴏɴʟʏ!.")
+
+    chat = await event.get_chat()
+    chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
+
+    full_channel = await Alishan(GetFullChannelRequest(chat_id))
+    if not full_channel.full_chat.call:
+        return await event.reply("**𝖵ᴏɪᴄᴇ ᴄʜᴀᴛ ɪs ɴᴏᴛ ᴀᴄᴛɪᴠᴇ,** ᴘʟᴇᴀsᴇ sᴛᴀʀᴛ ᴛʜᴇ ᴠᴄ ғɪʀsᴛ!")
+
+    if not force_play and chat_id in is_playing:
+        create_task(Play(event, song_name, query_format, chat_id, False))
         return
-    current_ind[chat_id] += 1
-    index = current_ind[chat_id]
-    if index >= len(queues[chat_id]):
-        await music.leave_call(chat_id)
-        await Alishan.send_message(chat_id, f"<b>𝖰ᴜᴇᴜᴇ ғɪɴɪsʜᴇᴅ,</b> {ASSISTANT_MENTION} ʟᴇᴀᴠɪɴɢ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ.", parse_mode="html")
-        queues.pop(chat_id, None)
-        queue_position.pop(chat_id, None)
-        current_ind.pop(chat_id, None)
-        is_playing.pop(chat_id, None)
-        return
+
+    await Play(event, song_name, query_format, chat_id, False, force_play=force_play)
+
+
+
+async def Play(event, song_name, query_format, chat_id, download, force_play=False):
+
+    user = await event.get_sender()
+
     try:
-        queue_position[chat_id] -=1
-        
-        stream_url, title, artist, duration, thumbnail, mention, query_format, download = queues[chat_id][index]
-        if query_format == "video":
-            await Play_Video(chat_id, stream_url)
+        mention = f"<a href=\"tg://user?id={user.id}\">{user.first_name}</a>"
+    except:
+        mention = "ᴀɴᴏɴʏᴍᴏᴜs"
+
+    if force_play and not await is_admin(user, event):
+        return await event.reply(
+            f"{mention} ʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴀᴅᴍɪɴ, ᴏɴʟʏ ᴀᴅᴍɪɴ ᴄᴀɴ ғᴏʀᴄᴇ ᴘʟᴀʏ. ",
+            parse_mode="html"
+        )
+
+    if event.is_reply and not song_name:
+        reply = await event.get_reply_message()
+        if reply.audio or reply.video:
+            processing = await event.respond("**𝖯ʀᴏᴄᴇssɪɴɢ...💫**")
+            download = True
         else:
-            await Play_Audio(chat_id, stream_url)
-            
-        if chat_id in active_bars:
-            active_bars[chat_id]["active"] = False  
-        create_task(playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention, download))
-        is_playing[chat_id] = True
-    except Exception as e:
-        await Alishan.send_message(chat_id, f"Error: {str(e)}")
+            download = False    
 
-@music.on_update(filters.stream_end())
-async def stream_end(_, update: Update):
-    try:
-        pass
-    except:
-        return   
-    try:
-        chat_id = update.chat_id
-        chat_id = int(f"-100{chat_id}" if not str(chat_id).startswith("-100") else chat_id)
-        if chat_id in queues:
-            if chat_id in playing_lofi:
-                playing_lofi.pop(chat_id, None)
-            await play_next(chat_id)
-    except:
-        pass
-        
-async def playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention, download):
-    duration = int(duration)
-    if duration >= 3600:
-        hours, remainder = divmod(duration, 3600)
-        minutes, secs = divmod(remainder, 60)
-        duration_text = f"{hours}:{minutes:02}:{secs:02}"
-    else:
-        minutes, secs = divmod(duration, 60)
-        duration_text = f"{minutes}:{secs:02}"
-    if not download:
-        thumbnail_path = await Thumbnail(thumbnail, title, artist, duration_text)
-    else:
-        thumbnail_path = thumbnail  
-    if query_format == "video":
-        query_format = "𝖵ɪᴅᴇᴏ"
-    else:
-        query_format = "𝖠ᴜᴅɪᴏ"
+        if reply.audio and query_format == "audio":
+            song_name = await reply.download_media(file="downloads/local_download.mp3")
 
-    msg = await Alishan.send_file(
-        chat_id,
-        file=thumbnail_path,
-        caption=f"<blockquote>‣ 𝖳ɪᴛʟᴇ:\n{title}</blockquote>\n"
-                f"<blockquote><b>‣ 𝖠ʀᴛɪsᴛ:<b> {artist}\n"
-                f"<b>‣ 𝖣ᴜʀᴀᴛɪᴏɴ:<b> {duration_text}\n"
-                f"<b>‣ 𝖲ᴛʀᴇᴀᴍ 𝖳ʏᴘᴇ :</b> {query_format}\n"
-                f"<b>𝖱ᴇǫᴜᴇsᴛᴇᴅ ʙʏ:</b> {mention}</blockquote>\n",
-        buttons=[
-            [Button.inline("00:00 ▱▱▱▱▱▱▱▱▱ 00:00", data=b"ignore_bar")],
-            [
-                Button.inline("▷", data=b"resume"),
-                Button.inline("II", data=b"pause"),
-                Button.inline("ʟᴏғɪ", data=b"instent_lofi"), 
-                Button.inline("‣‣I", data=b"skip"),
-                Button.inline("▢", data=b"stop"),
-            ],
-            [
-                Button.inline("≪ -20s", data=b"seek_backward"), 
-                Button.inline("↻", data=b"replay"),
-                Button.inline("+20s ≫", data=b"seek_forward")
-            ], 
-            [
-                Button.url("ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ", f"https://t.me/{BOT_USERNAME}?startgroup=true")
-            ]
-        ],
-        parse_mode="html"
-    )
+        elif reply.video and query_format == "video":
+            song_name = await reply.download_media(file="downloads/local_download.mp4")
 
-    if os.path.exists(thumbnail_path):
-        os.remove(thumbnail_path)
-    if chat_id in active_bars:
-        active_bars[chat_id]["active"] = False
-    bar_state = {"active": True}
-    active_bars[chat_id] = bar_state
-    asyncio.create_task(update_duration_bar(msg, duration, chat_id, bar_state))
+        elif reply.text:
+            song_name = reply.raw_text
 
-
-async def update_duration_bar(msg, duration, chat_id=None, bar_state=None):
-    total_blocks = 9
-
-    start_time = asyncio.get_event_loop().time()  # base timer
-
-    while True:
-        if chat_id not in is_playing or not bar_state.get("active", False):
-            break
-
-        # Calculate elapsed based only on time + seek_offset
-        now = asyncio.get_event_loop().time()
-        elapsed = int(now - start_time)
-
-        # Apply LOFI slow-down effect
-        if chat_id in playing_lofi:
-            elapsed = int(elapsed * 0.92)   # slow effect from your filter
-
-        # Apply seek offset
-        elapsed += seek_offset.get(chat_id, 0)
-
-        # Bounds
-        if elapsed < 0:
-            elapsed = 0
-
-        if elapsed >= duration:
-            break
-
-        filled = int((elapsed / duration) * total_blocks)
-        empty = total_blocks - filled
-        bar = "▰" * filled + "▱" * empty
-
-        cur_m, cur_s = divmod(elapsed, 60)
-        tot_m, tot_s = divmod(duration, 60)
-
-        progress_text = f"{cur_m:02}:{cur_s:02} {bar} {tot_m:02}:{tot_s:02}"
-
-        try:
-            await msg.edit(
-                buttons=[
-                    [Button.inline(progress_text, data=b"ignore_bar")],
-                    [
-                        Button.inline("▷", data=b"resume"),
-                        Button.inline("II", data=b"pause"),
-                        Button.inline("ʟᴏғɪ", data=b"instent_lofi"), 
-                        Button.inline("‣‣I", data=b"skip"),
-                        Button.inline("▢", data=b"stop"),
-                    ],
-                    [
-                        Button.inline("≪ -20s", data=b"seek_backward"), 
-                        Button.inline("↻", data=b"replay"),
-                        Button.inline("+20s ≫", data=b"seek_forward")
-                    ], 
-                    [
-                        Button.url(
-                            "ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ", 
-                            f"https://t.me/{BOT_USERNAME}?startgroup=true"
-                        )
-                    ], 
-                ]
+        else:
+            await processing.delete()
+            return await event.reply(
+                "𝖯ʟᴇᴀsᴇ ʀᴇᴘʟʏ ᴛᴏ **𝖠ᴜᴅɪᴏ/𝖵ɪᴅᴇᴏ** ᴏʀ ɢɪᴠᴇ 𝖲ᴏɴɢ 𝖭ᴀᴍᴇ ᴀɴᴅ 𝖸ᴏᴜᴛᴜʙᴇ 𝖴ʀʟ."
             )
-        except:
-            break
+        if reply.audio or reply.video:
+            await processing.delete()
 
-        await asyncio.sleep(5)
-        
-async def queue_message(title, artist, duration, query_format, chat_id, queue_pos, mention):
-    if duration >= 3600:
-            hours, remainder = divmod(duration, 3600)
-            minutes, secs = divmod(remainder, 60)
-            duration_text = f"{hours}:{minutes:02}:{secs:02}"
-    else:
-        minutes, secs = divmod(duration, 60)
-        duration_text = f"{minutes}:{secs:02}"
-    if query_format == "video":
-        query_format = "𝖵ɪᴅᴇᴏ"
-    else:
-        query_format = "𝖠ᴜᴅɪᴏ"        
-    await Alishan.send_message(
-        chat_id,
-        f"<b>➲ 𝖠ᴅᴅᴇᴅ ᴛᴏ ǫᴜᴇᴜᴇ ᴀᴛ #{queue_pos}</b>\n\n<blockquote><b>‣ 𝖳ɪᴛʟᴇ :</b> {title}</blockquote>\n<blockquote><b>‣ 𝖠ʀᴛɪsᴛ :</b> {artist}\n<b>‣ 𝖣ᴜʀᴀᴛɪᴏɴ :</b> {duration_text}\n<b>‣ 𝖲ᴛʀᴇᴀᴍ 𝖳ʏᴘᴇ :</b> {query_format}\n<b>𝖱ᴇǫᴜᴇsᴛᴇᴅ ʙʏ:</b> {mention}</blockquote>",
-        buttons = [
-        [
-            Button.inline("‣‣I", data=b"skip"),
-            Button.inline("▢", data=b"stop")
-        ],
-        [
-            Button.url("ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ", f"https://t.me/{BOT_USERNAME}?startgroup=true")
-        ]
-    ],
-    parse_mode="html"
-    )
+    elif not song_name:
+        return await event.reply(
+            "𝖯ʟᴇᴀsᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ **𝖲ᴏɴɢ 𝖭ᴀᴍᴇ** ᴏʀ **𝖸ᴏᴜᴛᴜʙᴇ 𝖴ʀʟ** ᴀғᴛᴇʀ /play"
+        )
+
+    bot = await Alishan.get_me()
+    assistant = await Assistant.get_me()
+
+    if not await is_admin(bot, event):
+        return await event.reply(
+            f"{BOT_MENTION} ɪs ɴᴏᴛ ᴀᴅᴍɪɴ, 𝖯ʟᴇᴀsᴇ ɢɪʙᴇ ᴍᴇ ᴀᴅᴍɪɴ ᴡɪᴛʜ <b>(ᴄʀᴇᴀᴛᴇ ɪɴᴠɪᴛᴇ ʟɪɴᴋ)</b>.",
+            parse_mode="html"
+        )
+
+    if chat_id in is_playing and not force_play:
+        return await add_to_queue(song_name, chat_id, query_format, mention, download, force_play)
+
+    try:
+        part = await Alishan(GetParticipantRequest(chat_id, assistant.id))
+        if isinstance(part.participant, ChannelParticipantBanned):
+            if not await check_rights(event, BOT_ID, "ban_users"):
+                return await event.reply(
+                    f"{BOT_MENTION} ʜᴀs ɴᴏ ᴀᴄᴄᴇss ᴛᴏ ᴜɴʙᴀɴ {ASSISTANT_MENTION}.",
+                    parse_mode="html"
+                )
+            await Alishan(EditBannedRequest(chat_id, assistant.id, UNBAN_RIGHTS))
+            await _invite_assistant(chat_id)
+            return await add_to_queue(song_name, chat_id, query_format, mention, download, force_play)
+
+        return await add_to_queue(song_name, chat_id, query_format, mention, download, force_play)
+
+    except UserNotParticipantError:
+        await _invite_assistant(chat_id)
+        return await add_to_queue(song_name, chat_id, query_format, mention, download, force_play)
+
+    except ChatAdminRequiredError:
+        return await event.reply(
+            f"{BOT_MENTION} ʜᴀs ɴᴏ ᴀᴄᴄᴇss ᴛᴏ ᴄʜᴇᴄᴋ {ASSISTANT_MENTION}. ᴘʟᴇᴀsᴇ ɢɪʙᴇ (ᴄʀᴇᴀᴛᴇ ɪɴᴠɪᴛᴇ ʟɪɴᴋ)",
+            parse_mode="html"
+        )
+
+    except Exception:
+        error = traceback.format_exc()
+        await send_error(error)
+        return await event.reply(
+            f"{BOT_MENTION} ᴄᴀɴɴᴏᴛ ᴄʜᴇᴄᴋ ᴀssɪsᴛᴀɴᴛ. ᴘʟᴇᴀsᴇ ᴍᴀᴋᴇ ɢʀᴏᴜᴘ ʜɪsᴛᴏʀʏ ᴠɪsɪʙʟᴇ.",
+            parse_mode="html"
+        )
+
+
+async def _invite_assistant(chat_id):
+    export = await Alishan(ExportChatInviteRequest(chat_id))
+    code = search(r"(?:joinchat/|\+)([a-zA-Z0-9_-]+)", export.link).group(1)
+    await Assistant(ImportChatInviteRequest(code))
+    await Assistant.send_message(chat_id, f"{ASSISTANT_MENTION} 𝖩ᴏɪɴᴇᴅ ᴛʜᴇ ɢʀᴏᴜᴘ! 𝖨 ᴀᴍ ᴄᴏᴍᴍɪɴɢ ɪɴ <b>𝖵ᴏɪᴄᴇ 𝖢ʜᴀᴛ</b>", parse_mode="html")
