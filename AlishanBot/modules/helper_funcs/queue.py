@@ -66,7 +66,14 @@ async def add_to_queue(song_name, chat_id, query_format, mention, download, forc
                 
             if not chat_id in is_playing:
                 is_playing[chat_id] = True
-                await join_call(chat_id)
+                try:
+                    await join_call(chat_id)
+                except:
+                    queues.pop(chat_id, None)
+                    queue_position.pop(chat_id, None)
+                    current_ind.pop(chat_id, None)
+                    is_playing.pop(chat_id, None)
+                    return
                 if not download:
                     stream_url, title, artist, duration, thumbnail = data
                 if query_format == "video":

@@ -66,7 +66,7 @@ async def meta_data(song_name):
                 query = vid.get("url") or vid.get("webpage_url")
     with YoutubeDL(ydl_opts) as ydl:
         result = ydl.extract_info(query, download=False)
-        if "entries" in result:
+        if "entries" in result and result["entries"]:
             info = result["entries"][0]
         else:
             info = result

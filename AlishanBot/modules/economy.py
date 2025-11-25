@@ -43,7 +43,7 @@ async def economy_system(event, command_used, args):
     sender = await event.get_sender()
     if command_used not in ["toprich", "topkill"] and not sender:
         return await event.reply("ʏᴏᴜ ᴀʀᴇ ᴀɴᴏɴʏᴍᴏᴜs ᴄᴀɴ'ᴛ ᴜsᴇ ᴛʜᴇsᴇ ᴄᴏᴍᴍᴀɴᴅ.")
-    if command_used not in ["open", "close"] and not await is_admin(sender, event):
+    if command_used in ["open", "close"] and not await is_admin(sender, event):
         return await event.reply("ᴏɴʟʏ ᴀᴅᴍɪɴ ᴄᴀɴ ᴜsᴇ ᴛʜᴇsᴇ ᴄᴏᴍᴍᴀɴᴅ.")
     if command_used == "open":
         chat = economy_settings.find_one({"chat_id": chat_id})

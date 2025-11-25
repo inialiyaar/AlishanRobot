@@ -93,7 +93,7 @@ def YTDownload(song_name, query_format, title=None, artist=None):
                 
     with YoutubeDL(ydl_opts) as ydl:
         result = ydl.extract_info(query, download=False)
-        if "entries" in result:
+        if "entries" in result and result["entries"]:
             info = result["entries"][0]
         else:
             info = result

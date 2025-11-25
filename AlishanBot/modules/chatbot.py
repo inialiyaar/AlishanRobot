@@ -14,25 +14,24 @@ from AlishanBot.modules.helper_funcs.ErrorLog import send_error
 from telethon.tl.functions.messages import GetStickerSetRequest
 from telethon.tl.types import InputStickerSetShortName
 import traceback
+from AlishanBot.modules.helper_funcs.helpers import is_admin
 
 STICKER_PACKS = [
     "f1_5458968679_by_KIRA_PROBOT", 
     "Quby741", 
     "HappiCATthings", 
+    "Billiya_by_fStikBot", 
+    "GsMochiCouple", 
+    "Gogoli_pack_3", 
+    "dxrfbj", 
+    "Lalalaladjkd", 
+    "GenshinImpactXZ8", 
+    "f1_5458968679_by_KIRA_PROBOT"
 ]
 client = AsyncOpenAI(
     api_key=config.ROUTER_API,
     base_url="https://openrouter.ai/api/v1" 
 )
-
-async def is_admin(user_id, chat_id, bot):
-    try:
-        participant = await bot(GetParticipantRequest(chat_id, user_id))
-        if getattr(participant.participant, "admin_rights", None) or getattr(participant.participant, "rank", None):
-            return True
-    except Exception:
-        pass
-    return False
 
 
 async def router_reply(user_text: str) -> str:
@@ -58,8 +57,6 @@ async def router_reply(user_text: str) -> str:
         )
         return response.choices[0].message.content
     except Exception:
-        error = traceback.format_exc()
-        await send_error(error)
         return "Aww, I'm sorry~ something went wrong 😢💔"
 
 
@@ -72,7 +69,7 @@ async def chatbot_toggle(event, command_used, args):
     chat = await event.get_chat()
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
 
-    if not await is_admin(user.id, event.chat_id, event.client):
+    if not await is_admin(user, event):
         return await event.reply("» ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴍᴀɴᴀɢᴇ ᴄʜᴀᴛʙᴏᴛ")
 
     keyboard = [
@@ -89,7 +86,7 @@ async def enable_chatbot(event):
     user = await event.get_sender()
     chat_id = int(event.pattern_match.group(1))
 
-    if not await is_admin(user.id, chat_id, event.client):
+    if not await is_admin(user, event):
         return await event.answer("ᴏɴʟʏ ᴀᴅᴍɪɴ ᴄᴀɴ ᴇɴᴀʙʟᴇ ᴄʜᴀᴛ ʙᴏᴛ", alert=True)
 
     chat_bot_groups.update_one({"chat_id": chat_id}, {"$set": {"enabled": True}}, upsert=True)
@@ -101,7 +98,7 @@ async def disable_chatbot(event):
     user = await event.get_sender()
     chat_id = int(event.pattern_match.group(1))
 
-    if not await is_admin(user.id, chat_id, event.client):
+    if not await is_admin(user, event):
         return await event.answer("ᴏɴʟʏ ᴀᴅᴍɪɴ ᴄᴀɴ ᴅɪsᴀʙʟᴇ ᴄʜᴀᴛʙᴏᴛ", alert=True)
 
     chat_bot_groups.update_one({"chat_id": chat_id}, {"$set": {"enabled": False}}, upsert=True)
@@ -126,10 +123,10 @@ async def chatbot_reply(event):
                     )
                     )
                 random_sticker = random.choice(stickers.documents) 
-                await asyncio.sleep(6)
+                await asyncio.sleep(5)
                 return await event.reply(file=random_sticker)
         async with Alishan.action(event.chat_id, "typing"):
-            await asyncio.sleep(8)
+            await asyncio.sleep(5)
             reply = await router_reply(text)
             if reply:
                 await event.reply(reply)
@@ -157,11 +154,11 @@ async def chatbot_reply(event):
                     )
                     )
                 random_sticker = random.choice(stickers.documents) 
-                await asyncio.sleep(6)
+                await asyncio.sleep(5)
                 return await event.reply(file=random_sticker)
         async with Alishan.action(chat_id, "typing"):
             reply = await router_reply(clean_text)
-            await asyncio.sleep(8)
+            await asyncio.sleep(5)
             
             if reply:
                 await event.reply(reply)

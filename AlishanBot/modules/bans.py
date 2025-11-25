@@ -32,7 +32,7 @@ async def ban_user(event, command_used, args):
         return await event.reply("ᴛʀʏɪɴɢ ᴛᴏ ᴘᴜᴛ ᴍᴇ ᴀɢᴀɪɴsᴛ ᴀ ɢᴏᴅ ʟᴇᴠᴇʟ ᴅɪsᴀsᴛᴇʀ ʜᴜʜ? ")
     if not await check_rights(event, BOT_ID, "ban_users"):
         return await event.reply("ᴏʜʜ sʜɪᴛ!! ɪ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ʙᴀɴ ᴜsᴇʀs ʀɪɢʜᴛs")    
-    if (sender.id not in config.sudo_list) and not await check_rights(event, sender.id, "ban_users"):
+    if not await check_rights(event, sender.id, "ban_users"):
         return await event.reply("ᴄᴀɴ'ᴛ ʙᴀɴ! ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ʙᴀɴ ᴘᴇʀᴍɪssɪᴏɴ")
     if await is_admin(user, event):
         return await event.reply("» ʟᴏʟ, ʏᴏᴜ ᴛʀʏɪɴɢ ᴛᴏ ʙᴀɴ ᴀᴅᴍɪɴ?")    
@@ -64,7 +64,7 @@ async def temp_ban_user(event, command_used, args):
     sender = await event.get_sender()
     if not await check_rights(event, BOT_ID, "ban_users"):
         return await event.reply("ᴏʜʜ sʜɪᴛ!! ɪ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ʙᴀɴ ᴜsᴇʀs ʀɪɢʜᴛs")
-    if (sender.id not in config.sudo_list) and not await check_rights(event, sender.id, "ban_users"):
+    if not await check_rights(event, sender.id, "ban_users"):
         return await event.reply("ᴄᴀɴ'ᴛ ʙᴀɴ! ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ʙᴀɴ ᴘᴇʀᴍɪssɪᴏɴ")   
     if not args and not event.is_reply:
         return await event.reply("ᴏʜʜ sʜɪᴛ!! ᴡʜᴀᴛ ᴀʀᴇ ʏᴏᴜ ᴅᴏɪɴɢ?")
@@ -133,7 +133,7 @@ async def unban_user(event, command_used, args):
     sender = await event.get_sender()
     if not await check_rights(event, BOT_ID, "ban_users"):
         return await event.reply("ᴏʜʜ sʜɪᴛ!! ɪ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ʙᴀɴ ᴜsᴇʀs ʀɪɢʜᴛs")
-    if (sender.id not in config.sudo_list) and not await check_rights(event, sender.id, "ban_users"):
+    if not await check_rights(event, sender.id, "ban_users"):
         return await event.reply("ᴄᴀɴ'ᴛ ᴜɴʙᴀɴ! ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ʙᴀɴ ᴘᴇʀᴍɪssɪᴏɴ")   
     if not args and not event.is_reply:
         return await event.reply("ᴏʜʜ sʜɪᴛ!! ᴡʜᴀᴛ ᴀʀᴇ ʏᴏᴜ ᴅᴏɪɴɢ?")
@@ -159,7 +159,7 @@ async def kick_user(event, command_used, args):
     sender = await event.get_sender()
     if not await check_rights(event, BOT_ID, "ban_users"):
         return await event.reply("ᴏʜʜ sʜɪᴛ!! ɪ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ʙᴀɴ ᴜsᴇʀs ʀɪɢʜᴛs")
-    if (sender.id not in config.sudo_list) and not await check_rights(event, sender.id, "ban_users"):
+    if not await check_rights(event, sender.id, "ban_users"):
         return await event.reply("ᴄᴀɴ'ᴛ ʙᴀɴ! ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ʙᴀɴ ᴘᴇʀᴍɪssɪᴏɴ")
     user = await get_target_user(event)
     if not user:

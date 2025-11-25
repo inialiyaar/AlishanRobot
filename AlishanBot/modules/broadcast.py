@@ -2,15 +2,14 @@ import asyncio
 from telethon import functions, errors
 from AlishanBot.core.bot import Alishan
 from AlishanBot.core.decorators import add_command
-from AlishanBot.utils.database import users, groups
-from AlishanBot import config
+from AlishanBot.utils.database import users, groups, sudo_users 
 
-sudo_list = config.sudo_list
 
 
 @add_command("broadcast")
 async def broadcast_handler(event, command_used, text):
-    if event.sender_id not in sudo_list:
+    sender = await event.get_sender()
+    if not sudo_users.find_one({"user_id": sender.id}):
         return
 
     reply = await event.get_reply_message()
