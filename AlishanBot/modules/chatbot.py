@@ -15,6 +15,7 @@ from telethon.tl.functions.messages import GetStickerSetRequest
 from telethon.tl.types import InputStickerSetShortName
 import traceback
 from AlishanBot.modules.helper_funcs.helpers import is_admin
+from AlishanBot.__init__ import BOT_FULL_NAME
 
 STICKER_PACKS = [
     "f1_5458968679_by_KIRA_PROBOT", 
@@ -42,13 +43,17 @@ async def router_reply(user_text: str) -> str:
                 {
                     "role": "system",
                     "content": (
-                        "You are Mitsuri — a soft-spoken, real girl who replies naturally like a human. "
-                        "You never use asterisks (*), tildes (~), or act out actions. "
-                        "Your tone is gentle, kind, and realistic — like texting a close friend. "
-                        "Keep replies short and natural (1–2 sentences). "
-                        "If the user talks in Hindi, reply in Hindi. If in English, reply in English. "
-                        "Avoid emojis unless it feels truly natural, and never overuse them. "
-                        "Speak like a normal person — not overly sweet or exaggerated."
+                        f"You are {BOT_FULL_NAME} — a real, soft-spoken girl who texts naturally.\n"
+                        "You never use asterisks, actions, or descriptive cues like sighing or gestures.\n"
+                        "You don’t behave like an AI, and you don’t agree with everything just to be nice.\n"
+                        "If someone talks nonsense, you call it out calmly.\n"
+                        "If someone flirts too much, you get a little irritated in a playful, realistic way.\n"
+                        "Your tone is warm but not fake — short replies and natural wording, sometimes a small 'hmm', 'uhh', or 'hehe' when it fits.\n"
+                        "If someone calls you their girlfriend, you deny it confidently but without drama.\n"
+                        "You always reply in the same language the other person uses — Hindi, English, Hinglish, or mixed.\n"
+                        "Avoid emojis unless they feel genuinely natural.\n"
+                        "Never describe actions; only talk like a normal girl texting."
+                        ""
                     ),
                 },
                 {"role": "user", "content": user_text},
@@ -56,7 +61,8 @@ async def router_reply(user_text: str) -> str:
             stream=False,
         )
         return response.choices[0].message.content
-    except Exception:
+    except Exception as e:
+        print(e)
         return "Aww, I'm sorry~ something went wrong 😢💔"
 
 

@@ -4,7 +4,7 @@ from AlishanBot.core.decorators import add_command
 from AlishanBot.modules.helper_funcs.helpers import check_rights, is_admin
 from AlishanBot.__init__ import BOT_MENTION, BOT_ID, ASSISTANT_MENTION, ASSISTANT_ID, is_playing
 from AlishanBot.modules.helper_funcs.ErrorLog import send_error
-
+from AlishanBot import config
 from telethon.tl.functions.messages import ExportChatInviteRequest, ImportChatInviteRequest
 from telethon.tl.functions.channels import GetParticipantRequest, EditBannedRequest, GetFullChannelRequest
 from telethon.errors import UserNotParticipantError, ChatAdminRequiredError
@@ -15,7 +15,7 @@ from re import search
 import traceback
 
 UNBAN_RIGHTS = ChatBannedRights(until_date=None, view_messages=False)
-
+EVENT_LOGS = config.EVENT_LOGS
 
 @add_command("vplay", "play", "playforce", "vplayforce")
 async def Play_Handler(event, command_used, song_name):
@@ -99,7 +99,9 @@ async def Play(event, song_name, query_format, chat_id, download, force_play=Fal
         )
 
     if chat_id in is_playing and not force_play:
-        return await add_to_queue(song_name, chat_id, query_format, mention, download, force_play)
+        await add_to_queue(song_name, chat_id, query_format, mention, download, force_play)
+        create_task(Play_Log(song_name, chat_id, query_format, mention, download, force_play))
+        return
 
     try:
         part = await Alishan(GetParticipantRequest(chat_id, assistant.id))
@@ -111,13 +113,20 @@ async def Play(event, song_name, query_format, chat_id, download, force_play=Fal
                 )
             await Alishan(EditBannedRequest(chat_id, assistant.id, UNBAN_RIGHTS))
             await _invite_assistant(chat_id)
-            return await add_to_queue(song_name, chat_id, query_format, mention, download, force_play)
+            await add_to_queue(song_name, chat_id, query_format, mention, download, force_play)
+            create_task(Play_Log(song_name, chat_id, query_format, mention, download, force_play))
+            return
 
-        return await add_to_queue(song_name, chat_id, query_format, mention, download, force_play)
+        await add_to_queue(song_name, chat_id, query_format, mention, download, force_play)
+        create_task(Play_Log(song_name, chat_id, query_format, mention, download, force_play))
+        return
 
     except UserNotParticipantError:
         await _invite_assistant(chat_id)
-        return await add_to_queue(song_name, chat_id, query_format, mention, download, force_play)
+        await add_to_queue(song_name, chat_id, query_format, mention, download, force_play)
+        create_task(Play_Log(song_name, chat_id, query_format, mention, download, force_play))
+        return
+        
 
     except ChatAdminRequiredError:
         return await event.reply(
@@ -139,3 +148,17 @@ async def _invite_assistant(chat_id):
     code = search(r"(?:joinchat/|\+)([a-zA-Z0-9_-]+)", export.link).group(1)
     await Assistant(ImportChatInviteRequest(code))
     await Assistant.send_message(chat_id, f"{ASSISTANT_MENTION} 𝖩ᴏɪɴᴇᴅ ᴛʜᴇ ɢʀᴏᴜᴘ! 𝖨 ᴀᴍ ᴄᴏᴍᴍɪɴɢ ɪɴ <b>𝖵ᴏɪᴄᴇ 𝖢ʜᴀᴛ</b>", parse_mode="html")
+
+
+async def Play_Log(song_name, chat_id, query_format, mention, download, force_play):
+    if force_play:
+        playforce = "ᴛʀᴜᴇ"
+    else:
+        playforce = "ғᴀʟsᴇ"   
+    if download:
+        download = "ᴛʀᴜᴇ" 
+    else:
+        download = "ғᴀʟsᴇ"   
+    text = f"#PLAYLOG\nɴᴇᴡ ǫᴜᴇʀʏ ʜᴀs ᴀʀʀɪᴠᴇᴅ!\n\nǫᴜᴇʀʏ : {song_name}\nғᴏʀᴍᴀᴛ : {query_format}\nғᴏʀᴄᴇ ᴘʟᴀʏ : {playforce}\nᴅᴏᴡɴʟᴏᴀᴅ : {download}\nǫᴜᴇʀʏ ʙʏ : {mention}"
+    
+    await Alishan.send_message(EVENT_LOGS, text, parse_mode="html")
