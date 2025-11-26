@@ -109,6 +109,8 @@ async def callback_help(event):
             ]
         ]
     elif data == b"back_to_start":
+        ping = get_ping() 
+        uptime = get_uptime()
         if event.is_private:
             caption=f"ʜᴇʏ {mention}.\n\nɪ ᴀᴍ {BOT_MENTION} ᴛʜᴇ ᴍᴏsᴛ ᴘᴏᴡᴇʀғᴜʟ ᴛᴇʟᴇɢʀᴀᴍ ᴍᴜsɪᴄ ᴀɴᴅ ɢʀᴏᴜᴘ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ ʙᴏᴛ ᴡʜɪᴄʜ ᴄᴀɴ ʜᴇʟᴘ ʏᴏᴜ ᴛᴏ ᴍᴀɴᴀɢᴇ ᴀɴᴅ sᴇᴄᴜʀᴇ ʏᴏᴜʀ ɢʀᴏᴜᴘ\n\n<b>➺ ᴘɪɴɢ :</b> {ping}\n<b>➺ ᴜᴘᴛɪᴍᴇ :</b> {uptime}\n\n<b>ᴄʟɪᴄᴋ ᴏɴ ʜᴇʟᴘ ᴛᴏ ʟᴇᴀʀɴ ᴍᴏʀᴇ. </b>"
             buttons = [
@@ -191,22 +193,6 @@ async def callback_help(event):
                 Button.inline("ʙᴀᴄᴋ", data=b"management_help")
             ]
         ]
-        ACTION_CMDS = {
-    "slap": "slap",
-    "punch": "punch",
-    "hug": "anime hug",
-    "pat": "anime pat",
-    "kiss": "anime kiss",
-    "cry": "anime cry",
-    "dance": "anime dance",
-    "wink": "anime wink",
-    "bite": "anime bite",
-    "blush": "anime blush",
-    "smile": "anime smile",
-    "love": "anime love",
-    "highfive": "anime highfive",
-    "wave": "anime wave",
-}
     elif data == b"fun_help":
         caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ 𝖥ᴜɴ :</b>\n\n❍ /truth : ᴛᴏ ɢɪᴠᴇ ᴀ ʀᴀɴᴅᴏᴍ ᴛʀᴜᴛʜ. \n❍ /dare : ᴛᴏ ɢɪᴠᴇ ᴀ ʀᴀɴᴅᴏᴍ ᴅᴀʀᴇ.\n❍ /slap : ᴛᴏ sʟᴀᴘ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /punch : ᴛᴏ ᴘᴜɴᴄɢ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n ❍ /hug : ᴛᴏ ʜᴜɢ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /pat : ᴛᴏ ᴘᴀᴛ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /kiss : ᴛᴏ ᴋɪss ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /cry : ᴛᴏ ᴄʀʏ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /dance : ᴛᴏ ᴅᴀɴᴄᴇ ᴡɪᴛʜ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /wink : ᴛᴏ ᴡɪɴᴋ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /bite : ᴛᴏ ʙɪᴛᴇ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /blush : ᴛᴏ ʙʟᴜsʜ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /smile : ᴛᴏ sᴍɪʟᴇ ᴡɪᴛʜ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /love : ᴛᴏ ʟᴏᴠᴇ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /highfive : ᴛᴏ ʜɪɢʜғɪᴠᴇ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /wave : ᴛᴏ ᴡᴀᴠᴇ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n"
         buttons = [
