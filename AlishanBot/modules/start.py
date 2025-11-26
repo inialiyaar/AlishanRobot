@@ -100,7 +100,7 @@ async def Refresh(event):
                     Button.inline("ʜᴇʟᴘ ᴍᴇɴᴜ", data=b"help_menu")
                 ], 
                 [
-                    Button.inline("ᴀʙᴏᴜᴛ ᴍᴇ", data=b"about"), 
+                    Button.inline("ᴀʙᴏᴜᴛ ᴍᴇ", data=b"about_help"), 
                     Button.inline("ʀᴇғʀᴇsʜ", data=b"refresh")
                 ], 
                 [

@@ -3,13 +3,14 @@ from telethon import functions, errors
 from AlishanBot.core.bot import Alishan
 from AlishanBot.core.decorators import add_command
 from AlishanBot.utils.database import users, groups, sudo_users 
+from AlishanBot import config
 
 
 
 @add_command("broadcast")
 async def broadcast_handler(event, command_used, text):
     sender = await event.get_sender()
-    if not sudo_users.find_one({"user_id": sender.id}):
+    if not sudo_users.find_one({"user_id": sender.id}) and sender.id != config.OWNER_ID:
         return
 
     reply = await event.get_reply_message()

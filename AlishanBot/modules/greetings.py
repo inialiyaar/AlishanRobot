@@ -4,7 +4,7 @@ from AlishanBot.core.decorators import add_command
 from AlishanBot import config  
 from telethon import Button  
 from AlishanBot.modules.helper_funcs.ErrorLog import send_error  
-from AlishanBot.utils.database import greetings  
+from AlishanBot.utils.database import greetings
 from AlishanBot.modules.helper_funcs.safedict import SafeDict  
 from AlishanBot.__init__ import BOT_ID, BOT_USERNAME, BOT_MENTION  
 import traceback  
@@ -422,9 +422,12 @@ async def clean_service(event, command_used, args):
 
     if not args:
         return await event.reply("ɪ ᴜɴᴅᴇʀsᴛᴀɴᴅ ᴏɴʟʏ 'on/yes' ᴏʀ 'off/no'")
-
-    enable = args.lower() in ["yes", "on"]
-
+    if args.lower() in ["yes", "on"]:
+        enable = True
+    elif args.lower() in ["off", "no"]:
+        enable = False
+    else:
+        return await event.reply("ɪ ᴜɴᴅᴇʀsᴛᴀɴᴅ ᴏɴʟʏ 'on/yes' ᴏʀ 'off/no'")
     greetings.update_one(
         {"chat_id": chat_id},
         {"$set": {"wel_clean_up": enable}},

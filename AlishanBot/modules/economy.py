@@ -13,7 +13,11 @@ from AlishanBot.__init__ import BOT_ID
 DAILY_MIN = 200
 DAILY_MAX = 500
 REVIVE_COST = 500
+PROTECT_COST_PER_DAY = 200
 TZ = ZoneInfo("Asia/Kolkata")
+
+if datetime.now(TZ).hour == 0:
+    economy.update_many({}, {"$set": {"daily": False}})
 
 ECON_CMDS = ["open", "close", "bal", "give", "rob", "kill","revive", "protect", "transfer", "toprich", "topkill","daily", "crime", "bet"]
 
@@ -43,6 +47,9 @@ async def economy_system(event, command_used, args):
     sender = await event.get_sender()
     if command_used not in ["toprich", "topkill"] and not sender:
         return await event.reply("ʏᴏᴜ ᴀʀᴇ ᴀɴᴏɴʏᴍᴏᴜs ᴄᴀɴ'ᴛ ᴜsᴇ ᴛʜᴇsᴇ ᴄᴏᴍᴍᴀɴᴅ.")
+    if sender.bot:
+        return await event.reply("ʙᴏᴛ ᴄᴀɴ'ᴛ ᴜsᴇ ᴇᴄᴏɴᴏᴍʏ! ")
+    user_id = sender.id 
     if command_used in ["open", "close"] and not await is_admin(sender, event):
         return await event.reply("ᴏɴʟʏ ᴀᴅᴍɪɴ ᴄᴀɴ ᴜsᴇ ᴛʜᴇsᴇ ᴄᴏᴍᴍᴀɴᴅ.")
     if command_used == "open":
@@ -82,30 +89,56 @@ async def economy_system(event, command_used, args):
     if command_used in ["bal", "revive", "protect"]:
         if event.is_reply:
             replied = await event.get_reply_message()
-            user_entity = await Alishan.get_entity(replied.sender_id)
-            if not user_entity:
+            sender = await Alishan.get_entity(replied.sender_id)
+            if not sender:
                 return await event.reply("ʏᴏᴜ ᴄᴀɴ'ᴛ ᴜsᴇ ᴛʜᴇsᴇ ᴄᴏᴍᴍᴀɴᴅ ᴏɴ ᴀɴᴏɴʏᴍᴏᴜs.")
-            if user_entity.bot:
+            if sender.bot:
                 return await event.reply("ʏᴏᴜ ᴄᴀɴ'ᴛ ᴜsᴇ ᴛʜᴇsᴇ ᴄᴏᴍᴍᴀɴᴅ ᴏɴ ʙᴏᴛ.")
         else:
-            user_entity = await event.get_sender()
-        if command_used == "bal":
-            user_id = int(user_entity.id)
             user = economy.find_one({"user_id": user_id})
             if not user:
                 user = {
                     "user_id": user_id, 
                     "balance": 100,
                     "kills": 0,
-                    "dead": False
+                    "dead": False, 
+                    "daily": False,
                 }
                 economy.insert_one(user)
+        if command_used == "bal":
             if user.get("dead", False):
                  status = "☠️ <b>sᴛᴀᴛᴜs :</b> ᴅᴇᴀᴅ"
             else:
                 status = "♥ <b>sᴛᴀᴛᴜs :</b> ᴀʟɪᴠᴇ"
             rank = get_rank(user_id)
-            return await event.reply(f"👤 <b>ɴᴀᴍᴇ :</b> <a href='{user_entity.id}'>{user_entity.first_name}</a>\n💰 <b>ᴛᴏᴛᴀʟ ʙᴀʟᴀɴᴄᴇ :</b> ${user['balance']}\n🏆 <b>ɢʟᴏʙᴀʟ_ʀᴀɴᴋ :</b> {rank}\n{status}\n⚔️ <b>ᴋɪʟʟs :</b> {user['kills']}", parse_mode="html")
+            return await event.reply(f"👤 <b>ɴᴀᴍᴇ :</b> <a href='{sender.id}'>{sender.first_name}</a>\n💰 <b>ᴛᴏᴛᴀʟ ʙᴀʟᴀɴᴄᴇ :</b> ${user['balance']}\n🏆 <b>ɢʟᴏʙᴀʟ_ʀᴀɴᴋ :</b> {rank}\n{status}\n⚔️ <b>ᴋɪʟʟs :</b> {user['kills']}", parse_mode="html")
+    if command_used in ["give", "rob", "kill", "transfer", "daily", "crime", "bet"]:
+        user = economy.find_one({"user_id": user_id})
+        if not user:
+            user = {
+                "user_id": user_id, 
+                "balance": 100,
+                "kills": 0,
+                "dead": False, 
+                "daily": False,
+            }
+            economy.insert_one(user)        
+    if command_used == "daily":
+        if not user.get("daily", False):
+            amount = random.randint(DAILY_MIN, DAILY_MAX)
+            balance = int(user["balance"]) 
+            balance += amount
+            user["balance"] = balance
+            economy.update_one(
+                {"user_id": user_id},
+                {
+                    "$inc": {"balance": amount},
+                    "$set": {"daily": True}
+                }
+            )
+            return await event.reply(f"ʏᴏᴜ ᴇʀɴᴇᴅ {amount}$ ғʀᴏᴍ ʏᴏᴜʀ ᴅᴀɪʟʏ ɢɪғᴛ 🎁!")
+        else:
+            return await event.reply(" ʜᴇʏʏ ᴡᴀɪ? ʏᴏᴜ ᴀʟʀᴇᴀᴅʏ ᴄʟᴀɪᴍᴇᴅ ʏᴏᴜʀ ᴅᴀɪʟʏ ɢɪғᴛ ᴛʀʏ ɴᴇxᴛ ᴅᴀʏ! ")
     replied = await event.get_reply_message() 
     user_entity = await Alishan.get_entity(replied.sender_id)
     if command_used in ["rob", "kill", "give"] and user_entity.id == BOT_ID:
@@ -114,3 +147,5 @@ async def economy_system(event, command_used, args):
         return await event.reply(f"ʏᴏᴜ ᴄᴀɴ'ᴛ {command_used} ʏᴏᴜʀ sᴇʟғ.")       
     if user_entity.bot and command_used in ["rob", "kill", "give"]:
         return await event.reply("ʏᴏᴜ ᴄᴀɴ'ᴛ ᴜsᴇ ᴛʜᴇsᴇ ᴄᴏᴍᴍᴀɴᴅ ᴏɴ ʙᴏᴛ. ")
+    if command_used == "kill":
+        pass

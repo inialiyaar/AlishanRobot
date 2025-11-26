@@ -63,7 +63,7 @@ async def forward_handler(event):
         if query_format == "video":
             await Play_Video(chat_id, stream_url, eco, seek, -20)
         else:
-            await Play_Audio(chat_id, stream_url, eco, seek, 20)
+            await Play_Audio(chat_id, stream_url, eco, seek, -20)
         await event.reply(f"{mention} sᴇᴇᴋ ᴛʜᴇ ᴛʀᴀᴄᴋ 20s ʙᴀᴄᴋᴡᴀʀᴅ. ", parse_mode="html")
     else:
         await event.reply(f"» {BOT_MENTION} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.", parse_mode="html")       

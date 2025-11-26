@@ -35,6 +35,9 @@ async def help(event, command, args):
                     Button.inline("ᴍᴜsɪᴄ", data=b"music_help"), 
                 ], 
                 [
+                    Button.inline("ɢᴀᴍᴇs", data=b"games_help")
+                ],
+                [
                     Button.url("ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ᴄʜᴀᴛ", f"https://t.me/{BOT_USERNAME}?startgroup=true"), 
                 ], 
                 
@@ -58,8 +61,6 @@ async def help(event, command, args):
 @Alishan.on(events.CallbackQuery())
 async def callback_help(event):
     data = event.data
-    ping = get_ping() 
-    uptime = get_uptime()
     user = await event.get_sender()
     try:
         user_id = user.id
@@ -77,6 +78,9 @@ async def callback_help(event):
                 Button.inline("ᴍᴜsɪᴄ", data=b"music_help"), 
             ], 
             [
+                Button.inline("ɢᴀᴍᴇs", data=b"games_help")
+            ], 
+            [
                 Button.url("ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ᴄʜᴀᴛ", f"https://t.me/{BOT_USERNAME}?startgroup=true")
             ], 
             [
@@ -86,6 +90,8 @@ async def callback_help(event):
                         
             ]
     elif data == b"about_help":
+        ping = get_ping() 
+        uptime = get_uptime()
         total_users = users.count_documents({})
         chats = groups.count_documents({})
         caption = f"<b>ʜᴇʏ</b> {mention},\n<b>ᴛʜɪs ɪs</b> {BOT_MENTION}\n<b>ᴀ ᴘᴏᴡᴇʀꜰᴜʟ ɢʀᴏᴜᴘ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ ᴀɴᴅ ᴍᴜsɪᴄ ʙᴏᴛ ʙᴜɪʟᴛ ᴛᴏ ʜᴇʟᴘ ʏᴏᴜ ᴍᴀɴᴀɢᴇ ʏᴏᴜʀ ɢʀᴏᴜᴘ ᴇᴀꜱɪʟʏ ᴀɴᴅ ᴛᴏ ᴘʀᴏᴛᴇᴄᴛ ʏᴏᴜʀ ɢʀᴏᴜᴘ ꜰʀᴏᴍ ꜱᴄᴀᴍᴍᴇʀꜱ ᴀɴᴅ ꜱᴘᴀᴍᴍᴇʀꜱ.\nᴡʀɪᴛᴛᴇɴ ɪɴ ᴩʏᴛʜᴏɴ ᴡɪᴛʜ ᴍᴏɴɢᴏᴅʙ ᴀs ᴅᴀᴛᴀʙᴀsᴇ.</b>\n────────────────────\n<b>➻ ᴜᴩᴛɪᴍᴇ »</b> {uptime}\n<b>➻ ᴘɪɴɢ »<b> {ping}\n<b>➻ ᴜsᴇʀs »</b> {total_users}\n<b>➻ ᴄʜᴀᴛs »</b> {chats}\n────────────────────\n\n➲  ɪ ᴄᴀɴ ɢʀᴇᴇᴛ ᴜꜱᴇʀꜱ ᴡɪᴛʜ ᴄᴜꜱᴛᴏᴍɪᴢᴀʙʟᴇ ᴡᴇʟᴄᴏᴍᴇ ᴍᴇꜱꜱᴀɢᴇꜱ ᴀɴᴅ ᴇᴠᴇɴ ꜱᴇᴛ ᴀ ɢʀᴏᴜᴘ'ꜱ ʀᴜʟᴇꜱ.\n➲ ɪ ᴄᴀɴ ᴘʟᴀʏ ᴍᴜsɪᴄ/ᴠɪᴅᴇᴏ ғʀᴏᴍ ʏᴏᴜᴛᴜʙᴇ ᴡɪᴛʜ ᴄᴏɴᴛʀᴏʟ ᴄᴏᴍᴍᴀɴᴅs.\n\n➻ ᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ ʙᴜᴛᴛᴏɴs ɢɪᴠᴇɴ ʙᴇʟᴏᴡ ғᴏʀ ɢᴇᴛᴛɪɴɢ ʙᴀsɪᴄ ʜᴇʟᴩ ᴀɴᴅ ɪɴғᴏ ᴀʙᴏᴜᴛ {BOT_MENTION}."
@@ -119,7 +125,11 @@ async def callback_help(event):
                     [
                         Button.url("sᴜᴘᴘᴏʀᴛ", f"https://t.me/{SUPPORT_CHAT}"), 
                         Button.url("ᴜᴘᴅᴀᴛᴇs", f"https://t.me/{SUPPORT_CHANNEL}")
-                    ]
+                    ], 
+                    [
+                        Button.url("Source Code",
+                    "https://github.com/inialiyaar/AlishanRobot.git"),
+                    ], 
                 ]
         else:
             caption=f"<b>» ᴄʜᴏᴏsᴇ ᴀɴ ᴏᴩᴛɪᴏɴ ғᴏʀ ɢᴇᴛᴛɪɴɢ ʜᴇʟᴩ.</b>"
@@ -147,8 +157,8 @@ async def callback_help(event):
             ],
             [
                 Button.inline("𝖨ɴғᴏs", data=b"info_help"), 
-                Button.inline("𝖠ғᴋ", data=b"afk_help"), 
-                Button.inline("𝖦ᴏᴏɢʟᴇ", data=b"google_help")
+                Button.inline("𝖦ʀᴇᴇᴛɪɴɢs", data=b"greetings_help"), 
+                Button.inline("𝖠ғᴋ", data=b"afk_help")
             ], 
             [
            Button.inline("◁", data=b"management_preview"), 
@@ -181,8 +191,24 @@ async def callback_help(event):
                 Button.inline("ʙᴀᴄᴋ", data=b"management_help")
             ]
         ]
+        ACTION_CMDS = {
+    "slap": "slap",
+    "punch": "punch",
+    "hug": "anime hug",
+    "pat": "anime pat",
+    "kiss": "anime kiss",
+    "cry": "anime cry",
+    "dance": "anime dance",
+    "wink": "anime wink",
+    "bite": "anime bite",
+    "blush": "anime blush",
+    "smile": "anime smile",
+    "love": "anime love",
+    "highfive": "anime highfive",
+    "wave": "anime wave",
+}
     elif data == b"fun_help":
-        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ 𝖥ᴜɴ :</b>\n\n❍ /truth : ᴛᴏ ɢɪᴠᴇ ᴀ ʀᴀɴᴅᴏᴍ ᴛʀᴜᴛʜ. \n❍ /dare : ᴛᴏ ɢɪᴠᴇ ᴀ ʀᴀɴᴅᴏᴍ ᴅᴀʀᴇ."
+        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ 𝖥ᴜɴ :</b>\n\n❍ /truth : ᴛᴏ ɢɪᴠᴇ ᴀ ʀᴀɴᴅᴏᴍ ᴛʀᴜᴛʜ. \n❍ /dare : ᴛᴏ ɢɪᴠᴇ ᴀ ʀᴀɴᴅᴏᴍ ᴅᴀʀᴇ.\n❍ /slap : ᴛᴏ sʟᴀᴘ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /punch : ᴛᴏ ᴘᴜɴᴄɢ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n ❍ /hug : ᴛᴏ ʜᴜɢ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /pat : ᴛᴏ ᴘᴀᴛ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /kiss : ᴛᴏ ᴋɪss ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /cry : ᴛᴏ ᴄʀʏ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /dance : ᴛᴏ ᴅᴀɴᴄᴇ ᴡɪᴛʜ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /wink : ᴛᴏ ᴡɪɴᴋ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /bite : ᴛᴏ ʙɪᴛᴇ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /blush : ᴛᴏ ʙʟᴜsʜ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /smile : ᴛᴏ sᴍɪʟᴇ ᴡɪᴛʜ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /love : ᴛᴏ ʟᴏᴠᴇ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /highfive : ᴛᴏ ʜɪɢʜғɪᴠᴇ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /wave : ᴛᴏ ᴡᴀᴠᴇ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n"
         buttons = [
             [
                 Button.inline("ʙᴀᴄᴋ", data=b"management_help")
@@ -202,6 +228,28 @@ async def callback_help(event):
                 Button.inline("ʙᴀᴄᴋ", data=b"management_help")
             ]
         ]
+    elif data == b"afk_help":
+        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ Iɴғᴏ:\n\nɢʀᴏᴜᴘ ᴏɴʟʏ</b>\n❍  /afk ᴏʀ /brb : ᴀɴɴᴏᴜɴᴄᴇᴅ ʏᴏᴜʀ ᴀғᴋ! ."
+        buttons = [
+            [
+                Button.inline("ʙᴀᴄᴋ", data=b"management_help")
+            ]
+        ]
+    elif data == b"info_help":
+        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ 𝖠ғᴋ :\n</b>❍ /Id : ᴛᴏ sʜᴏᴡ ʏᴏᴜʀ ɪᴅ ᴏʀ ᴄʜᴀᴛ ɪᴅ ᴀɴᴅ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ ɪᴅ. \n\n<b>ɢʀᴏᴜᴘ ᴏɴʟʏ</b>\n❍  /info : ᴛᴏ sʜᴏᴡ ᴛʜᴇ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ ᴏʀ ʏᴏᴜʀ ɪɴғᴏʀᴍᴀᴛɪᴏɴ.."
+        buttons = [
+            [
+                Button.inline("ʙᴀᴄᴋ", data=b"management_help")
+            ]
+        ]
+    elif data == b"greetings_help":
+        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ Iɴғᴏ:\n\nɢʀᴏᴜᴘ ᴏɴʟʏ</b>\n❍ /welcome ᴏʀ /wel(on|yes/off|no) : ᴛᴏ sʜᴏᴡ ᴄᴜʀʀᴇɴᴛ ᴡᴇʟᴄᴏᴍᴇ sᴛᴀᴛᴜs ᴀɴᴅ ᴏɴ ᴏʀ ᴏғғ ᴡᴇʟᴄᴏᴍɪɴɢ.\n❍ /goodbye ᴏʀ /gb (on|yes/off|no) : ᴛᴏ sʜᴏᴡ ᴄᴜʀʀᴇɴᴛ ɢᴏᴏᴅʙʏᴇ sᴛᴀᴛᴜs ᴀɴᴅ ᴏɴ ᴏʀ ᴏғғ ɢᴏᴏᴅʙʏɪɴɢ\n❍ /setwelcome or /setwel (message or reply message) : ᴛᴏ sᴇᴛ ᴄᴜsᴛᴏᴍᴇ ᴡᴇʟᴄᴏᴍᴇ ᴛᴇxᴛ ᴏʀᴀᴍᴇᴅɪᴀ. \n❍ /setgoodbye or /setgoodbye (message or reply message) : ᴛᴏ sᴇᴛ ᴄᴜsᴛᴏᴍᴇ ɢᴏᴏᴅʙʏᴇ ᴛᴇxᴛ ᴏʀ ᴍᴇᴅɪᴀ. \n❍ /cleanservice (ᴏɴ|ʏᴇs/ᴏғғ|ɴᴏ) : ᴛᴏ ᴅᴇʟᴇᴛᴇ ᴏʟᴅ ɢʀᴇᴇᴛɪɴɢs ᴍᴇssᴀɢᴇ ᴍᴀᴋᴇ ʏᴏᴜʀ ɢʀᴏᴜᴘ ᴄʟᴇᴀɴ. "
+        buttons = [
+            [
+                Button.inline("ʙᴀᴄᴋ", data=b"management_help"), 
+                Button.inline("ᴍᴀʀᴋᴅᴏᴡɴ", data=b"markdown_help"), 
+            ]
+        ]
     elif data == b"music_help":
          caption = f"<b>{BOT_MENTION} ᴛʜᴇ ᴜʟᴛɪᴍᴀᴛᴇ ᴍᴜsɪᴄ ʙᴏᴛ</b>\n\nᴄʜᴏꜱᴇ ᴛʜᴇ ᴄᴀᴛᴇɢᴏʀʏ ꜰᴏʀ ᴡʜɪᴄʜ ʏᴏᴜ ᴡᴀɴɴᴀ ɢᴇᴛ ʜᴇʟᴘ. ᴡɪᴛʜ {BOT_MENTION}\n<b>ᴀɴʏ ᴘʀᴏʙʟᴇᴍ ᴀsᴋ ʏᴏᴜʀ ᴅᴏᴜʙᴛs ᴀᴛ</b> <a href=\"https://t.me/{SUPPORT_CHAT}\">sᴜᴘᴘᴏʀᴛ chat</a>.\n\nᴀʟʟ ᴄᴏᴍᴍᴀɴᴅꜱ ᴄᴀɴ ʙᴇ ᴜꜱᴇᴅ ᴡɪᴛʜ : /"
          buttons = [
@@ -216,7 +264,7 @@ async def callback_help(event):
              ]
          ]
     elif data == b"play_help":
-        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ 𝖯ʟᴀʏ:\n\nv : sᴛᴀɴᴅs ғᴏʀ ᴠɪᴅᴇᴏ ᴩʟᴀʏ.\nforce : sᴛᴀɴᴅs ғᴏʀ ғᴏʀᴄᴇ ᴩʟᴀʏ.</b>\n\n❍ play ᴏʀ /vplay : sᴛᴀʀᴛs sᴛʀᴇᴀᴍɪɴɢ ᴛʜᴇ ʀᴇǫᴜᴇsᴛᴇᴅ ᴛʀᴀᴄᴋ ᴏɴ ᴠɪᴅᴇᴏᴄʜᴀᴛ.\n\n<b>ᴀᴅᴍɪɴs ᴏɴʟʏ</b>\n❍ /playforce ᴏʀ /vplayforce : sᴛᴏᴩs ᴛʜᴇ ᴏɴɢᴏɪɴɢ sᴛʀᴇᴀᴍ ᴀɴᴅ sᴛᴀʀᴛs sᴛʀᴇᴀᴍɪɴɢ ᴛʜᴇ ʀᴇǫᴜᴇsᴛᴇᴅ ᴛʀᴀᴄᴋ."
+        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ 𝖯ʟᴀʏ:\n\nv : sᴛᴀɴᴅs ғᴏʀ ᴠɪᴅᴇᴏ ᴩʟᴀʏ.\nforce : sᴛᴀɴᴅs ғᴏʀ ғᴏʀᴄᴇ ᴩʟᴀʏ.</b>\n\n❍ /play ᴏʀ /vplay : sᴛᴀʀᴛs sᴛʀᴇᴀᴍɪɴɢ ᴛʜᴇ ʀᴇǫᴜᴇsᴛᴇᴅ ᴛʀᴀᴄᴋ ᴏɴ ᴠɪᴅᴇᴏᴄʜᴀᴛ.\n\n<b>ᴀᴅᴍɪɴs ᴏɴʟʏ</b>\n❍ /playforce ᴏʀ /vplayforce : sᴛᴏᴩs ᴛʜᴇ ᴏɴɢᴏɪɴɢ sᴛʀᴇᴀᴍ ᴀɴᴅ sᴛᴀʀᴛs sᴛʀᴇᴀᴍɪɴɢ ᴛʜᴇ ʀᴇǫᴜᴇsᴛᴇᴅ ᴛʀᴀᴄᴋ."
         buttons = [
             [
                 Button.inline("ʙᴀᴄᴋ", data=b"music_help")

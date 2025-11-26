@@ -29,6 +29,7 @@ STICKER_PACKS = [
     "GenshinImpactXZ8", 
     "f1_5458968679_by_KIRA_PROBOT"
 ]
+
 client = AsyncOpenAI(
     api_key=config.ROUTER_API,
     base_url="https://openrouter.ai/api/v1" 

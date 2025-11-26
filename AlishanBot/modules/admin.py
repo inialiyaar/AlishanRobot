@@ -494,7 +494,7 @@ async def adminlist(event, command_used, args):
         if isinstance(participant, ChannelParticipantCreator):
             owner = user
             if getattr(participant, "rank", None):
-                owner_rank = participant. rank if participant.rank else "ᴏᴡɴᴇʀ"
+                owner_rank = participant.rank if participant.rank else "ᴏᴡɴᴇʀ"
             break
     for user in admins:
         participant = user.participant

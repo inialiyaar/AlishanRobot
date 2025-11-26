@@ -36,7 +36,7 @@ async def Ping(event, command_used, args):
     await Alishan.send_file(
         event.chat_id,
         file=config.START_IMG, 
-        caption=f"ʜᴇʏ <a href=\"tg://user?Id={user_id}\">{full_name}</a>.\n\nᴛʜɪs ɪs {BOT_MENTION}.\n\n<b>🏓 ᴘᴏɴɢ : </b>{ping}\n<b>➭ ʟᴀᴛᴇɴᴄʏ :</b> {latency}ᴍs\n\n<b>➥ sʏsᴛᴇᴍ sᴛᴀᴛs :</b>\n<b>➭ ᴜᴘᴛɪᴍᴇ :</b> {uptime}\n<b>➭ ʀᴀᴍ :</b> {ram:.1f}%\n<b>➭ ᴄᴘᴜ :</b> {cpu:.1f}%\n<b>➭ ᴅɪsᴋ :</b> {disk:.1f}%\n<b>➭ ᴘʏ-ᴛɢᴄᴀʟʟs :</b> {pytgcalls_ping:.1f}ᴍs", 
+        caption=f"ʜᴇʏ <a href=\"tg://user?Id={user_id}\">{full_name}</a>.\n\nᴛʜɪs ɪs {BOT_MENTION}.\n\n<b>🏓 ᴘᴏɴɢ : </b>{ping}\n<b>➭ ʟᴀᴛᴇɴᴄʏ :</b> {latency}ᴍs\n\n<b>➥ sʏsᴛᴇᴍ sᴛᴀᴛs :</b>\n<b>➭ ᴜᴘᴛɪᴍᴇ :</b> {uptime}\n<b>➭ ʀᴀᴍ :</b> {ram:.1f}%\n<b>➭ ᴄᴘᴜ :</b> {cpu:.1f}%\n<b>➭ ᴅɪsᴋ :</b> {disk:.1f}%\n<b>➭ ᴘʏ-ᴛɢᴄᴀʟʟs :</b> {pytgcalls_ping}ᴍs", 
         buttons = [
             [
                 Button.url("ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ", f"https://t.me/{BOT_USERNAME}?startgroup=true")
