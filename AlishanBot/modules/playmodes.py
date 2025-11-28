@@ -6,6 +6,7 @@ from AlishanBot.modules.helper_funcs.play import Play_Stream
 from AlishanBot.modules.helper_funcs.helpers import is_admin
 from telethon import Button
 from AlishanBot.utils.database import stream_mode
+from asyncio import sleep
 
 @callback_query("modes")
 async def PlayModes_Callback(event):
@@ -14,8 +15,15 @@ async def PlayModes_Callback(event):
         Button.inline("ɴᴏʀᴍᴀʟ", "instent_normal"), 
         Button.inline("ᴇᴄᴏ", "instent_eco")
     ]
-    await event.edit(buttons=buttons)
-
+    try:
+        await event.edit(buttons=buttons)
+    except:
+        await sleep(2)
+        try:
+            await event.edit(buttons=buttons)
+        except:    
+            pass   
+        
 @callback_query("instent_lofi")
 async def instent_lofi_handler_callback(event):
     user = await event.get_sender()
