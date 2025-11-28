@@ -47,7 +47,7 @@ async def GroupCallUpdate(event):
         if action.duration is None:
             return await Alishan.send_message(chat_id, "**♻️ VɪᴅᴇᴏCʜᴀᴛ Sᴛᴀʀᴛᴇᴅ!**")
         duration = readable_time(action.duration)
-        if chat_id in queues and len(queues[chat_id]) > 0:
+        if chat_id in player_stats:
             queues.pop(chat_id, None)
             current_ind.pop(chat_id, None)
             queue_position.pop(chat_id, None)
@@ -117,7 +117,7 @@ async def ChatAction(event):
     if event.user_left or event.user_kicked:
         if not user.id == ASSISTANT_ID:
             return
-        if chat_id in queues and len(queues[chat_id]) > 0:
+        if chat_id in player_stats:
             queues.pop(chat_id, None)
             current_ind.pop(chat_id, None)
             queue_position.pop(chat_id, None)

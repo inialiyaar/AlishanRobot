@@ -30,7 +30,10 @@ async def instent_lofi_handler_callback(event):
     chat = await event.get_chat()
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
     settings = stream_mode.find_one({"chat_id": chat_id})
-    admin_cmd = settings.get("admin_cmd", "admins")
+    if settings:
+        admin_cmd = settings.get("admin_cmd", "admins")
+    else:
+        admin_cmd = "admins"  
     if not await is_admin(user, event) and admin_cmd == "admins":
         await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
         return
@@ -61,7 +64,10 @@ async def instent_eco_handler_callback(event):
     chat = await event.get_chat()
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
     settings = stream_mode.find_one({"chat_id": chat_id})
-    admin_cmd = settings.get("admin_cmd", "admins")
+    if settings:
+        admin_cmd = settings.get("admin_cmd", "admins")
+    else:
+        admin_cmd = "admins"  
     if not await is_admin(user, event) and admin_cmd == "admins":
         await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
         return
@@ -92,7 +98,10 @@ async def instent_normal_handler_callback(event):
     chat = await event.get_chat()
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
     settings = stream_mode.find_one({"chat_id": chat_id})
-    admin_cmd = settings.get("admin_cmd", "admins")
+    if settings:
+        admin_cmd = settings.get("admin_cmd", "admins")
+    else:
+        admin_cmd = "admins"  
     if not await is_admin(user, event) and admin_cmd == "admins":
         await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
         return
