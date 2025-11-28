@@ -21,7 +21,10 @@ async def Stop(event, command_used, args):
         chat = await event.get_chat()
         chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
         settings = stream_mode.find_one({"chat_id": chat_id})
-        admin_cmd = settings.get("admin_cmd", "admins")
+        if settings:
+            admin_cmd = settings.get("admin_cmd", "admins")
+        else:
+            admin_cmd = "admins"  
         if not await is_admin(user, event) and admin_cmd == "admins":
             votes_target = 5
             msg = await event.reply(
@@ -49,7 +52,10 @@ async def Stop_Callback(event):
     chat = await event.get_chat()
     chat_id = int(f"-100{chat.id}" if not str(chat.id).startswith("-100") else chat.id)
     settings = stream_mode.find_one({"chat_id": chat_id})
-    admin_cmd = settings.get("admin_cmd", "admins")
+    if settings:
+        admin_cmd = settings.get("admin_cmd", "admins")
+    else:
+        admin_cmd = "admins"  
     if not await is_admin(user, event) and admin_cmd == "admins":
         await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
         return

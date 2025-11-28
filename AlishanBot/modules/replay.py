@@ -14,7 +14,10 @@ async def replay_handler(event):
     chat = await event.get_chat()
     chat_id = int(f"-100{chat.id}" if not str(chat.id).startswith("-100") else chat.id)
     settings = stream_mode.find_one({"chat_id": chat_id})
-    admin_cmd = settings.get("admin_cmd", "admins")
+    if settings:
+        admin_cmd = settings.get("admin_cmd", "admins")
+    else:
+        admin_cmd = "admins"  
     if not await is_admin(user, event) and admin_cmd == "admins":
         await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
         return
@@ -32,7 +35,8 @@ async def replay_callback(event):
     user = await event.get_sender()
     chat = await event.get_chat()
     rights = await Alishan.get_permissions(chat.id, user.id)
-    
+    chat = await event.get_chat()
+    chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
     settings = stream_mode.find_one({"chat_id": chat_id})
     admin_cmd = settings.get("admin_cmd", "admins")
     if not await is_admin(user, event) and admin_cmd == "admins":
@@ -49,9 +53,6 @@ async def replay(event):
         mention = f"<a href=\"tg://user?id={user.id}\">{user.first_name}</a>"
     except Exception:
         mention = "ᴀɴᴏɴʏᴍᴏᴜs"
-    chat = await event.get_chat()
-    
-    chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
     if chat_id in player_stats:
         status = await event.reply("**𝖱ᴇᴘʟᴀʏɪɴɢ ᴄᴜʀʀᴇɴᴛ 𝖳ʀᴀᴄᴋ...**")
         index = current_ind.get(chat_id, 0)
