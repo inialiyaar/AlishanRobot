@@ -1,11 +1,12 @@
 from AlishanBot.core.bot import Alishan
 from AlishanBot.core.decorators import add_command, callback_query
 from telethon import events
-from AlishanBot.modules.helper_funcs.queue import play_next, queues
+from AlishanBot.modules.helper_funcs.queue import play_next
 from asyncio import create_task
-from AlishanBot.__init__ import is_playing, 𝖡𝖮𝖳_𝖬𝖤𝖭𝖳𝖨𝖮𝖭, playing_lofi
+from AlishanBot.__init__ import player_stats, 𝖡𝖮𝖳_𝖬𝖤𝖭𝖳𝖨𝖮𝖭
 from telethon import Button
 from AlishanBot.modules.helper_funcs.helpers import is_admin
+from AlishanBot.utils.database import stream_mode
 
 votes = {}
 
@@ -15,7 +16,9 @@ async def skip_handler(event, command_used, args):
         user = await event.get_sender()
         chat = await event.get_chat()
         chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
-        if not await is_admin(user, event):
+        settings = stream_mode.find_one({"chat_id": chat_id})
+        admin_cmd = settings.get("admin_cmd", "admins")
+        if not await is_admin(user, event) and admin_cmd == "admins":
             votes_target = 5
             msg = await event.reply(
                 f"**𝖠ᴅᴍɪɴ ʀɪɢʜᴛs ɴᴇᴇᴅᴇᴅ**\n\n⧽ {votes_target} ᴠᴏᴛᴇs ɴᴇᴇᴅᴇᴅ ғᴏʀ ᴘᴇʀғᴏʀᴍɪɴɢ ᴛʜɪs ᴀᴄᴛɪᴏɴ.",
@@ -35,7 +38,7 @@ async def skip_handler(event, command_used, args):
             mention = "ᴀɴᴏɴʏᴍᴏᴜs"
         chat = await event.get_chat()
         chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
-        if chat_id in queues and len(queues[chat_id]) > 0:
+        if chat_id in player_stats:
             try:
                 await play_next(chat_id)
                 await event.delete()
@@ -53,13 +56,13 @@ async def callback_skip(event):
     user = await event.get_sender()
     chat = await event.get_chat()
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
-    if not await is_admin(user, event):
+    settings = stream_mode.find_one({"chat_id": chat_id})
+    admin_cmd = settings.get("admin_cmd", "admins")
+    if not await is_admin(user, event) and admin_cmd == "admins":
         await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
         return
     mention = f"<a href=\"tg://user?id={user.id}\">{user.first_name}</a>"
-    if chat_id in queues and len(queues[chat_id]) > 0:
-        if chat_id in playing_lofi:
-            playing_lofi.pop(chat_id, None)
+    if chat_id in player_stats:
         try:
             await play_next(chat_id)
         except Exception:
@@ -83,9 +86,7 @@ async def skip_vote_callback(event):
     vote_data["users"].append(user_id)
     vote_data["count"] +=1
     if vote_data["count"] >= vote_data["target"]:
-        if chat_id in queues and len(queues[chat_id]) > 0:
-            if chat_id in playing_lofi:
-                playing_lofi.pop(chat_id, None)
+        if chat_id in player_stats:
             try:
                 await play_next(chat_id)
             except Exception:

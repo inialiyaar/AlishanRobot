@@ -5,7 +5,7 @@ from AlishanBot.modules.helper_funcs.queue import queues, current_ind, queue_pos
 from AlishanBot.utils.database import groups
 from AlishanBot.modules.helper_funcs.add_group import add_group
 from telethon.tl.functions.channels import LeaveChannelRequest, GetFullChannelRequest
-from AlishanBot.__init__ import is_playing, BOT_ID, BOT_MENTION, BOT_USERNAME, ASSISTANT_MENTION, ASSISTANT_ID
+from AlishanBot.__init__ import player_stats, BOT_ID, BOT_MENTION, BOT_USERNAME, ASSISTANT_MENTION, ASSISTANT_ID
 import asyncio
 from pytgcalls import filters
 from pytgcalls.types import ChatUpdate, Update
@@ -51,7 +51,7 @@ async def GroupCallUpdate(event):
             queues.pop(chat_id, None)
             current_ind.pop(chat_id, None)
             queue_position.pop(chat_id, None)
-            is_playing.pop(chat_id, None)
+            player_stats.pop(chat_id, None)
             return await Alishan.send_message(chat_id, f"<b>📴 𝖵ɪᴅᴇᴏ𝖢ʜᴀᴛ 𝖤ɴᴅᴇᴅ! ᴀɴᴅ 𝖰ᴜᴇᴜᴇ 𝖢ʟᴇᴀʀᴇᴅ.</b>\n\n<b>⏰ 𝖣ᴜʀᴀᴛɪᴏɴ:</b> {duration}", parse_mode="html")
         else:
             return await Alishan.send_message(chat_id, f"<b>📴 𝖵ɪᴅᴇᴏ𝖢ʜᴀᴛ 𝖤ɴᴅᴇᴅ!</b>\n\n<b>⏰ 𝖣ᴜʀᴀᴛɪᴏɴ:</b> {duration}", parse_mode="html")
@@ -87,10 +87,10 @@ async def on_bot_banned(event):
                     queues.pop(chat_id, None)
                     current_ind.pop(chat_id, None)
                     queue_position.pop(chat_id, None)
-                    is_playing.pop(chat_id, None)
+                    player_stats.pop(chat_id, None)
             except: 
                 pass
-    if chat_id in is_playing:
+    if chat_id in player_stats:
         return
     if chat_id in pending_check:
         return
@@ -121,7 +121,7 @@ async def ChatAction(event):
             queues.pop(chat_id, None)
             current_ind.pop(chat_id, None)
             queue_position.pop(chat_id, None)
-            is_playing.pop(chat_id, None)
+            player_stats.pop(chat_id, None)
             await event.reply(f"<b>{ASSISTANT_MENTION} ᴡᴀs ʙᴀɴɴᴇᴅ! 𝖰ᴜᴇᴜᴇ 𝖢ʟᴇᴀʀᴇᴅ.</b>", parse_mode="html")
     if event.user_added:
         if user.id == BOT_ID:

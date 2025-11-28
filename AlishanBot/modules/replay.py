@@ -1,17 +1,22 @@
 from AlishanBot.core.bot import Alishan
-from AlishanBot.modules.helper_funcs.play import Play_Audio, Play_Video
+from AlishanBot.modules.helper_funcs.play import Play_Stream
 from AlishanBot.core.decorators import add_command, callback_query
 from AlishanBot.modules.helper_funcs.helpers import is_admin
-from AlishanBot.__init__ import is_playing, playing_lofi
-from AlishanBot.modules.helper_funcs.queue import queues, current_ind, active_bars, playing_message, seek_offset
+from AlishanBot.__init__ import player_stats
+from AlishanBot.modules.helper_funcs.queue import queues, current_ind, playing_message
 from asyncio import create_task
+from AlishanBot.utils.database import stream_mode
+import time
 
 @add_command("replay")
 async def replay_handler(event):
     user = await event.get_sender()
     chat = await event.get_chat()
-    if not await is_admin(user, event):
-        await event.reply("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.")
+    chat_id = int(f"-100{chat.id}" if not str(chat.id).startswith("-100") else chat.id)
+    settings = stream_mode.find_one({"chat_id": chat_id})
+    admin_cmd = settings.get("admin_cmd", "admins")
+    if not await is_admin(user, event) and admin_cmd == "admins":
+        await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
         return
     try:
         await event.delete()
@@ -27,7 +32,10 @@ async def replay_callback(event):
     user = await event.get_sender()
     chat = await event.get_chat()
     rights = await Alishan.get_permissions(chat.id, user.id)
-    if not await is_admin(user, event):
+    
+    settings = stream_mode.find_one({"chat_id": chat_id})
+    admin_cmd = settings.get("admin_cmd", "admins")
+    if not await is_admin(user, event) and admin_cmd == "admins":
         await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
         return
     if event.is_group or event.is_channel:
@@ -44,27 +52,24 @@ async def replay(event):
     chat = await event.get_chat()
     
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
-    if chat_id in queues and queues[chat_id]:
-        if chat_id in playing_lofi:
-            playing_lofi.pop(chat_id, None)
+    if chat_id in player_stats:
         status = await event.reply("**𝖱ᴇᴘʟᴀʏɪɴɢ ᴄᴜʀʀᴇɴᴛ 𝖳ʀᴀᴄᴋ...**")
         index = current_ind.get(chat_id, 0)
         stream_url, title, artist, duration, thumbnail, mention, query_format, download = queues[chat_id][index]
-        seek_offset[chat_id] = 0
+        settings = stream_mode.find_one({"chat_id": chat_id})
+        if settings:
+            play_mode = settings.get("play_mode", "normal")
+        else:
+            play_mode = "normal"
+        await Play_Stream(chat_id, stream_url, query_format, play_mode)
+        create_task(playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention, download)) 
+        player_stats[chat_id]["is_playing"] = True
+        player_stats[chat_id]["current_time"] = 0
+        player_stats[chat_id]["last_update"] = time.time()
+        player_stats[chat_id]["play_mode"] = play_mode        
         try:
-            if query_format == "video":
-                await Play_Video(chat_id, stream_url)
-            else:
-                await Play_Audio(chat_id, stream_url)
-            if chat_id in active_bars:
-                active_bars[chat_id]["active"] = False    
-            create_task(playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention, download)) 
-            is_playing[chat_id] = True
-            try:
-                await status.edit(f"<b>➭ 𝖳ʀᴀᴄᴋ ʀᴇᴘʟᴀʏ 𝖲ᴛᴀʀᴛᴇᴅ!\n\n𝖱ᴇǫᴜᴇsᴛᴇᴅ ʙʏ:</b> {mention}", parse_mode="html")
-            except Exception:
-                await event.reply(f"<b>➭ 𝖳ʀᴀᴄᴋ ʀᴇᴘʟᴀʏ 𝖲ᴛᴀʀᴛᴇᴅ! \n\n𝖱ᴇǫᴜᴇsᴛᴇᴅ ʙʏ:</b> {mention}", parse_mode="html")
-        except Exception as e:
-            await status.edit(f"Replay failed: {str(e)}")
+            await status.edit(f"<b>➭ 𝖳ʀᴀᴄᴋ ʀᴇᴘʟᴀʏ 𝖲ᴛᴀʀᴛᴇᴅ!\n\n𝖱ᴇǫᴜᴇsᴛᴇᴅ ʙʏ:</b> {mention}", parse_mode="html")
+        except Exception:
+            await event.reply(f"<b>➭ 𝖳ʀᴀᴄᴋ ʀᴇᴘʟᴀʏ 𝖲ᴛᴀʀᴛᴇᴅ! \n\n𝖱ᴇǫᴜᴇsᴛᴇᴅ ʙʏ:</b> {mention}", parse_mode="html")
     else:
         await event.reply(f"» {BOT_MENTION} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.", parse_mode="html")        

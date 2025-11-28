@@ -2,9 +2,10 @@ from AlishanBot.core.bot import Alishan,music
 from AlishanBot.core.decorators import add_command, callback_query
 from telethon import events
 from AlishanBot.modules.helper_funcs.queue import queues, current_ind, queue_position
-from AlishanBot.__init__ import is_playing, BOT_MENTION, playing_lofi
+from AlishanBot.__init__ import player_stats, BOT_MENTION
 from telethon import Button
 from AlishanBot.modules.helper_funcs.helpers import is_admin
+from AlishanBot.utils.database import stream_mode
 
 
 votes = {}
@@ -19,7 +20,9 @@ async def Stop(event, command_used, args):
         user = await event.get_sender()
         chat = await event.get_chat()
         chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
-        if not await is_admin(user, event):
+        settings = stream_mode.find_one({"chat_id": chat_id})
+        admin_cmd = settings.get("admin_cmd", "admins")
+        if not await is_admin(user, event) and admin_cmd == "admins":
             votes_target = 5
             msg = await event.reply(
                 f"**𝖠ᴅᴍɪɴ ʀɪɢʜᴛs ɴᴇᴇᴅᴇᴅ**\n\n⧽ {votes_target} ᴠᴏᴛᴇs ɴᴇᴇᴅᴇᴅ ғᴏʀ ᴘᴇʀғᴏʀᴍɪɴɢ ᴛʜɪs ᴀᴄᴛɪᴏɴ.",
@@ -44,7 +47,10 @@ async def Stop(event, command_used, args):
 async def Stop_Callback(event):
     user = await event.get_sender()
     chat = await event.get_chat()
-    if not await is_admin(user, event):
+    chat_id = int(f"-100{chat.id}" if not str(chat.id).startswith("-100") else chat.id)
+    settings = stream_mode.find_one({"chat_id": chat_id})
+    admin_cmd = settings.get("admin_cmd", "admins")
+    if not await is_admin(user, event) and admin_cmd == "admins":
         await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
         return
     try:
@@ -61,13 +67,11 @@ async def stop_song(event):
     
     chat = await event.get_chat()
     chat_id = int(f"-100{chat.id}" if not str(chat.id).startswith("-100") else chat.id)
-    if chat_id in is_playing:
-        if chat_id in playing_lofi:
-            playing_lofi.pop(chat_id, None)
+    if chat_id in player_stats:
         queues.pop(chat_id, None)
         queue_position.pop(chat_id, None)
         current_ind.pop(chat_id, None)
-        is_playing.pop(chat_id, None)
+        player_stats.pop(chat_id, None)
         await music.leave_call(chat_id)
         await event.reply(f"<b>➭ sᴛʀᴇᴀᴍ ᴇɴᴅᴇᴅ / sᴛᴏᴘᴘᴇᴅ\nᴇɴᴅᴇᴅ ʙʏ :</b> {mention}", buttons=None, parse_mode="html")
     else:
@@ -88,13 +92,11 @@ async def end_vote_callback(event):
     vote_data["users"].append(user_id)
     vote_data["count"] +=1
     if vote_data["count"] >= vote_data["target"]:
-        if chat_id in is_playing:
-            if chat_id in playing_lofi:
-                playing_lofi.pop(chat_id, None)
+        if chat_id in player_stats:
             queues.pop(chat_id, None)
             queue_position.pop(chat_id, None)
             current_ind.pop(chat_id, None)
-            is_playing.pop(chat_id, None) 
+            player_stats.pop(chat_id, None) 
             await music.leave_call(chat_id)
             await event.reply(f"<b>➭ sᴛʀᴇᴀᴍ ᴇɴᴅᴇᴅ / sᴛᴏᴘᴘᴇᴅ\nᴇɴᴅᴇᴅ ʙʏ :</b> ᴠᴏᴛɪɴɢ", buttons=None, parse_mode="html")
         else:

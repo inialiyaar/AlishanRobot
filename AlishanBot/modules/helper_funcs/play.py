@@ -1,43 +1,47 @@
 from AlishanBot.core.bot import music
-from pytgcalls.types import MediaStream, AudioQuality, VideoQuality, Device, ExternalMedia
-from pytgcalls.types.raw import AudioParameters
+from pytgcalls.types import MediaStream, AudioQuality, VideoQuality, ExternalMedia
 from asyncio import sleep
+from pytgcalls.types.raw import AudioParameters
 
-async def _play_base(chat_id, url, is_video=False, eco=False, seek_offset=None):
-    current_ms = await music.time(chat_id) or 0
-    current_sec = int(current_ms / 1000)
 
-    if seek_offset:
-        new_sec = current_sec + seek_offset
-        if new_sec < 0:
-            new_sec = 0 
-    else:
-        new_sec = current_sec
-
-    if eco:
-        ff = (
-            "-atmid "
-            f"-ss {new_sec} "
-            "-af asetrate=44100*0.92,aresample=44100,atempo=1.0,"
-            "lowpass=f=3800,highpass=f=120,aecho=0.6:0.7:50:0.3,volume=1.15"
-            " -atend"
-        )
-    else:
-        ff = f"-ss {new_sec}" if seek_offset else None
-
+async def Play_Stream(chat_id, url, stream_format, Play_Mode, seek=None):
     aud = AudioQuality.STUDIO
     vid = VideoQuality.UHD_4K
-    if is_video:
-        await music.play(
-            chat_id,
-            MediaStream(
-                url,
-                audio_parameters=aud,
-                video_parameters=vid,
-                ffmpeg_parameters=ff,
+    if Play_Mode == "lofi":
+        if seek:
+            ff =(
+                "-atmid "
+                f"-ss {seek} "
+                "-af asetrate=44100*0.92,aresample=44100,atempo=1.0,"
+                "lowpass=f=3800,highpass=f=120,aecho=0.6:0.7:50:0.3,volume=1.15"
+                " -atend"
             )
-        )
+        else:   
+            ff =(
+                "-atmid "
+                "-af asetrate=44100*0.92,aresample=44100,atempo=1.0,"
+                "lowpass=f=3800,highpass=f=120,aecho=0.6:0.7:50:0.3,volume=1.15"
+                " -atend"
+            ) 
+    elif Play_Mode == "eco":
+        if seek:
+            ff = (
+                "-atmid "
+                f"-ss {seek} "
+                "-af aecho=0.7:0.65:60:0.22,volume=1.10"
+                " -atend"
+            )
+        else:
+            ff = (
+                "-atmid "
+                "-af aecho=0.7:0.65:60:0.22,volume=1.10"
+                " -atend"
+            )
+    elif seek:
+        ff = f"-ss {seek}"
     else:
+        ff = None    
+    if stream_format == "audio":
         await music.play(
             chat_id,
             MediaStream(
@@ -47,15 +51,17 @@ async def _play_base(chat_id, url, is_video=False, eco=False, seek_offset=None):
                 ffmpeg_parameters=ff,
             )
         )
-
-async def Play_Audio(chat_id, url, eco=False, seek=False, to_seek=None):
-    offset = to_seek if to_seek else (20 if seek else None)
-    await _play_base(chat_id, url, is_video=False, eco=eco, seek_offset=offset)
+    else:
+        await music.play(
+            chat_id,
+            MediaStream(
+                url,
+                audio_parameters=aud,
+                video_parameters=vid,
+                ffmpeg_parameters=ff,
+            )
+        )
     
-async def Play_Video(chat_id, url, eco=False, seek=False, to_seek=None):
-    offset = to_seek if to_seek else (20 if seek else None)
-    await _play_base(chat_id, url, is_video=True, eco=eco, seek_offset=offset)    
-        
 async def join_call(chat_id):
     await music.play(
         chat_id,

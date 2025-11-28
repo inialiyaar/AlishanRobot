@@ -23,6 +23,10 @@ async def download_thumbnail(thumb_url):
     return save_path                  
 
 async def Thumbnail(thumb_url, title, artist, duration):
+    if title is None:
+        title = "Unknown Title"
+    if artist is None:
+        artist = "Unknown Artist"
     thumb_path = await download_thumbnail(thumb_url)
     earphones_path = "earphones.png"
     bg = Image.open(thumb_path).convert("RGBA").resize((1280, 720), Image.LANCZOS)

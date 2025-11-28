@@ -1,6 +1,6 @@
 from AlishanBot.core.bot import Alishan, music
 from AlishanBot.core.decorators import add_command
-from AlishanBot.__init__ import BOT_MENTION, BOT_USERNAME, is_playing
+from AlishanBot.__init__ import BOT_MENTION, BOT_USERNAME, player_stats
 from AlishanBot.modules.helper_funcs.uptime import get_uptime
 from AlishanBot.modules.helper_funcs.ping import get_ping
 from AlishanBot import config
@@ -29,7 +29,7 @@ async def stats_handler(event, command, args):
     greetings_on = greetings.count_documents({})
     pytgcalls_ping = music.ping
     ram, cpu, disk = get_system_stats()
-    playing = len(is_playing)
+    playing = len(player_stats)
     await msg.delete()
     caption=f"<b>{BOT_MENTION}'s sᴛᴀᴛs :</b>\n<b>ᴘʏ-ᴛɢᴄᴀʟʟs :</b> {pytgcalls_ping}ᴍs\n<b>ʟᴀᴛᴇɴᴄʏ :</b> {latency}ᴍs\n<b>ᴄʜᴀᴛs :</b> {chats}\n<b>ᴜsᴇʀs :</b> {total_users}\n<b>ᴘʟᴀʏɪɴɢ ᴏɴ :</b> {playing}\n<b>ᴄᴜsᴛᴏᴍ ɢʀᴇᴇᴛɪɴɢs :</b> {greetings_on}\n\n<b>sʏsᴛᴇᴍ sᴛᴀᴛs :</b>\n<b>sᴇʀᴠᴇʀ ᴘɪɴɢ :</b> {ping}\n<b>ᴜᴘᴛɪᴍᴇ :</b> {uptime}\n<b>ʀᴀᴍ :</b> {ram:.1f}%\n<b>ᴄᴘᴜ :</b> {cpu:.1f}%\n<b>ᴅɪsᴋ :</b> {disk:.1f}%"
     await event.reply(caption, parse_mode="html")

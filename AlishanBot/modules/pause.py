@@ -1,8 +1,10 @@
 from AlishanBot.core.bot import Alishan, music
 from AlishanBot.modules.helper_funcs.queue import queues
-from AlishanBot.__init__ import is_playing, BOT_MENTION
+from AlishanBot.__init__ import player_stats, BOT_MENTION, update_time
 from AlishanBot.core.decorators import add_command, callback_query
 from AlishanBot.modules.helper_funcs.helpers import is_admin
+import time
+from AlishanBot.utils.database import stream_mode
 
 
 @add_command("pause", "resume")
@@ -11,8 +13,10 @@ async def command_handler(event, command_used, args):
         user = await event.get_sender()
         chat = await event.get_chat()
         chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
-        if not await is_admin(user, event):
-            await event.reply("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.")
+        settings = stream_mode.find_one({"chat_id": chat_id})
+        admin_cmd = settings.get("admin_cmd", "admins")
+        if not await is_admin(user, event) and admin_cmd == "admins":
+            await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
             return
         try:
             await event.delete()
@@ -31,7 +35,9 @@ async def pause_callback(event):
     user = await event.get_sender()
     chat = await event.get_chat()
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
-    if not await is_admin(user, event):
+    settings = stream_mode.find_one({"chat_id": chat_id})
+    admin_cmd = settings.get("admin_cmd", "admins")
+    if not await is_admin(user, event) and admin_cmd == "admins":
         await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
         return
     await pause(event)
@@ -47,10 +53,10 @@ async def pause(event):
         except Exception:
             mention = "ᴀɴᴏɴʏᴍᴏᴜs"
 
-        if is_playing.get(chat_id, True):
-            await music.mute(chat_id)
+        if player_stats[chat_id]["is_playing"]:
             await music.pause(chat_id)
-            is_playing[chat_id] = False
+            update_time(chat_id)
+            player_stats[chat_id]["is_playing"] = False
             await event.reply(f"<b>➭ sᴛʀᴇᴀᴍ ᴘᴀᴜsᴇᴅ. \nᴘᴀᴜsᴇᴅ ʙʏ :</b> {mention}", parse_mode="html")
         else:
             await event.reply(f"<b>➭ sᴛʀᴇᴀᴍ ᴀʟʀᴇᴀᴅʏ ᴘᴀᴜsᴇᴅ.</b> {mention}", parse_mode="html")
@@ -64,7 +70,9 @@ async def resume_callback(event):
     user = await event.get_sender()
     chat = await event.get_chat()
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
-    if not await is_admin(user, event):
+    settings = stream_mode.find_one({"chat_id": chat_id})
+    admin_cmd = settings.get("admin_cmd", "admins")
+    if not await is_admin(user, event) and admin_cmd == "admins":
         await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
         return
     await resume(event)
@@ -79,10 +87,10 @@ async def resume(event):
             mention = f"<a href=\"tg://user?id={user.id}\">{user.first_name}</a>"
         except Exception:
             mention = "ᴀɴᴏɴʏᴍᴏᴜs"
-        if not is_playing.get(chat_id, True):
-            await music.unmute(chat_id)
+        if not player_stats[chat_id]["is_playing"]:
             await music.resume(chat_id)
-            is_playing[chat_id] = True
+            player_stats[chat_id]["is_playing"] = True
+            player_stats[chat_id]["last_update"] = time.time()
             await event.reply(f"<b>➭ sᴛʀᴇᴀᴍ ʀᴇsᴜᴍᴇᴅ. \nʀᴇsᴜᴍᴇᴅ ʙʏ :</b> {mention}", parse_mode="html")
         else:
             await event.reply(f"<b>➭ sᴛʀᴇᴀᴍ ᴀʟʀᴇᴀᴅʏ ʀᴇsᴜᴍᴇᴅ.</b> {mention}", parse_mode="html")

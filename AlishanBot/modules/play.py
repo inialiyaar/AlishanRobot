@@ -2,13 +2,14 @@ from AlishanBot.core.bot import Alishan, Assistant
 from AlishanBot.modules.helper_funcs.queue import add_to_queue
 from AlishanBot.core.decorators import add_command
 from AlishanBot.modules.helper_funcs.helpers import check_rights, is_admin
-from AlishanBot.__init__ import BOT_MENTION, BOT_ID, ASSISTANT_MENTION, ASSISTANT_ID, is_playing
+from AlishanBot.__init__ import BOT_MENTION, BOT_ID, ASSISTANT_MENTION, ASSISTANT_ID, player_stats
 from AlishanBot.modules.helper_funcs.ErrorLog import send_error
 from AlishanBot import config
 from telethon.tl.functions.messages import ExportChatInviteRequest, ImportChatInviteRequest
 from telethon.tl.functions.channels import GetParticipantRequest, EditBannedRequest, GetFullChannelRequest
 from telethon.errors import UserNotParticipantError, ChatAdminRequiredError
 from telethon.tl.types import ChannelParticipantBanned, ChatBannedRights
+from AlishanBot.utils.database import stream_mode
 
 from asyncio import create_task
 from re import search
@@ -35,8 +36,7 @@ async def Play_Handler(event, command_used, song_name):
     full_channel = await Alishan(GetFullChannelRequest(chat_id))
     if not full_channel.full_chat.call:
         return await event.reply("**𝖵ᴏɪᴄᴇ ᴄʜᴀᴛ ɪs ɴᴏᴛ ᴀᴄᴛɪᴠᴇ,** ᴘʟᴇᴀsᴇ sᴛᴀʀᴛ ᴛʜᴇ ᴠᴄ ғɪʀsᴛ!")
-
-    if not force_play and chat_id in is_playing:
+    if not force_play and chat_id in player_stats:
         create_task(Play(event, song_name, query_format, chat_id, False))
         return
 
@@ -47,13 +47,23 @@ async def Play_Handler(event, command_used, song_name):
 async def Play(event, song_name, query_format, chat_id, download, force_play=False):
 
     user = await event.get_sender()
-
+    
     try:
         mention = f"<a href=\"tg://user?id={user.id}\">{user.first_name}</a>"
     except:
         mention = "ᴀɴᴏɴʏᴍᴏᴜs"
-
-    if force_play and not await is_admin(user, event):
+    settings = stream_mode.find_one({"chat_id": chat_id})
+    if settings:
+        vote_mode = settings.get("vote_mode", 5)
+        play_mode = settings.get("play_mode", "normal")
+        admin_cmd = settings.get("admin_cmd", "admins")
+        can_play = settings.get("can_play", "everyone")
+    else:
+        vote_mode = 5
+        play_mode = "normal"
+        admin_cmd = "admins"
+        can_play = "everyone"
+    if force_play and not await is_admin(user, event) and admin_cmd == "admins":
         return await event.reply(
             f"{mention} ʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴀᴅᴍɪɴ, ᴏɴʟʏ ᴀᴅᴍɪɴ ᴄᴀɴ ғᴏʀᴄᴇ ᴘʟᴀʏ. ",
             parse_mode="html"
@@ -98,7 +108,7 @@ async def Play(event, song_name, query_format, chat_id, download, force_play=Fal
             parse_mode="html"
         )
 
-    if chat_id in is_playing and not force_play:
+    if chat_id in player_stats:
         await add_to_queue(song_name, chat_id, query_format, mention, download, force_play)
         create_task(Play_Log(song_name, chat_id, query_format, mention, download, force_play))
         return
