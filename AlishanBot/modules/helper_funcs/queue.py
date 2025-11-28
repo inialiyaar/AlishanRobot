@@ -58,6 +58,7 @@ async def add_to_queue(song_name, chat_id, query_format, mention, download, forc
                "play_mode": play_mode
            }    
             create_task(playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention, download))
+            queues[chat_id].append((stream_url, title, artist, duration, thumbnail, mention, query_format, download)) 
             try:
                 await status.delete()
             except Exception:
@@ -73,6 +74,7 @@ async def add_to_queue(song_name, chat_id, query_format, mention, download, forc
                "play_mode": play_mode
            }    
             create_task(playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention, download))
+            queues[chat_id].append((stream_url, title, artist, duration, thumbnail, mention, query_format, download)) 
             try:
                 await status.delete()
             except Exception:
