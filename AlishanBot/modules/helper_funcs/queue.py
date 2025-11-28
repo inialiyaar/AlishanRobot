@@ -27,16 +27,14 @@ progress_bar = {}
 
 async def add_to_queue(song_name, chat_id, query_format, mention, download, force_play):
     async with queue_locks[chat_id]:
-        if not chat_id in player_stats:
-            queues.setdefault(chat_id, [])
-            queue_position.setdefault(chat_id, 0)
-            current_ind.setdefault(chat_id, 0)
-            settings = stream_mode.find_one({"chat_id": chat_id})
-            if settings:
-                play_mode = settings.get("play_mode", "normal")
-            else:
-                play_mode = "normal"
-            await join_call(chat_id)       
+        queues.setdefault(chat_id, [])
+        queue_position.setdefault(chat_id, 0)
+        current_ind.setdefault(chat_id, 0)  
+        settings = stream_mode.find_one({"chat_id": chat_id})
+        if settings:
+            play_mode = settings.get("play_mode", "normal")
+        else:
+            play_mode = "normal"
         status = await Alishan.send_message(chat_id, f"**sᴇᴀʀᴄʜɪɴɢ...🔎**")
         if download:
             stream_url = song_name
@@ -49,11 +47,24 @@ async def add_to_queue(song_name, chat_id, query_format, mention, download, forc
             if data == "PLAYLISTERROR":    
                 return await Alishan.send_message(chat_id, "ᴘʀᴏᴠɪᴅᴇᴅ ᴘʟᴀʏʟɪsᴛ ᴀʀᴇ ᴇᴍᴘᴛʏ ᴘʟᴇᴀsᴇ ᴛʀʏ ᴏᴛʜᴇʀ ᴘʟᴀʏʟɪsᴛ.")
             stream_url, title, artist, duration, thumbnail = data
+        
+        if chat_id not in player_stats:
+            await Play_Stream(chat_id, stream_url, query_format, play_mode)
+            player_stats[chat_id] = {
+               "is_playing": True,
+               "duration": duration,
+               "current_time": 0,
+               "last_update": time.time(),
+               "play_mode": play_mode
+           }    
+            create_task(playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention, download))
+            try:
+                await status.delete()
+            except Exception:
+                pass
+            return       
         if force_play:
             await Play_Stream(chat_id, stream_url, query_format, play_mode)
-            create_task(playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention, download))
-            player_stats[chat_id]["is_playing"] = True
-            player_stats[chat_id]["last_update"] = time.time()
             player_stats[chat_id] = {
                "is_playing": True,
                "duration": duration,
@@ -61,29 +72,19 @@ async def add_to_queue(song_name, chat_id, query_format, mention, download, forc
                "last_update": time.time(),
                "play_mode": play_mode
            }    
-            try:
-                await status.delete()
-            except Exception:
-                    pass
-        elif chat_id in player_stats:
-            queues[chat_id].append((stream_url, title, artist, duration, thumbnail, mention, query_format, download)) 
-            queue_position[chat_id] +=1
-            create_task(queue_message(title, artist, duration, query_format, chat_id, queue_position[chat_id], mention))
-        else:       
-            await Play_Stream(chat_id, stream_url, query_format, play_mode)
-            player_stats[chat_id] = {
-               "is_playing": True,
-               "duration": duration,
-               "current_time": 0,
-               "last_update": time.time(),
-               "play_mode": play_mode
-           }    
-            queues[chat_id].append((stream_url, title, artist, duration, thumbnail, mention, query_format, download)) 
             create_task(playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention, download))
             try:
                 await status.delete()
             except Exception:
-                    pass   
+                pass
+            return       
+        queues[chat_id].append((stream_url, title, artist, duration, thumbnail, mention, query_format, download)) 
+        queue_position[chat_id] +=1
+        create_task(queue_message(title, artist, duration, query_format, chat_id, queue_position[chat_id], mention))
+        try:
+            await status.delete()
+        except Exception:
+            pass
 
 async def play_next(chat_id):
     if chat_id not in queues or not queues[chat_id]:
@@ -188,12 +189,11 @@ async def playing_message(title, artist, duration, query_format, thumbnail, chat
     if os.path.exists(thumbnail_path):
         os.remove(thumbnail_path)
     progress_bar[chat_id] = msg
-    player_stats[chat_id]["_msg_id"] = msg.id
     create_task(update_bar())
     
 async def update_bar():
     while True:
-        await asyncio.sleep(7)
+        await asyncio.sleep(10)
 
         for chat_id, msg in list(progress_bar.items()):
             if chat_id not in player_stats:
@@ -206,7 +206,8 @@ async def update_bar():
             current = stats["current_time"]
             last_up = stats["last_update"]
             is_playing = stats["is_playing"]
-
+            if duration is None or duration == 0:
+                continue
             if is_playing:
                 elapsed = time.time() - last_up
                 current += elapsed
