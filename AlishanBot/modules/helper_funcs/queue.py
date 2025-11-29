@@ -1,4 +1,4 @@
-from AlishanBot.modules.helper_funcs.play import Play_Stream, join_call
+from AlishanBot.modules.helper_funcs.play import Play_Stream
 from AlishanBot.core.bot import music, Alishan
 from AlishanBot.modules.helper_funcs.ytmetadata import meta_data
 from pytgcalls import filters
@@ -18,6 +18,7 @@ import traceback
 from AlishanBot.utils.database import stream_mode
 import time
 
+
 queues = {}  
 queue_position = {}  
 current_ind = {}
@@ -29,7 +30,7 @@ playing_tasks = {}
 async def add_to_queue(song_name, chat_id, query_format, mention, download, force_play):
     async with queue_locks[chat_id]:
         if chat_id not in player_stats:
-            await join_call(chat_id)
+            await music.play(chat_id, None)
         queues.setdefault(chat_id, [])
         queue_position.setdefault(chat_id, 0)
         current_ind.setdefault(chat_id, 0)  

@@ -1,5 +1,5 @@
 from AlishanBot.core.bot import music
-from pytgcalls.types import MediaStream, AudioQuality, VideoQuality, ExternalMedia
+from pytgcalls.types import MediaStream, AudioQuality, VideoQuality
 from asyncio import sleep
 from pytgcalls.types.raw import AudioParameters
 
@@ -62,15 +62,3 @@ async def Play_Stream(chat_id, url, stream_format, Play_Mode, seek=None):
             )
         )
     
-async def join_call(chat_id):
-    await music.play(
-        chat_id,
-        MediaStream(
-            ExternalMedia.AUDIO,
-            AudioParameters(
-                bitrate=48000,
-                channels=2
-            )
-        )
-    )
-    sleep(4)
