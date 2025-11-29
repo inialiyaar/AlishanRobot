@@ -23,6 +23,7 @@ queue_position = {}
 current_ind = {}
 queue_locks = defaultdict(asyncio.Lock)
 progress_bar = {}
+playing_tasks = {}
 
 
 async def add_to_queue(song_name, chat_id, query_format, mention, download, force_play):
@@ -73,7 +74,6 @@ async def add_to_queue(song_name, chat_id, query_format, mention, download, forc
                "last_update": time.time(),
                "play_mode": play_mode
            }    
-            create_task(playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention, download))
             queues[chat_id].append((stream_url, title, artist, duration, thumbnail, mention, query_format, download)) 
             try:
                 await status.delete()
@@ -191,17 +191,18 @@ async def playing_message(title, artist, duration, query_format, thumbnail, chat
     if os.path.exists(thumbnail_path):
         os.remove(thumbnail_path)
     progress_bar[chat_id] = msg
-    create_task(update_bar())
     
 async def update_bar():
     while True:
         await asyncio.sleep(10)
-
-        for chat_id, msg in list(progress_bar.items()):
+        for chat_id in list(progress_bar.keys()):
             if chat_id not in player_stats:
                 progress_bar.pop(chat_id, None)
                 continue
-
+            msg = progress_bar.get(chat_id)
+            if msg is None:
+                progress_bar.pop(chat_id, None)
+                continue
             stats = player_stats[chat_id]
 
             duration = stats["duration"]

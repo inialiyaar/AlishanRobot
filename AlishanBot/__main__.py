@@ -5,6 +5,7 @@ import importlib
 import os
 from AlishanBot import config
 from AlishanBot.modules.helper_funcs.info import load_info
+from asyncio import create_task
 
 print("Core loaded. ")
 
@@ -29,6 +30,8 @@ async def main():
     await Assistant.send_message(config.EVENT_LOGS, "**ɪ ᴀᴍ ʀᴇᴀᴅʏ ғᴏʀ ᴘʟᴀʏ ᴛʀᴀᴄᴋs ʙᴀʙʏ!**")  
     """
     print("BOT RUNNING.. ")
+    from AlishanBot.modules.helper_funcs.queue import update_bar
+    create_task(update_bar())
     await Alishan.run_until_disconnected()
     
 def import_modules():
