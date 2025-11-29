@@ -19,7 +19,7 @@ async def command_handler(event, command_used, args):
         else:
             admin_cmd = "admins"  
         if not await is_admin(user, event) and admin_cmd == "admins":
-            await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
+            await event.reply("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.")
             return
         try:
             await event.delete()

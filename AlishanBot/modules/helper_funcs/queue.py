@@ -58,7 +58,8 @@ async def add_to_queue(song_name, chat_id, query_format, mention, download, forc
                "duration": duration,
                "current_time": 0,
                "last_update": time.time(),
-               "play_mode": play_mode
+               "play_mode": play_mode,
+               "loop": False,
            }    
             create_task(playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention, download))
             queues[chat_id].append((stream_url, title, artist, duration, thumbnail, mention, query_format, download)) 
@@ -74,7 +75,8 @@ async def add_to_queue(song_name, chat_id, query_format, mention, download, forc
                "duration": duration,
                "current_time": 0,
                "last_update": time.time(),
-               "play_mode": play_mode
+               "play_mode": play_mode,
+               "loop": False
            }    
             create_task(playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention, download))
             queues[chat_id].append((stream_url, title, artist, duration, thumbnail, mention, query_format, download)) 
@@ -92,27 +94,26 @@ async def add_to_queue(song_name, chat_id, query_format, mention, download, forc
             pass
 
 async def play_next(chat_id):
-    if chat_id not in queues or not queues[chat_id]:
-        player_stats.pop(chat_id, None)
-        await music.leave_call(chat_id)
-        await Alishan.send_message(chat_id, f"<b>𝖰ᴜᴇᴜᴇ ғɪɴɪsʜᴇᴅ,</b> {ASSISTANT_MENTION} ʟᴇᴀᴠɪɴɢ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ.", parse_mode="html")
-        queues.pop(chat_id, None)
-        queue_position.pop(chat_id, None)
-        current_ind.pop(chat_id, None)
-        return
     current_ind[chat_id] += 1
     index = current_ind[chat_id]
     if index >= len(queues[chat_id]):
-        await music.leave_call(chat_id)
-        await Alishan.send_message(chat_id, f"<b>𝖰ᴜᴇᴜᴇ ғɪɴɪsʜᴇᴅ,</b> {ASSISTANT_MENTION} ʟᴇᴀᴠɪɴɢ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ.", parse_mode="html")
-        queues.pop(chat_id, None)
-        queue_position.pop(chat_id, None)
-        current_ind.pop(chat_id, None)
-        player_stats.pop(chat_id, None)
-        return
+        loop = player_stats[chat_id]["loop"]
+        if loop:
+            queue_position[chat_id] = 0
+            current_ind[chat_id] = 0
+            index = 0
+        else:   
+            await music.leave_call(chat_id)
+            await Alishan.send_message(chat_id, f"<b>𝖰ᴜᴇᴜᴇ ғɪɴɪsʜᴇᴅ,</b> {ASSISTANT_MENTION} ʟᴇᴀᴠɪɴɢ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ.", parse_mode="html")
+            queues.pop(chat_id, None)
+            queue_position.pop(chat_id, None)
+            current_ind.pop(chat_id, None)
+            player_stats.pop(chat_id, None)
+            return
     try:
-        queue_position[chat_id] -=1
-        
+        if not queue_position[chat_id] > 0:
+            queue_position[chat_id] -=1
+            
         stream_url, title, artist, duration, thumbnail, mention, query_format, download = queues[chat_id][index]
         settings = stream_mode.find_one({"chat_id": chat_id})
         if settings:
@@ -120,13 +121,11 @@ async def play_next(chat_id):
         else:
             play_mode = "normal"
         await Play_Stream(chat_id, stream_url, query_format, play_mode)
-        player_stats[chat_id] = {
-               "is_playing": True,
-               "duration": duration,
-               "current_time": 0,
-               "last_update": time.time(),
-               "play_mode": play_mode,
-           }
+        player_stats[chat_id]["is_playing"] = True
+        player_stats[chat_id]["duration"] = duration 
+        player_stats[chat_id]["current_time"] = 0
+        player_stats[chat_id]["last_update"] = time.time()
+        player_stats[chat_id]["play_mode"] = play_mode
         create_task(playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention, download))
     except Exception as e:
         await Alishan.send_message(chat_id, f"Error: {str(e)}")
@@ -137,13 +136,10 @@ async def stream_end(_, update: Update):
         pass
     except:
         return   
-    try:
-        chat_id = update.chat_id
-        chat_id = int(f"-100{chat_id}" if not str(chat_id).startswith("-100") else chat_id)
-        if chat_id in queues:
-            await play_next(chat_id)
-    except:
-        pass
+    chat_id = update.chat_id
+    chat_id = int(f"-100{chat_id}" if not str(chat_id).startswith("-100") else chat_id)
+    if chat_id in queues:
+        await play_next(chat_id)
         
 async def playing_message(title, artist, duration, query_format, thumbnail, chat_id, mention, download):
     duration = int(duration)
