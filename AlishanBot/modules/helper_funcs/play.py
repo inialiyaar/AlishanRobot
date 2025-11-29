@@ -62,8 +62,8 @@ async def Play_Stream(chat_id, url, stream_format, Play_Mode, seek=None):
             )
         )
     
-async def join_call(chat_id):
-    await music.play(
+def join_call(chat_id):
+    music.play(
         chat_id,
         MediaStream(
             ExternalMedia.AUDIO,
@@ -73,4 +73,4 @@ async def join_call(chat_id):
             )
         )
     )
-    await sleep(2)
+    sleep(2)
