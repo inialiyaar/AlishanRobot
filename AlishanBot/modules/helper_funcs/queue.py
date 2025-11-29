@@ -29,7 +29,7 @@ playing_tasks = {}
 async def add_to_queue(song_name, chat_id, query_format, mention, download, force_play):
     async with queue_locks[chat_id]:
         if chat_id not in player_stats:
-            join_call(chat_id)
+            await join_call(chat_id)
         queues.setdefault(chat_id, [])
         queue_position.setdefault(chat_id, 0)
         current_ind.setdefault(chat_id, 0)  
