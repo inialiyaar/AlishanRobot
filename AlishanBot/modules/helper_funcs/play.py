@@ -73,4 +73,4 @@ async def join_call(chat_id):
             )
         )
     )
-    sleep(3)
+    sleep(4)
