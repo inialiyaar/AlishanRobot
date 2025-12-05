@@ -29,16 +29,10 @@ playing_tasks = {}
 
 async def add_to_queue(song_name, chat_id, query_format, mention, download, force_play):
     async with queue_locks[chat_id]:
-        if chat_id not in player_stats:
-            await music.play(chat_id, None)
         queues.setdefault(chat_id, [])
         queue_position.setdefault(chat_id, 0)
         current_ind.setdefault(chat_id, 0)  
         settings = stream_mode.find_one({"chat_id": chat_id})
-        if settings:
-            play_mode = settings.get("play_mode", "normal")
-        else:
-            play_mode = "normal"
         status = await Alishan.send_message(chat_id, f"**sᴇᴀʀᴄʜɪɴɢ...🔎**")
         if download:
             stream_url = song_name
@@ -51,6 +45,10 @@ async def add_to_queue(song_name, chat_id, query_format, mention, download, forc
             if data == "PLAYLISTERROR":    
                 return await Alishan.send_message(chat_id, "ᴘʀᴏᴠɪᴅᴇᴅ ᴘʟᴀʏʟɪsᴛ ᴀʀᴇ ᴇᴍᴘᴛʏ ᴘʟᴇᴀsᴇ ᴛʀʏ ᴏᴛʜᴇʀ ᴘʟᴀʏʟɪsᴛ.")
             stream_url, title, artist, duration, thumbnail = data
+        if settings:
+            play_mode = settings.get("play_mode", "normal")
+        else:
+            play_mode = "normal"
         if chat_id not in player_stats:
             await Play_Stream(chat_id, stream_url, query_format, play_mode)
             player_stats[chat_id] = {
