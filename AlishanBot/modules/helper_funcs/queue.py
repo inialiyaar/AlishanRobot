@@ -40,6 +40,7 @@ async def add_to_queue(song_name, chat_id, query_format, mention, download, forc
             thumbnail = "https://i.ibb.co/gLNS8hC1/x.jpg"
         if not download:
             data = await meta_data(song_name)
+            time.sleep(1)
             if data == "URLERROR":
                 return await Alishan.send_message(chat_id, "ᴘʀᴏᴠɪᴅᴇᴅ ᴜʀʟ ɪs ɴᴏᴛ ʏᴏᴜᴛᴜʙᴇ ᴜʀʟ ᴘʟᴇᴀsᴇ ᴛʀʏ ᴏɴ ʏᴏᴜᴛᴜʙᴇ ᴜʀʟ. ")
             if data == "PLAYLISTERROR":    
