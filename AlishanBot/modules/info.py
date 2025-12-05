@@ -51,9 +51,9 @@ async def Info_Handler(event, command_used, args):
                 if not user:
                     return await event.reply(" ɪ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ɪɴғᴏʀᴍᴀᴛɪᴏɴ ᴀʙᴏᴜᴛ ᴀɴᴏɴʏᴍᴏᴜs! ")
                 if not sender:
-                    return await event.reply(f"ʜᴇʀᴇ ɪs {user.first}'s ɪᴅ : `{user.id}`\nᴄʜᴀᴛ ɪᴅ : `{event.chat_id}`")    
+                    return await event.reply(f"ʜᴇʀᴇ ɪs {user.first_name}'s ɪᴅ : `{user.id}`\nᴄʜᴀᴛ ɪᴅ : `{event.chat_id}`")    
                 else:
-                    return await event.reply(f"ʜᴇʀᴇ ɪs {user.first}'s ɪᴅ : `{user.id}`\nᴄʜᴀᴛ ɪᴅ : `{event.chat_id}`\nʏᴏᴜʀ ɪᴅ : `{sender.id}`")    
+                    return await event.reply(f"ʜᴇʀᴇ ɪs {user.first_name}'s ɪᴅ : `{user.id}`\nᴄʜᴀᴛ ɪᴅ : `{event.chat_id}`\nʏᴏᴜʀ ɪᴅ : `{sender.id}`")    
             else:
                 if not sender:
                     return await event.reply(f" ʏᴏᴜ ᴀʀᴇ ᴀɴᴏɴʏᴍᴏᴜs : \nᴄʜᴀᴛ ɪᴅ : `{chat.id}`")

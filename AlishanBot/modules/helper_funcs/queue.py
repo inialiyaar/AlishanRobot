@@ -51,7 +51,6 @@ async def add_to_queue(song_name, chat_id, query_format, mention, download, forc
             if data == "PLAYLISTERROR":    
                 return await Alishan.send_message(chat_id, "ᴘʀᴏᴠɪᴅᴇᴅ ᴘʟᴀʏʟɪsᴛ ᴀʀᴇ ᴇᴍᴘᴛʏ ᴘʟᴇᴀsᴇ ᴛʀʏ ᴏᴛʜᴇʀ ᴘʟᴀʏʟɪsᴛ.")
             stream_url, title, artist, duration, thumbnail = data
-        
         if chat_id not in player_stats:
             await Play_Stream(chat_id, stream_url, query_format, play_mode)
             player_stats[chat_id] = {
