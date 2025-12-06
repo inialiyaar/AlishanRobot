@@ -8,7 +8,8 @@ from telethon.tl.functions.channels import LeaveChannelRequest, GetFullChannelRe
 from AlishanBot.__init__ import player_stats, BOT_ID, BOT_MENTION, BOT_USERNAME, ASSISTANT_MENTION, ASSISTANT_ID
 import asyncio
 from pytgcalls import filters
-from pytgcalls.types import ChatUpdate, Update
+from pytgcalls.types import GroupCallParticipant, Update
+from pytgcalls import filters
 from datetime import datetime, timedelta
 from AlishanBot import config
 from telethon import Button
@@ -32,7 +33,6 @@ def readable_time(seconds: int) -> str:
     if seconds > 0 or not parts:
         parts.append(f"{seconds} sᴇᴄᴏɴᴅ{'s' if seconds != 1 else ''}")
     return " ".join(parts)
-
 @Alishan.on(events.Raw)
 async def GroupCallUpdate(event):
     if not isinstance(event, UpdateNewChannelMessage):
@@ -88,7 +88,7 @@ async def on_bot_banned(event):
                     current_ind.pop(chat_id, None)
                     queue_position.pop(chat_id, None)
                     player_stats.pop(chat_id, None)
-            except: 
+            except Exception: 
                 pass
     if chat_id in player_stats:
         return
@@ -101,7 +101,7 @@ async def on_bot_banned(event):
     if chat_id not in queues:
         try:
             await Assistant(LeaveChannelRequest(chat_id))
-        except:
+        except Exception:
             pass
     pending_check.discard(chat_id)
     
@@ -165,5 +165,16 @@ async def ChatAction(event):
                         ], 
                         parse_mode="html", 
                     )
-                except:
-                    pass   
+                except Exception:
+                    pass  
+                
+@music.on_update(filters.call_participant(GroupCallParticipant.Action.LEFT | GroupCallParticipant.Action.JOINED))
+async def VoiceChatUpdate(_, update: Update):
+    participant = update.participant
+    action = participant.action
+    chat_id = update.chat_id
+    user = await Alishan.get_entity(participant.user_id)
+    if action == GroupCallParticipant.Action.JOINED:
+        await Assistant.send_message(chat_id, f"{user.first_name} ᴊᴏɪɴᴇᴅ ᴛʜᴇ ᴠᴏɪᴄᴇᴄʜᴀᴛ. ")
+    else:
+        await Assistant.send_message(chat_id, f"{user.first_name} ʟᴇᴀᴠᴇ ᴛʜᴇ ᴠᴏɪᴄᴇᴄʜᴀᴛ. ")

@@ -1,4 +1,3 @@
-print("Loading core system... ")
 from AlishanBot.core.bot import Alishan, Assistant, music
 import asyncio
 import importlib
@@ -6,8 +5,6 @@ import os
 from AlishanBot import config
 from AlishanBot.modules.helper_funcs.info import load_info
 from asyncio import create_task
-
-print("Core loaded. ")
 
 async def main():
     print("Starting client")

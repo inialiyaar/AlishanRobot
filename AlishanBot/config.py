@@ -1,6 +1,5 @@
 from dotenv import load_dotenv
 from os import getenv
-
 load_dotenv()
 
 START_IMG = getenv("START_IMG", "https://i.ibb.co/hRtNhLC8/x.jpg")
