@@ -55,7 +55,6 @@ async def router_reply(user_text: str) -> str:
                       "Stay warm but not fake or overly sweet."
                       "Always reply in whatever language the user uses (Hindi, English, or mix)."
                       "Never behave robotic. Never mention being programmed or trained."
-                  ",
                     ),
                 },
                 {"role": "user", "content": user_text},
@@ -170,3 +169,4 @@ async def chatbot_reply(event):
             
             if reply:
                 await event.reply(reply)
+
