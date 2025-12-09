@@ -28,14 +28,14 @@ async def Play_Handler(event, command_used, song_name):
     except: pass
 
     if event.is_private:
-        return await event.reply("𝖸ᴏᴜ ᴄᴀɴ ᴜsᴇ ɪɴ ɢʀᴏᴜᴘs ᴏɴʟʏ!.")
+        return await event.reply("You can use in groups only!.")
 
     chat = await event.get_chat()
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
 
     full_channel = await Alishan(GetFullChannelRequest(chat_id))
     if not full_channel.full_chat.call:
-        return await event.reply("**𝖵ᴏɪᴄᴇ ᴄʜᴀᴛ ɪs ɴᴏᴛ ᴀᴄᴛɪᴠᴇ,** ᴘʟᴇᴀsᴇ sᴛᴀʀᴛ ᴛʜᴇ ᴠᴄ ғɪʀsᴛ!")
+        return await event.reply("**Voice chat is not active,** please start the VC first!")
     if not force_play and chat_id in player_stats:
         create_task(Play(event, song_name, query_format, chat_id, False))
         return
@@ -51,7 +51,7 @@ async def Play(event, song_name, query_format, chat_id, download, force_play=Fal
     try:
         mention = f"<a href=\"tg://user?id={user.id}\">{user.first_name}</a>"
     except:
-        mention = "ᴀɴᴏɴʏᴍᴏᴜs"
+        mention = "Anonymous"
     settings = stream_mode.find_one({"chat_id": chat_id})
     if settings:
         vote_mode = settings.get("vote_mode", 5)
@@ -65,14 +65,14 @@ async def Play(event, song_name, query_format, chat_id, download, force_play=Fal
         can_play = "everyone"
     if force_play and not await is_admin(user, event) and admin_cmd == "admins":
         return await event.reply(
-            f"{mention} ʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴀᴅᴍɪɴ, ᴏɴʟʏ ᴀᴅᴍɪɴ ᴄᴀɴ ғᴏʀᴄᴇ ᴘʟᴀʏ. ",
+            f"{mention} you are not admin, only admin can force play. ",
             parse_mode="html"
         )
 
     if event.is_reply and not song_name:
         reply = await event.get_reply_message()
         if reply.audio or reply.video:
-            processing = await event.respond("**𝖯ʀᴏᴄᴇssɪɴɢ...💫**")
+            processing = await event.respond("**Processing...💫**")
             download = True
         else:
             download = False    
@@ -89,14 +89,14 @@ async def Play(event, song_name, query_format, chat_id, download, force_play=Fal
         else:
             await processing.delete()
             return await event.reply(
-                "𝖯ʟᴇᴀsᴇ ʀᴇᴘʟʏ ᴛᴏ **𝖠ᴜᴅɪᴏ/𝖵ɪᴅᴇᴏ** ᴏʀ ɢɪᴠᴇ 𝖲ᴏɴɢ 𝖭ᴀᴍᴇ ᴀɴᴅ 𝖸ᴏᴜᴛᴜʙᴇ 𝖴ʀʟ."
+                "Please reply to **Audio/Video** or give Song Name and Youtube Url."
             )
         if reply.audio or reply.video:
             await processing.delete()
 
     elif not song_name:
         return await event.reply(
-            "𝖯ʟᴇᴀsᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ **𝖲ᴏɴɢ 𝖭ᴀᴍᴇ** ᴏʀ **𝖸ᴏᴜᴛᴜʙᴇ 𝖴ʀʟ** ᴀғᴛᴇʀ /play"
+            "Please provide a **Song Name** or **Youtube Url** after /play"
         )
 
     bot = await Alishan.get_me()
@@ -104,7 +104,7 @@ async def Play(event, song_name, query_format, chat_id, download, force_play=Fal
 
     if not await is_admin(bot, event):
         return await event.reply(
-            f"{BOT_MENTION} ɪs ɴᴏᴛ ᴀᴅᴍɪɴ, 𝖯ʟᴇᴀsᴇ ɢɪʙᴇ ᴍᴇ ᴀᴅᴍɪɴ ᴡɪᴛʜ <b>(ᴄʀᴇᴀᴛᴇ ɪɴᴠɪᴛᴇ ʟɪɴᴋ)</b>.",
+            f"{BOT_MENTION} is not admin, please give me admin with <b>(create invite link)</b>.",
             parse_mode="html"
         )
 
@@ -118,7 +118,7 @@ async def Play(event, song_name, query_format, chat_id, download, force_play=Fal
         if isinstance(part.participant, ChannelParticipantBanned):
             if not await check_rights(event, BOT_ID, "ban_users"):
                 return await event.reply(
-                    f"{BOT_MENTION} ʜᴀs ɴᴏ ᴀᴄᴄᴇss ᴛᴏ ᴜɴʙᴀɴ {ASSISTANT_MENTION}.",
+                    f"{BOT_MENTION} has no access to unban {ASSISTANT_MENTION}.",
                     parse_mode="html"
                 )
             await Alishan(EditBannedRequest(chat_id, assistant.id, UNBAN_RIGHTS))
@@ -140,7 +140,7 @@ async def Play(event, song_name, query_format, chat_id, download, force_play=Fal
 
     except ChatAdminRequiredError:
         return await event.reply(
-            f"{BOT_MENTION} ʜᴀs ɴᴏ ᴀᴄᴄᴇss ᴛᴏ ᴄʜᴇᴄᴋ {ASSISTANT_MENTION}. ᴘʟᴇᴀsᴇ ɢɪʙᴇ (ᴄʀᴇᴀᴛᴇ ɪɴᴠɪᴛᴇ ʟɪɴᴋ)",
+            f"{BOT_MENTION} has no access to check {ASSISTANT_MENTION}. Please give (create invite link)",
             parse_mode="html"
         )
 
@@ -148,7 +148,7 @@ async def Play(event, song_name, query_format, chat_id, download, force_play=Fal
         error = traceback.format_exc()
         await send_error(error)
         return await event.reply(
-            f"{BOT_MENTION} ᴄᴀɴɴᴏᴛ ᴄʜᴇᴄᴋ ᴀssɪsᴛᴀɴᴛ. ᴘʟᴇᴀsᴇ ᴍᴀᴋᴇ ɢʀᴏᴜᴘ ʜɪsᴛᴏʀʏ ᴠɪsɪʙʟᴇ.",
+            f"{BOT_MENTION} cannot check assistant. Please make group history visible.",
             parse_mode="html"
         )
 
@@ -157,18 +157,19 @@ async def _invite_assistant(chat_id):
     export = await Alishan(ExportChatInviteRequest(chat_id))
     code = search(r"(?:joinchat/|\+)([a-zA-Z0-9_-]+)", export.link).group(1)
     await Assistant(ImportChatInviteRequest(code))
-    await Assistant.send_message(chat_id, f"{ASSISTANT_MENTION} 𝖩ᴏɪɴᴇᴅ ᴛʜᴇ ɢʀᴏᴜᴘ! 𝖨 ᴀᴍ ᴄᴏᴍᴍɪɴɢ ɪɴ <b>𝖵ᴏɪᴄᴇ 𝖢ʜᴀᴛ</b>", parse_mode="html")
+    await Assistant.send_message(chat_id, f"{ASSISTANT_MENTION} joined the group! I am coming in <b>Voice Chat</b>", parse_mode="html")
 
 
 async def Play_Log(song_name, chat_id, query_format, mention, download, force_play):
     if force_play:
-        playforce = "ᴛʀᴜᴇ"
+        playforce = "True"
     else:
-        playforce = "ғᴀʟsᴇ"   
+        playforce = "False"   
     if download:
-        download = "ᴛʀᴜᴇ" 
+        download = "True" 
     else:
-        download = "ғᴀʟsᴇ"   
-    text = f"#PLAYLOG\nɴᴇᴡ ǫᴜᴇʀʏ ʜᴀs ᴀʀʀɪᴠᴇᴅ!\n\nǫᴜᴇʀʏ : {song_name}\nғᴏʀᴍᴀᴛ : {query_format}\nғᴏʀᴄᴇ ᴘʟᴀʏ : {playforce}\nᴅᴏᴡɴʟᴏᴀᴅ : {download}\nǫᴜᴇʀʏ ʙʏ : {mention}"
+        download = "False"   
+    text = f"#PLAYLOG\nNew query has arrived!\n\nQuery: {song_name}\nFormat: {query_format}\nForce Play: {playforce}\nDownload: {download}\nQuery by: {mention}"
     
     await Alishan.send_message(EVENT_LOGS, text, parse_mode="html")
+    

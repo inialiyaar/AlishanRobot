@@ -9,11 +9,11 @@ def get_uptime():
     minutes, seconds = divmod(seconds, 60)
     parts = []
     if days > 0:
-        parts.append(f"{days} ᴅᴀʏ{'s' if days != 1 else ''}")
+        parts.append(f"{days} Day{'s' if days != 1 else ''}")
     if hours > 0:
-        parts.append(f"{hours} ʜᴏᴜʀ{'s' if hours != 1 else ''}")
+        parts.append(f"{hours} Hour{'s' if hours != 1 else ''}")
     if minutes > 0:
-        parts.append(f"{minutes} ᴍɪɴᴜᴛᴇ{'s' if minutes != 1 else ''}")
+        parts.append(f"{minutes} Minute{'s' if minutes != 1 else ''}")
     if seconds > 0 or not parts:
-        parts.append(f"{seconds} sᴇᴄᴏɴᴅ{'s' if seconds != 1 else ''}")
+        parts.append(f"{seconds} Second{'s' if seconds != 1 else ''}")
     return " ".join(parts)

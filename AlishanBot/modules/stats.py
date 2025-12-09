@@ -19,7 +19,7 @@ async def stats_handler(event, command, args):
     if not sudo_users.find_one({"user_id": sender.id}) and sender.id != config.OWNER_ID:
         return
     start = time.time()
-    msg = await event.reply("**ᴄʜᴇᴄᴋɪɴɢ..**")
+    msg = await event.reply("**Checking..**")
     end = time.time()
     latency = round((end - start) * 1000, 2)    
     ping = get_ping() 
@@ -31,5 +31,6 @@ async def stats_handler(event, command, args):
     ram, cpu, disk = get_system_stats()
     playing = len(player_stats)
     await msg.delete()
-    caption=f"<b>{BOT_MENTION}'s sᴛᴀᴛs :</b>\n<b>ᴘʏ-ᴛɢᴄᴀʟʟs :</b> {pytgcalls_ping}ᴍs\n<b>ʟᴀᴛᴇɴᴄʏ :</b> {latency}ᴍs\n<b>ᴄʜᴀᴛs :</b> {chats}\n<b>ᴜsᴇʀs :</b> {total_users}\n<b>ᴘʟᴀʏɪɴɢ ᴏɴ :</b> {playing}\n<b>ᴄᴜsᴛᴏᴍ ɢʀᴇᴇᴛɪɴɢs :</b> {greetings_on}\n\n<b>sʏsᴛᴇᴍ sᴛᴀᴛs :</b>\n<b>sᴇʀᴠᴇʀ ᴘɪɴɢ :</b> {ping}\n<b>ᴜᴘᴛɪᴍᴇ :</b> {uptime}\n<b>ʀᴀᴍ :</b> {ram:.1f}%\n<b>ᴄᴘᴜ :</b> {cpu:.1f}%\n<b>ᴅɪsᴋ :</b> {disk:.1f}%"
+    caption=f"<b>{BOT_MENTION}'s Stats:</b>\n<b>Py-Tgcalls:</b> {pytgcalls_ping}ms\n<b>Latency:</b> {latency}ms\n<b>Chats:</b> {chats}\n<b>Users:</b> {total_users}\n<b>Playing On:</b> {playing}\n<b>Custom Greetings:</b> {greetings_on}\n\n<b>System Stats:</b>\n<b>Server Ping:</b> {ping}\n<b>Uptime:</b> {uptime}\n<b>RAM:</b> {ram:.1f}%\n<b>CPU:</b> {cpu:.1f}%\n<b>Disk:</b> {disk:.1f}%"
     await event.reply(caption, parse_mode="html")
+    

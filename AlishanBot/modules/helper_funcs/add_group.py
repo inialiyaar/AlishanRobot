@@ -25,17 +25,17 @@ async def add_group(event):
         result = await Alishan(ExportChatInviteRequest(chat_id))
         invite_link = result.link
         invite_button = [
-            [Button.url("ɢʀᴏᴜᴘ", invite_link)]
+            [Button.url("Group", invite_link)]
         ]
     except Exception:
         invite_button = [
-            [Button.inline("ɪɴᴠɪᴛᴇ ғᴀɪʟᴇᴅ", data=b"invite_failed")]
+            [Button.inline("Invite Failed", data=b"invite_failed")]
         ]
     added_by = await event.get_added_by()    
     if added_by:
         mention = f"<a href=\"tg://user?id={added_by.id}\">{added_by.first_name}</a>"
     else:
-        mention = "ᴜɴᴋɴᴏᴡɴ"  
+        mention = "Unknown"  
     total_members = full_info.participants_count
     admins = await Alishan.get_participants(chat, filter=ChannelParticipantsAdmins)
     for user in admins:
@@ -47,11 +47,11 @@ async def add_group(event):
         try:
             creator = f"<a href=\"tg://user?id{creator.id}\">{creator.first_name}</a>"
         except:
-            creator = "ᴜɴᴋɴᴏᴡɴ"
+            creator = "Unknown"
     else:
-        creator = "ᴜɴᴋɴᴏᴡɴ"  
+        creator = "Unknown"  
         
-    caption = f"#GROUPLOG\n{BOT_MENTION} ʜᴀs ᴀᴅᴅᴇᴅ ᴛᴏ {full_name}.\n\n<b>ᴀᴅᴅᴇᴅ ʙʏ :</b> {mention}\n<b>ᴄʜᴀᴛ ᴜsᴇʀɴᴀᴍᴇ :</b> @{username}\n<b>ᴄʜᴀᴛ ɪᴅ :</b> {chat_id}\n\n<b>ᴏᴡɴᴇʀ : </b>{creator}\n<b>ᴛᴏᴛᴀʟ ᴍᴇᴍʙᴇʀs :</b> {total_members}"    
+    caption = f"#GROUPLOG\n{BOT_MENTION} has added to {full_name}.\n\n<b>Added by:</b> {mention}\n<b>Chat Username:</b> @{username}\n<b>Chat ID:</b> {chat_id}\n\n<b>Owner: </b>{creator}\n<b>Total Members:</b> {total_members}"    
     await Alishan.send_message(
         config.EVENT_LOGS,
         caption,
@@ -62,4 +62,5 @@ async def add_group(event):
         
 @callback_query("invite_failed")
 async def invite_failed_callback(event):
-    await event.answer(f"{BOT_FULL_NAME} ɪs ɴᴏᴛ ᴀᴅᴍɪɴ", alert=True)
+    await event.answer(f"{BOT_FULL_NAME} is not admin", alert=True)
+    

@@ -20,10 +20,10 @@ async def main():
     await Alishan.send_file(
         config.EVENT_LOGS,
         file=config.START_IMG, 
-        caption=f"<a href=\"tg://user?id={bot.id}\">{bot_name}</a> ʙᴏᴛ sᴛᴀʀᴛᴇᴅ:\n\n<b>ᴄᴏʀᴇ sʏsᴛᴇᴍ ᴀɴᴅ ᴍᴏᴅᴜᴏᴇs ᴀʀᴇ ʟᴏᴀᴅᴇᴅ sᴜᴄᴄᴇssғᴜʟʟʏ</b>\n\n<b>ɪᴅ:</b> {bot.id}\n<b>ɴᴀᴍᴇ:</b> {bot_name}\n<b>ᴜsᴇʀɴᴀᴍᴇ:</b> @{bot.username}\n", 
+        caption=f"<a href=\"tg://user?id={bot.id}\">{bot_name}</a> Bot started:\n\n<b>Core system and modules are loaded successfully</b>\n\n<b>ID:</b> {bot.id}\n<b>Name:</b> {bot_name}\n<b>Username:</b> @{bot.username}\n", 
         parse_mode="html"
         )
-    await Assistant.send_message(config.EVENT_LOGS, "**ɪ ᴀᴍ ʀᴇᴀᴅʏ ғᴏʀ ᴘʟᴀʏ ᴛʀᴀᴄᴋs ʙᴀʙʏ!**")  
+    await Assistant.send_message(config.EVENT_LOGS, "**I am ready for play tracks baby!**")  
     print("BOT RUNNING.. ")
     from AlishanBot.modules.helper_funcs.queue import update_bar
     create_task(update_bar())

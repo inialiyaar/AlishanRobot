@@ -22,12 +22,12 @@ DEFAULT_GOODBYE_TEXT = "Nice Knowing you {fullname}! See you soon later."
 @add_command("welcome", "wel")  
 async def Welcome_Handler(event, command_used, args):  
     if event.is_private:  
-        return await event.reply("ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪs ᴍᴀᴅᴇ ᴛᴏ ʙᴇ ᴜsᴇᴅ ɪɴ ɢʀᴏᴜᴘs! ")  
+        return await event.reply("This command is made to be used in groups! ")  
     user = await event.get_sender()  
     if not user:  
-        return await event.reply("ᴀɴᴏɴʏᴍᴏᴜs ᴄᴀɴ'ᴛ ᴜsᴇ ᴛʜᴇsᴇ ᴄᴏᴍᴍᴀɴᴅ.")  
+        return await event.reply("Anonymous can't use these commands.")  
     if not await is_admin(user, event):  
-        return await event.reply("ʏᴏᴜ ɴᴇᴇᴅ ᴛᴏ ʙᴇ ᴀɴᴅ ᴀᴅᴍɪɴ ᴛᴏ ᴅᴏ ᴛʜɪs.")  
+        return await event.reply("You need to be an admin to do this.")  
     chat = await event.get_chat()  
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)      
     group_greetings = greetings.find_one({"chat_id": chat_id})       
@@ -40,7 +40,7 @@ async def Welcome_Handler(event, command_used, args):
         wel_clean_up = group_greetings.get("wel_clean_up", False)  
         msg_id = group_greetings.get("wel_msg_id", None)  
     if not args:  
-        stats = await event.reply(f"ɪ ᴀᴍ ᴄᴜʀʀᴇɴᴛʟʏ ᴡᴇʟᴄᴏᴍɪɴɢ ᴜsᴇʀs: {welcoming}\nɪ ᴀᴍ ᴄᴜʀʀᴇɴᴛʟʏ ᴅᴇʟᴇᴛɪɴɢ ᴏʟᴅ ᴡᴇʟᴄᴏᴍᴇs: {wel_clean_up}\n\nᴍᴇᴍʙᴇʀs ᴀʀᴇ ᴄᴜʀʀᴇɴᴛʟʏ ᴡᴇʟᴄᴏᴍᴇ ᴡɪᴛʜ:")  
+        stats = await event.reply(f"I am currently welcoming users: {welcoming}\nI am currently deleting old welcomes: {wel_clean_up}\n\nMembers are currently welcome with:")  
         if not msg_id:  
             text = DEFAULT_WELCOME_TEXT  
         else:      
@@ -64,7 +64,7 @@ async def Welcome_Handler(event, command_used, args):
                 },   
                 upsert=True,   
             )  
-            return await event.reply("ᴏᴋᴇʏ! ! ɪ'ʟʟ ɢʀᴇᴇᴛ ᴍᴇᴍʙᴇʀs ᴡʜᴇɴ ᴛʜᴇʏ ᴊᴏɪɴ. ")  
+            return await event.reply("Okay!! I'll greet members when they join.")  
         if args.lower() in ["off", "no"]:  
             greetings.update_one(  
                 {"chat_id": chat_id},   
@@ -77,19 +77,19 @@ async def Welcome_Handler(event, command_used, args):
                 },   
                 upsert=True,   
             )  
-            return await event.reply("ɪ'ʟʟ ɢᴏ ʟᴏᴀғ ᴀʀᴏᴜɴᴅ ᴀɴᴅ ɴᴏᴛ ᴡᴇʟᴄᴏᴍᴇ ᴀɴʏᴏɴᴇ ᴛʜᴇɴ.")  
+            return await event.reply("I'll go loaf around and not welcome anyone then.")  
         else:  
-            return await event.reply("ɪ ᴜɴᴅᴇʀsᴛᴀɴᴅ ᴏɴʟʏ 'on/yes' ᴏʀ 'off/no'")  
+            return await event.reply("I understand only 'on/yes' or 'off/no'")  
               
 @add_command("goodbye", "gb")  
 async def Welcome_Handler(event, command_used, args):  
     if event.is_private:  
-        return await event.reply("ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪs ᴍᴀᴅᴇ ᴛᴏ ʙᴇ ᴜsᴇᴅ ɪɴ ɢʀᴏᴜᴘs! ")  
+        return await event.reply("This command is made to be used in groups! ")  
     user = await event.get_sender()  
     if not user:  
-        return await event.reply("ᴀɴᴏɴʏᴍᴏᴜs ᴄᴀɴ'ᴛ ᴜsᴇ ᴛʜᴇsᴇ ᴄᴏᴍᴍᴀɴᴅ.")  
+        return await event.reply("Anonymous can't use these commands.")  
     if not await is_admin(user, event):  
-        return await event.reply("ʏᴏᴜ ɴᴇᴇᴅ ᴛᴏ ʙᴇ ᴀɴᴅ ᴀᴅᴍɪɴ ᴛᴏ ᴅᴏ ᴛʜɪs.")      
+        return await event.reply("You need to be an admin to do this.")      
     chat = await event.get_chat()  
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)      
     group_greetings = greetings.find_one({"chat_id": chat_id})       
@@ -102,7 +102,7 @@ async def Welcome_Handler(event, command_used, args):
         gb_clean_up = group_greetings.get("gb_clean_up", False)  
         msg_id = group_greetings.get("gb_msg_id", None)  
     if not args:  
-        stats = await event.reply(f"ɪ ᴀᴍ ᴄᴜʀʀᴇɴᴛʟʏ ɢᴏᴏᴅʙʏᴇ ᴛᴏ ᴜsᴇʀs: {goodbye}\nɪ ᴀᴍ ᴄᴜʀʀᴇɴᴛʟʏ ᴅᴇʟᴇᴛɪɴɢ ᴏʟᴅ ɢᴏᴏᴅʙʏᴇs: {gb_clean_up}\n\nᴍᴇᴍʙᴇʀs ᴀʀᴇ ᴄᴜʀʀᴇɴᴛʟʏ ɢᴏᴏᴅʙʏᴇ ᴡɪᴛʜ:")  
+        stats = await event.reply(f"I am currently goodbye to users: {goodbye}\nI am currently deleting old goodbyes: {gb_clean_up}\n\nMembers are currently goodbye with:")  
         if not msg_id:  
             text = DEFAULT_GOODBYE_TEXT  
         else:      
@@ -126,7 +126,7 @@ async def Welcome_Handler(event, command_used, args):
                 },   
                 upsert=True,   
             )  
-            return await event.reply("ᴏᴋᴇʏ! ! ɪ'ʟʟ ɢʀᴇᴇᴛ ᴍᴇᴍʙᴇʀs ᴡʜᴇɴ ᴛʜᴇʏ ᴊᴏɪɴ. ")  
+            return await event.reply("Okay!! I'll greet members when they join.")  
         if args.lower() in ["off", "no"]:  
             greetings.update_one(  
                 {"chat_id": chat_id},   
@@ -139,28 +139,28 @@ async def Welcome_Handler(event, command_used, args):
                 },   
                 upsert=True,   
             )  
-            return await event.reply("ɪ'ʟʟ ɢᴏ ʟᴏᴀғ ᴀʀᴏᴜɴᴅ ᴀɴᴅ ɴᴏᴛ ᴡᴇʟᴄᴏᴍᴇ ᴀɴʏᴏɴᴇ ᴛʜᴇɴ.")  
+            return await event.reply("I'll go loaf around and not welcome anyone then.")  
         else:  
-            return await event.reply("ɪ ᴜɴᴅᴇʀsᴛᴀɴᴅ ᴏɴʟʏ 'on/yes' ᴏʀ 'off/no'")              
+            return await event.reply("I understand only 'on/yes' or 'off/no'")              
               
 @add_command("setwelcome", "setwel")     
 async def set_new_welcome(event, command_used, args):  
     if event.is_private:  
-        return await event.reply("ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪs ᴍᴀᴅᴇ ᴛᴏ ʙᴇ ᴜsᴇᴅ ɪɴ ɢʀᴏᴜᴘs!")  
+        return await event.reply("This command is made to be used in groups!")  
     user = await event.get_sender()  
     if not user:  
-        return await event.reply("ᴀɴᴏɴʏᴍᴏᴜs ᴄᴀɴ'ᴛ ᴜsᴇ ᴛʜᴇsᴇ ᴄᴏᴍᴍᴀɴᴅ.")  
+        return await event.reply("Anonymous can't use these commands.")  
     if not await is_admin(user, event):  
-        return await event.reply("ʏᴏᴜ ɴᴇᴇᴅ ᴛᴏ ʙᴇ ᴀɴᴅ ᴀᴅᴍɪɴ ᴛᴏ ᴅᴏ ᴛʜɪs.")      
+        return await event.reply("You need to be an admin to do this.")      
     chat = await event.get_chat()  
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)         
     sender = await event.get_sender()  
     if not sender:  
-        return await event.reply("ᴀɴᴏɴʏᴍᴏᴜs ᴄᴀɴ'ᴛ ᴜsᴇ ᴛʜᴇsᴇ ᴄᴏᴍᴍᴀɴᴅ. ")  
+        return await event.reply("Anonymous can't use these commands. ")  
     if sender.bot:  
         return  
     if not args and not event.is_reply:  
-        return await event.reply("ʏᴏᴜ ɴᴇᴇᴅ ᴛᴏ ɢɪᴠᴇ ᴛʜᴇ ᴡᴇʟᴄᴏᴍᴇ ᴍᴇssᴀɢᴇ sᴏᴍᴇ ᴄᴏɴᴛᴇɴᴛ.")  
+        return await event.reply("You need to give the welcome message some content.")  
     if event.is_reply:  
         replied = await event.get_reply_message()  
         text = replied.message or ""  
@@ -237,24 +237,24 @@ async def set_new_welcome(event, command_used, args):
             },   
             upsert=True,   
         )  
-    return await event.reply("ʏᴇss!! ᴛʜɪs ɴᴇᴡ ᴡᴇʟᴄᴏᴍᴇ ᴍᴇssᴀɢᴇ ʜᴀs ʙᴇᴇɴ sᴀᴠᴇᴅ ɪɴ ᴍʏ ᴅᴀᴛᴀʙᴀsᴇ. ")   
+    return await event.reply("Yes!! This new welcome message has been saved in my database.")   
       
 @add_command("setgoodbye", "setgb")
 async def set_new_goodbye(event, command_used, args):
     if event.is_private:
-        return await event.reply("ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪs ᴍᴀᴅᴇ ᴛᴏ ʙᴇ ᴜsᴇᴅ ɪɴ ɢʀᴏᴜᴘs!")
+        return await event.reply("This command is made to be used in groups!")
 
     sender = await event.get_sender()
     if not sender:
-        return await event.reply("ᴀɴᴏɴʏᴍᴏᴜs ᴄᴀɴ'ᴛ ᴜsᴇ ᴛʜᴇsᴇ ᴄᴏᴍᴍᴀɴᴅ.")
+        return await event.reply("Anonymous can't use these commands.")
     if not await is_admin(sender, event):
-        return await event.reply("ʏᴏᴜ ɴᴇᴇᴅ ᴛᴏ ʙᴇ ᴀɴᴅ ᴀᴅᴍɪɴ ᴛᴏ ᴅᴏ ᴛʜɪs.")
+        return await event.reply("You need to be an admin to do this.")
 
     chat = await event.get_chat()
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
 
     if not args and not event.is_reply:
-        return await event.reply("ʏᴏᴜ ɴᴇᴇᴅ ᴛᴏ ɢɪᴠᴇ ᴛʜᴇ ᴡᴇʟᴄᴏᴍᴇ ᴍᴇssᴀɢᴇ sᴏᴍᴇ ᴄᴏɴᴛᴇɴᴛ.")
+        return await event.reply("You need to give the welcome message some content.")
 
     if event.is_reply:
         replied = await event.get_reply_message()
@@ -293,7 +293,7 @@ async def set_new_goodbye(event, command_used, args):
         upsert=True,
     )
 
-    return await event.reply("ʏᴇss!! ᴛʜɪs ɴᴇᴡ ɢᴏᴏᴅʙʏᴇ ᴍᴇssᴀɢᴇ ʜᴀs ʙᴇᴇɴ sᴀᴠᴇᴅ ɪɴ ᴍʏ ᴅᴀᴛᴀʙᴀsᴇ.") 
+    return await event.reply("Yes!! This new goodbye message has been saved in my database.") 
       
 @Alishan.on(events.ChatAction)
 async def Greetings_Handler(event):
@@ -409,25 +409,25 @@ async def Greetings_Handler(event):
 @add_command("cleanservice")
 async def clean_service(event, command_used, args):
     if event.is_private:
-        return await event.reply("ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪs ᴍᴀᴅᴇ ᴛᴏ ʙᴇ ᴜsᴇᴅ ɪɴ ɢʀᴏᴜᴘs!")
+        return await event.reply("This command is made to be used in groups!")
 
     user = await event.get_sender()
     if not user:
-        return await event.reply("ᴀɴᴏɴʏᴍᴏᴜs ᴄᴀɴ'ᴛ ᴜsᴇ ᴛʜᴇsᴇ ᴄᴏᴍᴍᴀɴᴅ.")
+        return await event.reply("Anonymous can't use these commands.")
     if not await is_admin(user, event):
-        return await event.reply("ʏᴏᴜ ɴᴇᴇᴅ ᴛᴏ ʙᴇ ᴀɴᴅ ᴀᴅᴍɪɴ ᴛᴏ ᴅᴏ ᴛʜɪs.")
+        return await event.reply("You need to be an admin to do this.")
 
     chat = await event.get_chat()
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
 
     if not args:
-        return await event.reply("ɪ ᴜɴᴅᴇʀsᴛᴀɴᴅ ᴏɴʟʏ 'on/yes' ᴏʀ 'off/no'")
+        return await event.reply("I understand only 'on/yes' or 'off/no'")
     if args.lower() in ["yes", "on"]:
         enable = True
     elif args.lower() in ["off", "no"]:
         enable = False
     else:
-        return await event.reply("ɪ ᴜɴᴅᴇʀsᴛᴀɴᴅ ᴏɴʟʏ 'on/yes' ᴏʀ 'off/no'")
+        return await event.reply("I understand only 'on/yes' or 'off/no'")
     greetings.update_one(
         {"chat_id": chat_id},
         {"$set": {"wel_clean_up": enable}},
@@ -435,6 +435,7 @@ async def clean_service(event, command_used, args):
     )
 
     if enable:
-        return await event.reply("sᴇʀᴠɪᴄᴇ ᴄʟᴇᴀɴᴜᴘ ᴇɴᴀʙʟᴇᴅ.")
+        return await event.reply("Service cleanup enabled.")
     else:
-        return await event.reply("sᴇʀᴠɪᴄᴇ ᴄʟᴇᴀɴᴜᴘ ᴅɪsᴀʙʟᴇᴅ.")
+        return await event.reply("Service cleanup disabled.")
+        

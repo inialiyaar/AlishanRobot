@@ -23,9 +23,9 @@ async def broadcast_handler(event, command_used, text):
         pin_broadcast = True
 
     if not text and not reply:
-        return await event.reply("⚠️ **𝖴sᴇ:** `/broadcast <message>` ᴏʀ 𝖱ᴇᴘʟᴀʏ ᴛᴏ ᴀ 𝖬ᴇssᴀɢᴇ.\n𝖠ᴅᴅ `-pin` ᴛᴏ 𝖯ɪɴ 𝖦ʀᴏᴜᴘs.")
+        return await event.reply("⚠️ **Use:** `/broadcast <message>` or Replay to a Message.\nAdd `-pin` to Pin Groups.")
 
-    status = await event.reply("🕐 **𝖡ʀᴏᴀᴅᴄᴀsᴛ 𝖲ᴛᴀʀᴛᴇᴅ ɪɴ 𝖡ᴀᴄᴋɢʀᴏᴜɴᴅ...**")
+    status = await event.reply("🕐 **Broadcast Started in Background...**")
 
     asyncio.create_task(do_broadcast(event, text, reply, status, pin_broadcast))
 
@@ -49,7 +49,7 @@ async def do_broadcast(event, text, reply, status, pin_broadcast):
         except Exception:
             continue
 
-    await status.edit("**𝖲ᴇɴᴛ ᴛᴏ 𝖠ʟʟ ᴜsᴇʀs 𝖣ᴏɴᴇ! ɴᴏᴡ 𝖲ᴇɴᴅɪɴɢ ᴛᴏ 𝖦𝗋𝗈𝗎𝗉s...**")
+    await status.edit("**Sent to All Users Done! Now Sending to Groups...**")
 
     counter = 0
     for group in groups.find():
@@ -93,12 +93,13 @@ async def do_broadcast(event, text, reply, status, pin_broadcast):
             continue
 
     result = (
-        f"**𝖡ʀᴏᴀᴅᴄᴀsᴛ 𝖢ᴏᴍᴘʟᴇᴛᴇ!**\n\n"
-        f"**👤 𝖲ᴇɴᴛ ᴛᴏ 𝖴sᴇʀs :** `{success_users}`\n"
-        f"**👥 𝖲ᴇɴᴛ ᴛᴏ 𝖦ʀᴏᴜᴘs :** `{success_groups}`\n"
+        f"**Broadcast Complete!**\n\n"
+        f"**👤 Sent to Users :** `{success_users}`\n"
+        f"**👥 Sent to Groups :** `{success_groups}`\n"
     )
 
     if pin_broadcast:
-        result += f"**📌 𝖯ɪɴɴᴇᴅ ɪɴ 𝖦ʀᴏᴜᴘs :** `{pinned_groups}`\n**💬 𝖭ᴏʀᴍᴀʟ 𝖲ᴇɴᴛ (𝖭ᴏ 𝖯ɪɴ) :** `{normal_groups}`"
+        result += f"**📌 Pinned in Groups :** `{pinned_groups}`\n**💬 Normal Sent (No Pin) :** `{normal_groups}`"
 
     await status.edit(result)
+    

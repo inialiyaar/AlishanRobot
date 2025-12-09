@@ -87,7 +87,7 @@ async def all_fun_commands(event, command_used, args):
         r = requests.get("https://api.truthordarebot.xyz/api/truth").json()
         q = r.get("question", "Error fetching truth.")
         return await event.reply(
-            f"**ᴛʀᴜᴛʜ:**\n{q}",
+            f"**Truth:**\n{q}",
             buttons=[Button.inline("ɴᴇxᴛ ᴛʀᴜᴛʜ", data=b"next_truth")]
         )
 
@@ -95,7 +95,7 @@ async def all_fun_commands(event, command_used, args):
         r = requests.get("https://api.truthordarebot.xyz/api/dare").json()
         q = r.get("question", "Error fetching dare.")
         return await event.reply(
-            f"**ᴅᴀʀᴇ:**\n{q}",
+            f"**Dare:**\n{q}",
             buttons=[Button.inline("ɴᴇxᴛ ᴅᴀʀᴇ", data=b"next_dare")]
         )
 
@@ -105,7 +105,7 @@ async def next_truth(event):
     r = requests.get("https://api.truthordarebot.xyz/api/truth").json()
     q = r.get("question", "Error fetching truth.")
     await event.edit(
-        f"**ᴛʀᴜᴛʜ:**\n{q}",
+        f"**Truth:**\n{q}",
         buttons=[Button.inline("ɴᴇxᴛ ᴛʀᴜᴛʜ", data=b"next_truth")]
     )
 
@@ -114,7 +114,7 @@ async def next_dare(event):
     r = requests.get("https://api.truthordarebot.xyz/api/dare").json()
     q = r.get("question", "Error fetching dare.")
     await event.edit(
-        f"**ᴅᴀʀᴇ:**\n{q}",
+        f"**Dare:**\n{q}",
         buttons=[Button.inline("ɴᴇxᴛ ᴅᴀʀᴇ", data=b"next_dare")]
     )
 

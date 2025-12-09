@@ -11,9 +11,9 @@ from asyncio import sleep
 @callback_query("modes")
 async def PlayModes_Callback(event):
     buttons = [
-        Button.inline("ʟᴏғɪ", data="instent_lofi"), 
-        Button.inline("ɴᴏʀᴍᴀʟ", "instent_normal"), 
-        Button.inline("ᴇᴄᴏ", "instent_eco")
+        Button.inline("Lofi", data="instent_lofi"), 
+        Button.inline("Normal", "instent_normal"), 
+        Button.inline("Eco", "instent_eco")
     ]
     try:
         await event.edit(buttons=buttons)
@@ -35,18 +35,18 @@ async def instent_lofi_handler_callback(event):
     else:
         admin_cmd = "admins"  
     if not await is_admin(user, event) and admin_cmd == "admins":
-        await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
+        await event.answer("You must be an admin to use this.", alert=True)
         return
     try:
         mention = f"<a href=\"tg://user?id={user.id}\">{user.first_name}</a>"
     except Exception:
-        mention = "ᴀɴᴏɴʏᴍᴏᴜs"    
+        mention = "Anonymous"    
     if chat_id in player_stats:
         play_mode = player_stats[chat_id]["play_mode"]
         if play_mode != "lofi":
             play_mode = "lofi"
         else:
-            return await event.answer("ʟᴏғɪ ᴍᴏᴅᴇ ᴀʟʀᴇᴀᴅʏ ᴀᴄᴛɪᴠᴀᴛᴇᴅ. ", alert=True)
+            return await event.answer("Lofi mode already activated.", alert=True)
         index = current_ind.get(chat_id, 0)
         stream_url, title, artist, duration, thumbnail, mention, query_format, download = queues[chat_id][index]
         player_stats[chat_id]["is_playing"] = True    
@@ -54,9 +54,9 @@ async def instent_lofi_handler_callback(event):
         seek = player_stats[chat_id]["current_time"]
         await Play_Stream(chat_id, stream_url, query_format, play_mode, seek)
         player_stats[chat_id]["play_mode"] = "lofi"
-        await event.reply(f"{mention} ᴛᴜʀɴᴇᴅ ᴏɴ ᴛʜᴇ ʟᴏғɪ ᴍᴏᴅᴇ. ", parse_mode="html")
+        await event.reply(f"{mention} turned on the Lofi mode.", parse_mode="html")
     else:
-        await event.answer(f"» {BOT_FULLNAME} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.", parse_mode="html", alert=true)   
+        await event.answer(f"» {BOT_MENTION} isn't streaming on Voicechat.", parse_mode="html", alert=True)   
         
 @callback_query("instent_eco")
 async def instent_eco_handler_callback(event):
@@ -69,18 +69,18 @@ async def instent_eco_handler_callback(event):
     else:
         admin_cmd = "admins"  
     if not await is_admin(user, event) and admin_cmd == "admins":
-        await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
+        await event.answer("You must be an admin to use this.", alert=True)
         return
     try:
         mention = f"<a href=\"tg://user?id={user.id}\">{user.first_name}</a>"
     except Exception:
-        mention = "ᴀɴᴏɴʏᴍᴏᴜs"    
+        mention = "Anonymous"    
     if chat_id in player_stats:
         play_mode = player_stats[chat_id]["play_mode"]
         if play_mode != "eco":
             play_mode = "eco"
         else:
-            return await event.answer("ᴇᴄᴏ ᴍᴏᴅᴇ ᴀʟʀᴇᴀᴅʏ ᴀᴄᴛɪᴠᴀᴛᴇᴅ. ", alert=True)
+            return await event.answer("Eco mode already activated.", alert=True)
         index = current_ind.get(chat_id, 0)
         stream_url, title, artist, duration, thumbnail, mention, query_format, download = queues[chat_id][index]
         player_stats[chat_id]["is_playing"] = True    
@@ -88,9 +88,9 @@ async def instent_eco_handler_callback(event):
         seek = player_stats[chat_id]["current_time"]
         await Play_Stream(chat_id, stream_url, query_format, play_mode, seek)
         player_stats[chat_id]["play_mode"] = "eco"
-        await event.reply(f"{mention} ᴛᴜʀɴᴇᴅ ᴏɴ ᴛʜᴇ ᴇᴄᴏ ᴍᴏᴅᴇ. ", parse_mode="html")
+        await event.reply(f"{mention} turned on the Eco mode.", parse_mode="html")
     else:
-        await event.answer(f"» {BOT_FULLNAME} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.", parse_mode="html", alert=true)        
+        await event.answer(f"» {BOT_MENTION} isn't streaming on Voicechat.", parse_mode="html", alert=True)        
         
 @callback_query("instent_normal")
 async def instent_normal_handler_callback(event):
@@ -103,18 +103,18 @@ async def instent_normal_handler_callback(event):
     else:
         admin_cmd = "admins"  
     if not await is_admin(user, event) and admin_cmd == "admins":
-        await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
+        await event.answer("You must be an admin to use this.", alert=True)
         return
     try:
         mention = f"<a href=\"tg://user?id={user.id}\">{user.first_name}</a>"
     except Exception:
-        mention = "ᴀɴᴏɴʏᴍᴏᴜs"    
+        mention = "Anonymous"    
     if chat_id in player_stats:
         play_mode = player_stats[chat_id]["play_mode"]
         if play_mode != "normal":
             play_mode = "normal"
         else:
-            return await event.answer("ɴᴏʀᴍᴀʟ ᴍᴏᴅᴇ ᴀʟʀᴇᴀᴅʏ ᴀᴄᴛɪᴠᴀᴛᴇᴅ. ", alert=True)
+            return await event.answer("Normal mode already activated.", alert=True)
         index = current_ind.get(chat_id, 0)
         stream_url, title, artist, duration, thumbnail, mention, query_format, download = queues[chat_id][index]
         player_stats[chat_id]["is_playing"] = True    
@@ -122,6 +122,7 @@ async def instent_normal_handler_callback(event):
         seek = player_stats[chat_id]["current_time"]
         await Play_Stream(chat_id, stream_url, query_format, play_mode, seek)
         player_stats[chat_id]["play_mode"] = "normal"
-        await event.reply(f"{mention} ᴛᴜʀɴᴇᴅ ᴏɴ ᴛʜᴇ ɴᴏʀᴍᴀʟ ᴍᴏᴅᴇ. ", parse_mode="html")
+        await event.reply(f"{mention} turned on the Normal mode.", parse_mode="html")
     else:
-        await event.answer(f"» {BOT_FULLNAME} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.", parse_mode="html", alert=true)                   
+        await event.answer(f"» {BOT_MENTION} isn't streaming on Voicechat.", parse_mode="html", alert=True)
+        

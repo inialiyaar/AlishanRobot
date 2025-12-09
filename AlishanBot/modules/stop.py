@@ -28,9 +28,9 @@ async def Stop(event, command_used, args):
         if not await is_admin(user, event) and admin_cmd == "admins":
             votes_target = 5
             msg = await event.reply(
-                f"**𝖠ᴅᴍɪɴ ʀɪɢʜᴛs ɴᴇᴇᴅᴇᴅ**\n\n⧽ {votes_target} ᴠᴏᴛᴇs ɴᴇᴇᴅᴇᴅ ғᴏʀ ᴘᴇʀғᴏʀᴍɪɴɢ ᴛʜɪs ᴀᴄᴛɪᴏɴ.",
+                f"**Admin rights needed**\n\n⧽ {votes_target} votes needed for performing this action.",
                 buttons = [
-                    [Button.inline("ᴠᴏᴛᴇ", data=b"skip_vote")]
+                    [Button.inline("Vote", data=b"skip_vote")]
                 ]
                 )
             votes[chat_id, msg.id] = {
@@ -44,7 +44,7 @@ async def Stop(event, command_used, args):
         except Exception:
             pass
     else:
-        await event.reply("𝖸ᴏᴜ ᴄᴀɴ ᴜsᴇ ɪɴ ɢʀᴏᴜᴘs ᴏɴʟʏ!.")
+        await event.reply("You can use in groups only!.")
 
 @callback_query("stop")
 async def Stop_Callback(event):
@@ -57,7 +57,7 @@ async def Stop_Callback(event):
     else:
         admin_cmd = "admins"  
     if not await is_admin(user, event) and admin_cmd == "admins":
-        await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
+        await event.answer("You must be an admin to use this.", alert=True)
         return
     try:
         await stop_song(event)
@@ -69,7 +69,7 @@ async def stop_song(event):
     try:
         mention = f"<a href=\"tg://user?id={user.id}\">{user.first_name}</a>"
     except Exception:
-        mention = "ᴀɴᴏɴʏᴍᴏᴜs"
+        mention = "Anonymous"
     
     chat = await event.get_chat()
     chat_id = int(f"-100{chat.id}" if not str(chat.id).startswith("-100") else chat.id)
@@ -79,9 +79,9 @@ async def stop_song(event):
         current_ind.pop(chat_id, None)
         player_stats.pop(chat_id, None)
         await music.leave_call(chat_id)
-        await event.reply(f"<b>➭ sᴛʀᴇᴀᴍ ᴇɴᴅᴇᴅ / sᴛᴏᴘᴘᴇᴅ\nᴇɴᴅᴇᴅ ʙʏ :</b> {mention}", buttons=None, parse_mode="html")
+        await event.reply(f"<b>➭ Stream ended / stopped\nEnded by:</b> {mention}", buttons=None, parse_mode="html")
     else:
-        await event.reply(f"» {BOT_MENTION} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.", parse_mode="html")
+        await event.reply(f"» {BOT_MENTION} isn't streaming on Voicechat.", parse_mode="html")
   
 @callback_query("end_vote")
 async def end_vote_callback(event):
@@ -94,7 +94,7 @@ async def end_vote_callback(event):
         return
     vote_data = votes[key]  
     if user_id in vote_data["users"]:
-        return await event.answer("ʏᴏᴜ ᴀʟʀᴇᴀᴅʏ ᴠᴏᴛᴇᴅ!", alert=True)
+        return await event.answer("You already voted!", alert=True)
     vote_data["users"].append(user_id)
     vote_data["count"] +=1
     if vote_data["count"] >= vote_data["target"]:
@@ -104,19 +104,19 @@ async def end_vote_callback(event):
             current_ind.pop(chat_id, None)
             player_stats.pop(chat_id, None) 
             await music.leave_call(chat_id)
-            await event.reply(f"<b>➭ sᴛʀᴇᴀᴍ ᴇɴᴅᴇᴅ / sᴛᴏᴘᴘᴇᴅ\nᴇɴᴅᴇᴅ ʙʏ :</b> ᴠᴏᴛɪɴɢ", buttons=None, parse_mode="html")
+            await event.reply(f"<b>➭ Stream ended / stopped\nEnded by:</b> Voting", buttons=None, parse_mode="html")
         else:
-            await event.reply(f"» {BOT_MENTION} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.", parse_mode="html")
+            await event.reply(f"» {BOT_MENTION} isn't streaming on Voicechat.", parse_mode="html")
         del votes[key]  
     else:
         remaining = vote_data["target"] - vote_data["count"]
         target = vote_data["target"]
         count = vote_data["count"]
-        await event.answer("ᴀᴅᴅᴇᴅ 1 ᴜᴘ ᴠᴏᴛᴇ")
+        await event.answer("Added 1 up vote")
         await event.edit(
-            f"**𝖠ᴅᴍɪɴ ʀɪɢʜᴛs ɴᴇᴇᴅᴇᴅ**\n\n⧽ {target} ᴠᴏᴛᴇs ɴᴇᴇᴅᴇᴅ ғᴏʀ ᴘᴇʀғᴏʀᴍɪɴɢ ᴛʜɪs ᴀᴄᴛɪᴏɴ.", 
+            f"**Admin rights needed**\n\n⧽ {target} votes needed for performing this action.", 
             buttons= [
                     [Button.inline(f"{count} 👍", data=b"skip_vote")]
                 ]
             )
-                
+            

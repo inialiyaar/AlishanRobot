@@ -2,7 +2,7 @@ from AlishanBot.core.bot import Alishan
 from AlishanBot.modules.helper_funcs.play import Play_Stream
 from AlishanBot.core.decorators import add_command, callback_query
 from AlishanBot.modules.helper_funcs.helpers import is_admin
-from AlishanBot.__init__ import player_stats
+from AlishanBot.__init__ import player_stats, BOT_MENTION
 from AlishanBot.modules.helper_funcs.queue import queues, current_ind, playing_message
 from asyncio import create_task
 from AlishanBot.utils.database import stream_mode
@@ -19,7 +19,7 @@ async def replay_handler(event, command, args):
     else:
         admin_cmd = "admins"  
     if not await is_admin(user, event) and admin_cmd == "admins":
-        await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
+        await event.answer("You must be an admin to use this.", alert=True)
         return
     try:
         await event.delete()
@@ -28,7 +28,7 @@ async def replay_handler(event, command, args):
     if event.is_group or event.is_channel:
     	await replay(event)
     else:
-        await event.reply("𝖸ᴏᴜ ᴄᴀɴ ᴜsᴇ ɪɴ ɢʀᴏᴜᴘs ᴏɴʟʏ!.")
+        await event.reply("You can use in groups only!.")
     
 @callback_query("replay")
 async def replay_callback(event):
@@ -41,12 +41,12 @@ async def replay_callback(event):
     else:
         admin_cmd = "admins" 
     if not await is_admin(user, event) and admin_cmd == "admins":
-        await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
+        await event.answer("You must be an admin to use this.", alert=True)
         return
     if event.is_group or event.is_channel:
     	await replay(event)
     else:
-        await event.reply("𝖸ᴏᴜ ᴄᴀɴ ᴜsᴇ ɪɴ ɢʀᴏᴜᴘs ᴏɴʟʏ!.")
+        await event.reply("You can use in groups only!.")
         
 async def replay(event):
     user = await event.get_sender()
@@ -55,9 +55,9 @@ async def replay(event):
     try:
         mention = f"<a href=\"tg://user?id={user.id}\">{user.first_name}</a>"
     except Exception:
-        mention = "ᴀɴᴏɴʏᴍᴏᴜs"
+        mention = "Anonymous"
     if chat_id in player_stats:
-        status = await event.reply("**𝖱ᴇᴘʟᴀʏɪɴɢ ᴄᴜʀʀᴇɴᴛ 𝖳ʀᴀᴄᴋ...**")
+        status = await event.reply("**Replaying current track...**")
         index = current_ind.get(chat_id, 0)
         stream_url, title, artist, duration, thumbnail, mention, query_format, download = queues[chat_id][index]
         settings = stream_mode.find_one({"chat_id": chat_id})
@@ -72,8 +72,9 @@ async def replay(event):
         player_stats[chat_id]["last_update"] = time.time()
         player_stats[chat_id]["play_mode"] = play_mode        
         try:
-            await status.edit(f"<b>➭ 𝖳ʀᴀᴄᴋ ʀᴇᴘʟᴀʏ 𝖲ᴛᴀʀᴛᴇᴅ!\n\n𝖱ᴇǫᴜᴇsᴛᴇᴅ ʙʏ:</b> {mention}", parse_mode="html")
+            await status.edit(f"<b>➭ Track replay started!\n\nRequested by:</b> {mention}", parse_mode="html")
         except Exception:
-            await event.reply(f"<b>➭ 𝖳ʀᴀᴄᴋ ʀᴇᴘʟᴀʏ 𝖲ᴛᴀʀᴛᴇᴅ! \n\n𝖱ᴇǫᴜᴇsᴛᴇᴅ ʙʏ:</b> {mention}", parse_mode="html")
+            await event.reply(f"<b>➭ Track replay started! \n\nRequested by:</b> {mention}", parse_mode="html")
     else:
-        await event.reply(f"» {BOT_MENTION} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.", parse_mode="html")        
+        await event.reply(f"» {BOT_MENTION} isn't streaming on Voicechat.", parse_mode="html")
+        

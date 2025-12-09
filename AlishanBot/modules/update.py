@@ -25,13 +25,13 @@ def readable_time(seconds: int) -> str:
     minutes, seconds = divmod(seconds, 60)
     parts = []
     if days > 0:
-        parts.append(f"{days} ᴅᴀʏ{'s' if days != 1 else ''}")
+        parts.append(f"{days} day{'s' if days != 1 else ''}")
     if hours > 0:
-        parts.append(f"{hours} ʜᴏᴜʀ{'s' if hours != 1 else ''}")
+        parts.append(f"{hours} hour{'s' if hours != 1 else ''}")
     if minutes > 0:
-        parts.append(f"{minutes} ᴍɪɴᴜᴛᴇ{'s' if minutes != 1 else ''}")
+        parts.append(f"{minutes} minute{'s' if minutes != 1 else ''}")
     if seconds > 0 or not parts:
-        parts.append(f"{seconds} sᴇᴄᴏɴᴅ{'s' if seconds != 1 else ''}")
+        parts.append(f"{seconds} second{'s' if seconds != 1 else ''}")
     return " ".join(parts)
 @Alishan.on(events.Raw)
 async def GroupCallUpdate(event):
@@ -45,16 +45,16 @@ async def GroupCallUpdate(event):
     action = msg.action
     if isinstance(action, MessageActionGroupCall):
         if action.duration is None:
-            return await Alishan.send_message(chat_id, "**♻️ VɪᴅᴇᴏCʜᴀᴛ Sᴛᴀʀᴛᴇᴅ!**")
+            return await Alishan.send_message(chat_id, "**♻️ VideoChat Started!**")
         duration = readable_time(action.duration)
         if chat_id in player_stats:
             queues.pop(chat_id, None)
             current_ind.pop(chat_id, None)
             queue_position.pop(chat_id, None)
             player_stats.pop(chat_id, None)
-            return await Alishan.send_message(chat_id, f"<b>📴 𝖵ɪᴅᴇᴏ𝖢ʜᴀᴛ 𝖤ɴᴅᴇᴅ! ᴀɴᴅ 𝖰ᴜᴇᴜᴇ 𝖢ʟᴇᴀʀᴇᴅ.</b>\n\n<b>⏰ 𝖣ᴜʀᴀᴛɪᴏɴ:</b> {duration}", parse_mode="html")
+            return await Alishan.send_message(chat_id, f"<b>📴 VideoChat Ended! and Queue Cleared.</b>\n\n<b>⏰ Duration:</b> {duration}", parse_mode="html")
         else:
-            return await Alishan.send_message(chat_id, f"<b>📴 𝖵ɪᴅᴇᴏ𝖢ʜᴀᴛ 𝖤ɴᴅᴇᴅ!</b>\n\n<b>⏰ 𝖣ᴜʀᴀᴛɪᴏɴ:</b> {duration}", parse_mode="html")
+            return await Alishan.send_message(chat_id, f"<b>📴 VideoChat Ended!</b>\n\n<b>⏰ Duration:</b> {duration}", parse_mode="html")
     if isinstance(action, MessageActionInviteToGroupCall):
         if not msg.from_id:
             return
@@ -67,7 +67,7 @@ async def GroupCallUpdate(event):
             invited_mention = f"<a href='tg://user?id={invited_user.id}'>{invited_user.first_name}</a>"
             await Alishan.send_message(
                 chat_id, 
-                f"{inviter_mention} ɪɴᴠɪᴛᴇᴅ {invited_mention}",
+                f"{inviter_mention} invited {invited_mention}",
                 parse_mode="html"
             )
         
@@ -122,7 +122,7 @@ async def ChatAction(event):
             current_ind.pop(chat_id, None)
             queue_position.pop(chat_id, None)
             player_stats.pop(chat_id, None)
-            await event.reply(f"<b>{ASSISTANT_MENTION} ᴡᴀs ʙᴀɴɴᴇᴅ! 𝖰ᴜᴇᴜᴇ 𝖢ʟᴇᴀʀᴇᴅ.</b>", parse_mode="html")
+            await event.reply(f"<b>{ASSISTANT_MENTION} was banned! Queue Cleared.</b>", parse_mode="html")
     if event.user_added:
         if user.id == BOT_ID:
             added_by = await event.get_added_by()
@@ -130,18 +130,18 @@ async def ChatAction(event):
             if added_by:
                 mention = f"<a href=\"tg://user?id={added_by.id}\">{added_by.first_name}</a>"
             else:
-                mention = "ᴜɴᴋɴᴏᴡɴ"  
+                mention = "Unknown"  
             try:   
                 await event.reply(
                     file=config.START_IMG,
-                    message=f"ʜᴇʏ {mention}\nɪ ᴀᴍ {BOT_MENTION} ᴛʜᴇ ᴍᴏsᴛ ᴘᴏᴡᴇʀғᴜʟʟ ᴛᴇʟᴇɢʀᴀᴍ ᴍᴜsɪᴄ ᴀɴᴅ ɢʀᴏᴜᴘ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ bot\n\nᴛʜᴀɴᴋs ғᴏʀ ᴀᴅᴅɪɴɢ ᴍᴇ ɪɴ {chat_title}, {BOT_MENTION} ᴄᴀɴ ᴘʟᴀʏ sᴏɴɢs ɪɴ ᴛʜɪs ᴄʜᴀᴛ", 
+                    message=f"Hey {mention}\nI am {BOT_MENTION} the most powerful Telegram music and group management bot\n\nThanks for adding me in {chat_title}, {BOT_MENTION} can play songs in this chat", 
                     buttons = [
                         [
-                            Button.url("ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ᴄʜᴀᴛ", f"https://t.me/{BOT_USERNAME}?startgroup=true"), 
+                            Button.url("Add Me to Your Chat", f"https://t.me/{BOT_USERNAME}?startgroup=true"), 
                         ], 
                         [
-                            Button.url("sᴜᴘᴘᴏʀᴛ", f"https://t.me/{config.SUPPORT_CHAT}"), 
-                            Button.url("ᴜᴘᴅᴀᴛᴇs", f"https://t.me/{config.SUPPORT_CHANNEL}")
+                            Button.url("Support", f"https://t.me/{config.SUPPORT_CHAT}"), 
+                            Button.url("Updates", f"https://t.me/{config.SUPPORT_CHANNEL}")
                         ]
                     ], 
                     parse_mode="html", 
@@ -153,14 +153,14 @@ async def ChatAction(event):
                     await Alishan.send_file(
                         chat_id, 
                         file=config.START_IMG,
-                        message=f"ʜᴇʏ {mention}\nɪ ᴀᴍ {BOT_MENTION} ᴛʜᴇ ᴍᴏsᴛᴘᴏᴡᴇʀғᴜʟʟ ᴛᴇʟᴇɢʀᴀᴍ ᴍᴜsɪᴄ ᴀɴᴅ ɢʀᴏᴜᴘ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ bot\n\nᴛʜᴀɴᴋs ғᴏʀ ᴀᴅᴅɪɴɢ ᴍᴇ ɪɴ {chat_title}, {BOT_MENTION} ᴄᴀɴ ᴘʟᴀʏ sᴏɴɢs ɪɴ ᴛʜɪs ᴄʜᴀᴛ", 
+                        message=f"Hey {mention}\nI am {BOT_MENTION} the most powerful Telegram music and group management bot\n\nThanks for adding me in {chat_title}, {BOT_MENTION} can play songs in this chat", 
                         buttons = [
                             [
-                                Button.url("ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ᴄʜᴀᴛ", f"https://t.me/{BOT_USERNAME}?startgroup=true"), 
+                                Button.url("Add Me to Your Chat", f"https://t.me/{BOT_USERNAME}?startgroup=true"), 
                             ], 
                             [
-                                Button.url("sᴜᴘᴘᴏʀᴛ", f"https://t.me/{config.SUPPORT_CHAT}"), 
-                                Button.url("ᴜᴘᴅᴀᴛᴇs", f"https://t.me/{config.SUPPORT_CHANNEL}")
+                                Button.url("Support", f"https://t.me/{config.SUPPORT_CHAT}"), 
+                                Button.url("Updates", f"https://t.me/{config.SUPPORT_CHANNEL}")
                             ]
                         ], 
                         parse_mode="html", 
@@ -175,6 +175,7 @@ async def VoiceChatUpdate(_, update: Update):
     chat_id = update.chat_id
     user = await Alishan.get_entity(participant.user_id)
     if action == GroupCallParticipant.Action.JOINED:
-        await Assistant.send_message(chat_id, f"{user.first_name} ᴊᴏɪɴᴇᴅ ᴛʜᴇ ᴠᴏɪᴄᴇᴄʜᴀᴛ. ")
+        await Assistant.send_message(chat_id, f"{user.first_name} joined the VoiceChat.")
     else:
-        await Assistant.send_message(chat_id, f"{user.first_name} ʟᴇᴀᴠᴇ ᴛʜᴇ ᴠᴏɪᴄᴇᴄʜᴀᴛ. ")
+        await Assistant.send_message(chat_id, f"{user.first_name} left the VoiceChat.")
+        

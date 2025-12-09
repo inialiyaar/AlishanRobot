@@ -19,7 +19,7 @@ async def command_handler(event, command_used, args):
         else:
             admin_cmd = "admins"  
         if not await is_admin(user, event) and admin_cmd == "admins":
-            await event.reply("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.")
+            await event.reply("You must be an admin to use this.")
             return
         try:
             await event.delete()
@@ -30,7 +30,7 @@ async def command_handler(event, command_used, args):
         except Exception:
             pass
     else:
-        await event.reply("𝖸ᴏᴜ ᴄᴀɴ ᴜsᴇ ɪɴ ɢʀᴏᴜᴘs ᴏɴʟʏ!.")
+        await event.reply("You can use in groups only!.")
     
 
 @callback_query("pause")
@@ -44,7 +44,7 @@ async def pause_callback(event):
     else:
         admin_cmd = "admins"  
     if not await is_admin(user, event) and admin_cmd == "admins":
-        await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
+        await event.answer("You must be an admin to use this.", alert=True)
         return
     await pause(event)
     
@@ -57,17 +57,17 @@ async def pause(event):
         try:
             mention = f"<a href=\"tg://user?id={user.id}\">{user.first_name}</a>"
         except Exception:
-            mention = "ᴀɴᴏɴʏᴍᴏᴜs"
+            mention = "Anonymous"
 
         if player_stats[chat_id]["is_playing"]:
             await music.pause(chat_id)
             update_time(chat_id)
             player_stats[chat_id]["is_playing"] = False
-            await event.reply(f"<b>➭ sᴛʀᴇᴀᴍ ᴘᴀᴜsᴇᴅ. \nᴘᴀᴜsᴇᴅ ʙʏ :</b> {mention}", parse_mode="html")
+            await event.reply(f"<b>➭ Stream paused. \nPaused by:</b> {mention}", parse_mode="html")
         else:
-            await event.reply(f"<b>➭ sᴛʀᴇᴀᴍ ᴀʟʀᴇᴀᴅʏ ᴘᴀᴜsᴇᴅ.</b> {mention}", parse_mode="html")
+            await event.reply(f"<b>➭ Stream already paused.</b> {mention}", parse_mode="html")
     else:
-        await event.reply(f"» {BOT_MENTION} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.", parse_mode="html")
+        await event.reply(f"» {BOT_MENTION} isn't streaming on Voicechat.", parse_mode="html")
 
     
 
@@ -82,7 +82,7 @@ async def resume_callback(event):
     else:
         admin_cmd = "admins"  
     if not await is_admin(user, event) and admin_cmd == "admins":
-        await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
+        await event.answer("You must be an admin to use this.", alert=True)
         return
     await resume(event)
     
@@ -95,13 +95,14 @@ async def resume(event):
         try:
             mention = f"<a href=\"tg://user?id={user.id}\">{user.first_name}</a>"
         except Exception:
-            mention = "ᴀɴᴏɴʏᴍᴏᴜs"
+            mention = "Anonymous"
         if not player_stats[chat_id]["is_playing"]:
             await music.resume(chat_id)
             player_stats[chat_id]["is_playing"] = True
             player_stats[chat_id]["last_update"] = time.time()
-            await event.reply(f"<b>➭ sᴛʀᴇᴀᴍ ʀᴇsᴜᴍᴇᴅ. \nʀᴇsᴜᴍᴇᴅ ʙʏ :</b> {mention}", parse_mode="html")
+            await event.reply(f"<b>➭ Stream resumed. \nResumed by:</b> {mention}", parse_mode="html")
         else:
-            await event.reply(f"<b>➭ sᴛʀᴇᴀᴍ ᴀʟʀᴇᴀᴅʏ ʀᴇsᴜᴍᴇᴅ.</b> {mention}", parse_mode="html")
+            await event.reply(f"<b>➭ Stream already resumed.</b> {mention}", parse_mode="html")
     else:
-        await event.reply(f"» {BOT_MENTION} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.", parse_mode="html")
+        await event.reply(f"» {BOT_MENTION} isn't streaming on Voicechat.", parse_mode="html")
+        

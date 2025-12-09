@@ -33,7 +33,7 @@ async def add_to_queue(song_name, chat_id, query_format, mention, download, forc
         queue_position.setdefault(chat_id, 0)
         current_ind.setdefault(chat_id, 0)  
         settings = stream_mode.find_one({"chat_id": chat_id})
-        status = await Alishan.send_message(chat_id, f"**sᴇᴀʀᴄʜɪɴɢ...🔎**")
+        status = await Alishan.send_message(chat_id, f"**Searching...🔎**")
         if download:
             stream_url = song_name
             title,  artist, duration = get_meta(song_name)
@@ -42,9 +42,9 @@ async def add_to_queue(song_name, chat_id, query_format, mention, download, forc
             data = await meta_data(song_name)
             time.sleep(1)
             if data == "URLERROR":
-                return await Alishan.send_message(chat_id, "ᴘʀᴏᴠɪᴅᴇᴅ ᴜʀʟ ɪs ɴᴏᴛ ʏᴏᴜᴛᴜʙᴇ ᴜʀʟ ᴘʟᴇᴀsᴇ ᴛʀʏ ᴏɴ ʏᴏᴜᴛᴜʙᴇ ᴜʀʟ. ")
+                return await Alishan.send_message(chat_id, "Provided URL is not a YouTube URL, please try a YouTube URL.")
             if data == "PLAYLISTERROR":    
-                return await Alishan.send_message(chat_id, "ᴘʀᴏᴠɪᴅᴇᴅ ᴘʟᴀʏʟɪsᴛ ᴀʀᴇ ᴇᴍᴘᴛʏ ᴘʟᴇᴀsᴇ ᴛʀʏ ᴏᴛʜᴇʀ ᴘʟᴀʏʟɪsᴛ.")
+                return await Alishan.send_message(chat_id, "Provided playlist is empty, please try other playlists.")
             stream_url, title, artist, duration, thumbnail = data
         if settings:
             play_mode = settings.get("play_mode", "normal")
@@ -103,7 +103,7 @@ async def play_next(chat_id):
             index = 0
         else:   
             await music.leave_call(chat_id)
-            await Alishan.send_message(chat_id, f"<b>𝖰ᴜᴇᴜᴇ ғɪɴɪsʜᴇᴅ,</b> {ASSISTANT_MENTION} ʟᴇᴀᴠɪɴɢ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ.", parse_mode="html")
+            await Alishan.send_message(chat_id, f"<b>Queue finished,</b> {ASSISTANT_MENTION} leaving voice chat.", parse_mode="html")
             queues.pop(chat_id, None)
             queue_position.pop(chat_id, None)
             current_ind.pop(chat_id, None)
@@ -154,18 +154,18 @@ async def playing_message(title, artist, duration, query_format, thumbnail, chat
     else:
         thumbnail_path = thumbnail  
     if query_format == "video":
-        query_format = "𝖵ɪᴅᴇᴏ"
+        query_format = "Video"
     else:
-        query_format = "𝖠ᴜᴅɪᴏ"
+        query_format = "Audio"
 
     msg = await Alishan.send_file(
         chat_id,
         file=thumbnail_path,
-        caption=f"<blockquote>‣ 𝖳ɪᴛʟᴇ:\n{title}</blockquote>\n"
-                f"<blockquote><b>‣ 𝖠ʀᴛɪsᴛ:<b> {artist}\n"
-                f"<b>‣ 𝖣ᴜʀᴀᴛɪᴏɴ:<b> {duration_text}\n"
-                f"<b>‣ 𝖲ᴛʀᴇᴀᴍ 𝖳ʏᴘᴇ :</b> {query_format}\n"
-                f"<b>𝖱ᴇǫᴜᴇsᴛᴇᴅ ʙʏ:</b> {mention}</blockquote>\n",
+        caption=f"<blockquote>‣ Title:\n{title}</blockquote>\n"
+                f"<blockquote><b>‣ Artist:<b> {artist}\n"
+                f"<b>‣ Duration:<b> {duration_text}\n"
+                f"<b>‣ Stream Type:</b> {query_format}\n"
+                f"<b>Requested by:</b> {mention}</blockquote>\n",
         buttons=[
             [
                 Button.inline("▷", data=b"resume"),
@@ -180,7 +180,7 @@ async def playing_message(title, artist, duration, query_format, thumbnail, chat
                 Button.inline("+20s ≫", data=b"seek_forward")
             ], 
             [
-                Button.url("ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ", f"https://t.me/{BOT_USERNAME}?startgroup=true")
+                Button.url("Add Me to Your Group", f"https://t.me/{BOT_USERNAME}?startgroup=true")
             ]
         ],
         parse_mode="html"
@@ -245,7 +245,7 @@ async def update_bar():
                     Button.inline("+20s ≫", data=b"seek_forward")
                 ], 
                 [
-                    Button.url("ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ", f"https://t.me/{BOT_USERNAME}?startgroup=true")
+                    Button.url("Add Me to Your Group", f"https://t.me/{BOT_USERNAME}?startgroup=true")
                 ]
             ]
             try:
@@ -263,20 +263,21 @@ async def queue_message(title, artist, duration, query_format, chat_id, queue_po
         minutes, secs = divmod(duration, 60)
         duration_text = f"{minutes}:{secs:02}"
     if query_format == "video":
-        query_format = "𝖵ɪᴅᴇᴏ"
+        query_format = "Video"
     else:
-        query_format = "𝖠ᴜᴅɪᴏ"        
+        query_format = "Audio"        
     await Alishan.send_message(
         chat_id,
-        f"<b>➲ 𝖠ᴅᴅᴇᴅ ᴛᴏ ǫᴜᴇᴜᴇ ᴀᴛ #{queue_pos}</b>\n\n<blockquote><b>‣ 𝖳ɪᴛʟᴇ :</b> {title}</blockquote>\n<blockquote><b>‣ 𝖠ʀᴛɪsᴛ :</b> {artist}\n<b>‣ 𝖣ᴜʀᴀᴛɪᴏɴ :</b> {duration_text}\n<b>‣ 𝖲ᴛʀᴇᴀᴍ 𝖳ʏᴘᴇ :</b> {query_format}\n<b>𝖱ᴇǫᴜᴇsᴛᴇᴅ ʙʏ:</b> {mention}</blockquote>",
+        f"<b>➲ Added to queue at #{queue_pos}</b>\n\n<blockquote><b>‣ Title:</b> {title}</blockquote>\n<blockquote><b>‣ Artist:</b> {artist}\n<b>‣ Duration:</b> {duration_text}\n<b>‣ Stream Type:</b> {query_format}\n<b>Requested by:</b> {mention}</blockquote>",
         buttons = [
         [
             Button.inline("‣‣I", data=b"skip"),
             Button.inline("▢", data=b"stop")
         ],
         [
-            Button.url("ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ", f"https://t.me/{BOT_USERNAME}?startgroup=true")
+            Button.url("Add Me to Your Group", f"https://t.me/{BOT_USERNAME}?startgroup=true")
         ]
     ],
     parse_mode="html"
     )
+    

@@ -18,14 +18,14 @@ async def forward_handler(event):
     else:
         admin_cmd = "admins"  
     if not await is_admin(user, event) and admin_cmd == "admins":
-        await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
+        await event.answer("You must be an admin to use this.", alert=True)
         return
     chat = await event.get_chat()
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id) 
     try:
         mention = f"<a href=\"tg://user?id={user.id}\">{user.first_name}</a>"
     except Exception:
-        mention = "ᴀɴᴏɴʏᴍᴏᴜs" 
+        mention = "Anonymous" 
     if chat_id in player_stats:
         player_stats[chat_id]["is_playing"] = True
         update_time(chat_id)
@@ -37,9 +37,9 @@ async def forward_handler(event):
         seek = player_stats[chat_id]["current_time"]
         play_mode = player_stats[chat_id]["play_mode"]
         await Play_Stream(chat_id, stream_url, query_format, play_mode, seek)
-        await event.reply(f"{mention} sᴇᴇᴋ ᴛʜᴇ ᴛʀᴀᴄᴋ 20s ғᴏʀᴡᴀʀᴅ.", parse_mode="html")
+        await event.reply(f"{mention} seek the track 20s forward.", parse_mode="html")
     else:
-        await event.reply(f"» {BOT_MENTION} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.", parse_mode="html")       
+        await event.reply(f"» {BOT_MENTION} isn't streaming on Voicechat.", parse_mode="html")       
 
 @callback_query("seek_backward")
 async def backward_handler(event):
@@ -52,12 +52,12 @@ async def backward_handler(event):
     else:
         admin_cmd = "admins"  
     if not await is_admin(user, event) and admin_cmd == "admins":
-        await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
+        await event.answer("You must be an admin to use this.", alert=True)
         return
     try:
         mention = f"<a href=\"tg://user?id={user.id}\">{user.first_name}</a>"
     except Exception:
-        mention = "ᴀɴᴏɴʏᴍᴏᴜs" 
+        mention = "Anonymous" 
     if chat_id in player_stats:
         player_stats[chat_id]["is_playing"] = True
         update_time(chat_id)
@@ -69,9 +69,9 @@ async def backward_handler(event):
         seek = player_stats[chat_id]["current_time"]
         play_mode = player_stats[chat_id]["play_mode"]
         await Play_Stream(chat_id, stream_url, query_format, play_mode, seek)
-        await event.reply(f"{mention} sᴇᴇᴋ ᴛʜᴇ ᴛʀᴀᴄᴋ 20s ʙᴀᴄᴋᴡᴀʀᴅ. ", parse_mode="html")
+        await event.reply(f"{mention} seek the track 20s backward.", parse_mode="html")
     else:
-        await event.reply(f"» {BOT_MENTION} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.", parse_mode="html")       
+        await event.reply(f"» {BOT_MENTION} isn't streaming on Voicechat.", parse_mode="html")       
 @add_command("seek")
 async def seek_handler(event, command, args):
     user = await event.get_sender()
@@ -83,41 +83,42 @@ async def seek_handler(event, command, args):
     else:
         admin_cmd = "admins"  
     if not await is_admin(user, event) and admin_cmd == "admins":
-        await event.answer("ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜsᴇ ᴛʜɪs.", alert=True)
+        await event.answer("You must be an admin to use this.", alert=True)
         return
     if not args:
-        return await event.reply("ᴘʟᴇᴀsᴇ ɢɪᴠᴇ ᴀ ᴛɪᴍᴇ ʟɪᴋᴇ 1m, -20s, 120")
+        return await event.reply("Please give a time like 1m, -20s, 120")
     try:
         seconds = int(args)
     except:
-        return await event.reply(" ɪɴᴠᴀʟɪᴅ ᴛɪᴍᴇ! ᴜsᴇ 60 / 100 / -20 / -200")
+        return await event.reply("Invalid time! Use 60 / 100 / -20 / -200")
     try:
         mention = f"<a href=\"tg://user?id={user.id}\">{user.first_name}</a>"
     except Exception:
-        mention = "ᴀɴᴏɴʏᴍᴏᴜs" 
+        mention = "Anonymous" 
     if chat_id not in player_stats:
-        return await event.reply(f"» {BOT_MENTION} ɪsɴ'ᴛ 𝖲ᴛʀᴇᴀᴍɪɴɢ ᴏɴ 𝖵ᴏɪᴄᴇᴄʜᴀᴛ.", parse_mode="html")
+        return await event.reply(f"» {BOT_MENTION} isn't streaming on Voicechat.", parse_mode="html")
 
     update_time(chat_id)
     player_stats[chat_id]["current_time"]
     if seconds < 0:
         player_stats[chat_id]["current_time"] -= abs(seconds)
-        direction = "ʙᴀᴄᴋᴡᴀʀᴅ"
+        direction = "backward"
     else:
         player_stats[chat_id]["current_time"] += seconds
-        direction = "ғᴏʀᴡᴀʀᴅ"
+        direction = "forward"
     seek = player_stats[chat_id]["current_time"]
     index = current_ind.get(chat_id, 0)
     stream_url, title, artist, duration, thumbnail, mention, q_format, dl = queues[chat_id][index]    
     if seek < 0: 
-        return await event.reply(f"ʏᴏᴜ ᴄᴀɴ'ᴛ sᴇᴇᴋ ʙᴇʏᴏɴᴅ 0:00\nᴛʀᴀᴄᴋ ʟᴇɴɢʜᴛ {duration}s")
+        return await event.reply(f"You can't seek beyond 0:00\nTrack length {duration}s")
     if seek > duration:
-        return await event.reply(f"ʏᴏᴜ ᴄᴀɴ'ᴛ sᴇᴇᴋ ʙᴇʏᴏɴᴅ ᴛʜᴇ ᴛʀᴀᴄᴋ\nᴛʀᴀᴄᴋ ʟᴇɴɢʜᴛ {duration}s")
+        return await event.reply(f"You can't seek beyond the track\nTrack length {duration}s")
     play_mode = player_stats[chat_id]["play_mode"]
     await Play_Stream(chat_id, stream_url, q_format, play_mode, seek)
 
     return await event.reply(
-        f"sᴇᴇᴋᴇᴅ {int(seek)} {direction}.\n"
-        f"sᴇᴇᴋᴇᴅ ʙʏ : {mention}",
+        f"Seeked {int(seconds)} {direction}.\n"
+        f"Seeked by: {mention}",
         parse_mode="html"
     )
+    

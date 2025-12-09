@@ -36,26 +36,22 @@ async def Start(event, command_used, args):
         await Alishan.send_file(
             event.chat_id, 
             file=config.START_IMG, 
-            caption=f"ʜᴇʏ <a href=\"tg://user?Id={user_id}\">{full_name}</a>.\n\nɪ ᴀᴍ {BOT_MENTION} ᴛʜᴇ ᴍᴏsᴛ ᴘᴏᴡᴇʀғᴜʟ ᴛᴇʟᴇɢʀᴀᴍ ᴍᴜsɪᴄ ᴀɴᴅ ɢʀᴏᴜᴘ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ ʙᴏᴛ ᴡʜɪᴄʜ ᴄᴀɴ ʜᴇʟᴘ ʏᴏᴜ ᴛᴏ ᴍᴀɴᴀɢᴇ ᴀɴᴅ sᴇᴄᴜʀᴇ ʏᴏᴜʀ ɢʀᴏᴜᴘ\n\n<b>➺ ᴘɪɴɢ : </b>{ping}\n<b>➺ ᴜᴘᴛɪᴍᴇ :</b> {uptime}\n\n<b>ᴄʟɪᴄᴋ ᴏɴ ʜᴇʟᴘ ᴛᴏ ʟᴇᴀʀɴ ᴍᴏʀᴇ. </b>", 
+            caption=f"Hey <a href=\"tg://user?Id={user_id}\">{full_name}</a>.\n\nI am {BOT_MENTION} the most powerful Telegram music and group management bot which can help you to manage and secure your group\n\n<b>➺ Ping: </b>{ping}\n<b>➺ Uptime:</b> {uptime}\n\n<b>Click on Help to learn more. </b>", 
             buttons = [
                 [
-                    Button.url("ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ", f"https://t.me/{BOT_USERNAME}?startgroup=true")
+                    Button.url("Add Me to Your Group", f"https://t.me/{BOT_USERNAME}?startgroup=true")
                 ],
                 [
-                    Button.inline("ʜᴇʟᴘ ᴍᴇɴᴜ", data=b"help_menu")
+                    Button.inline("Help Menu", data=b"help_menu")
                 ], 
                 [
-                    Button.inline("ᴀʙᴏᴜᴛ ᴍᴇ", data=b"about_help"), 
-                    Button.inline("ʀᴇғʀᴇsʜ", data=b"refresh")
+                    Button.inline("About Me", data=b"about_help"), 
+                    Button.inline("Refresh", data=b"refresh")
                 ], 
                 [
-                    Button.url("sᴜᴘᴘᴏʀᴛ", f"https://t.me/{config.SUPPORT_CHAT}"), 
-                    Button.url("ᴜᴘᴅᴀᴛᴇs", f"https://t.me/{config.SUPPORT_CHANNEL}")
+                    Button.url("Support", f"https://t.me/{config.SUPPORT_CHAT}"), 
+                    Button.url("Updates", f"https://t.me/{config.SUPPORT_CHANNEL}")
                 ],
-                [
-                    Button.url("Source Code",
-                    "https://github.com/inialiyaar/AlishanRobot.git"),
-                ]
             ], 
             parse_mode="html"
         )
@@ -63,14 +59,14 @@ async def Start(event, command_used, args):
         await Alishan.send_file(
             event.chat_id,
             file=config.START_IMG,
-            caption=f"ʜᴇʏ ᴛʜᴇʀᴇ <a href=\"tg://user?Id={user_id}\">{full_name}</a>.\n\n{BOT_MENTION} ɪs ᴀʟɪᴠᴇ ʙᴀʙʏ! \n\nᴀ ғᴀsᴛ ᴀɴᴅ ᴘᴏᴡᴇʀғᴜʟ ᴛᴇʟᴇɢʀᴀᴍ ᴍᴜsɪᴄ ᴘʟᴜs ᴍᴀɴᴀɢᴇᴍᴇɴᴛ ʙᴏᴛ!\nᴡɪᴛʜ sᴏᴍᴇ ᴀᴡᴇsᴏᴍᴇ Ғᴇᴜᴛᴜʀᴇs.\n\n<b>➺ ᴘɪɴɢ :</b> {ping}\n<b>➺ ᴜᴘᴛɪᴍᴇ :</b> {uptime}\n\n<b>ᴄʟɪᴄᴋ ᴏɴ ʜᴇʟᴘ ᴛᴏ ʟᴇᴀʀɴ ᴍᴏʀᴇ. </b>",
+            caption=f"Hey there <a href=\"tg://user?Id={user_id}\">{full_name}</a>.\n\n{BOT_MENTION} is alive baby! \n\nA fast and powerful Telegram music plus management bot!\nWith some awesome features.\n\n<b>➺ Ping:</b> {ping}\n<b>➺ Uptime:</b> {uptime}\n\n<b>Click on Help to learn more. </b>",
             buttons = [
                 [
-                    Button.url("ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ", f"https://t.me/{BOT_USERNAME}?startgroup=true")
+                    Button.url("Add Me to Your Group", f"https://t.me/{BOT_USERNAME}?startgroup=true")
                 ],
                 [
-                    Button.url("sᴜᴘᴘᴏʀᴛ", f"https://t.me/{config.SUPPORT_CHAT}"), 
-                    Button.url("ᴜᴘᴅᴀᴛᴇs", f"https://t.me/{config.SUPPORT_CHANNEL}")
+                    Button.url("Support", f"https://t.me/{config.SUPPORT_CHAT}"), 
+                    Button.url("Updates", f"https://t.me/{config.SUPPORT_CHANNEL}")
                 ]
             ], 
             parse_mode="html"
@@ -79,7 +75,7 @@ async def Start(event, command_used, args):
     
 @callback_query("refresh")    
 async def Refresh(event):
-     msg = await event.respond("**♻️ ʀᴇғʀᴇsʜɪɴɢ...**")
+     msg = await event.respond("**♻️ Refreshing...**")
      uptime = get_uptime()
      ping = get_ping()
      info = get_info() 
@@ -91,27 +87,24 @@ async def Refresh(event):
      last_name = user.last_name or ""
      full_name = (first_name + " " + last_name).strip()
      await event.edit(
-         f"ʜᴇʏ <a href=\"tg://user?Id={user_id}\">{full_name}</a>.\n\nɪ ᴀᴍ {BOT_MENTION} ᴛʜᴇ ᴍᴏsᴛ ᴘᴏᴡᴇʀғᴜʟ ᴛᴇʟᴇɢʀᴀᴍ ᴍᴜsɪᴄ ᴀɴᴅ ɢʀᴏᴜᴘ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ ʙᴏᴛ ᴡʜɪᴄʜ ᴄᴀɴ ʜᴇʟᴘ ʏᴏᴜ ᴛᴏ ᴍᴀɴᴀɢᴇ ᴀɴᴅ sᴇᴄᴜʀᴇ ʏᴏᴜʀ ɢʀᴏᴜᴘ\n\n<b>➺ ᴘɪɴɢ :</b> {ping}\n<b>➺ ᴜᴘᴛɪᴍᴇ :</b> {uptime}\n\n<b>ᴄʟɪᴄᴋ ᴏɴ ʜᴇʟᴘ ᴛᴏ ʟᴇᴀʀɴ ᴍᴏʀᴇ. </b>", 
+         f"Hey <a href=\"tg://user?Id={user_id}\">{full_name}</a>.\n\nI am {BOT_MENTION} the most powerful Telegram music and group management bot which can help you to manage and secure your group\n\n<b>➺ Ping:</b> {ping}\n<b>➺ Uptime:</b> {uptime}\n\n<b>Click on Help to learn more. </b>", 
          buttons= [
                 [
-                    Button.url("ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ", f"https://t.me/{BOT_USERNAME}?startgroup=true")
+                    Button.url("Add Me to Your Group", f"https://t.me/{BOT_USERNAME}?startgroup=true")
                 ],
                 [
-                    Button.inline("ʜᴇʟᴘ ᴍᴇɴᴜ", data=b"help_menu")
+                    Button.inline("Help Menu", data=b"help_menu")
                 ], 
                 [
-                    Button.inline("ᴀʙᴏᴜᴛ ᴍᴇ", data=b"about_help"), 
-                    Button.inline("ʀᴇғʀᴇsʜ", data=b"refresh")
+                    Button.inline("About Me", data=b"about_help"), 
+                    Button.inline("Refresh", data=b"refresh")
                 ], 
                 [
-                    Button.url("sᴜᴘᴘᴏʀᴛ", f"https://t.me/{config.SUPPORT_CHAT}"), 
-                    Button.url("ᴜᴘᴅᴀᴛᴇs", f"https://t.me/{config.SUPPORT_CHANNEL}")
+                    Button.url("Support", f"https://t.me/{config.SUPPORT_CHAT}"), 
+                    Button.url("Updates", f"https://t.me/{config.SUPPORT_CHANNEL}")
                 ],
-                [
-                    Button.url("Source Code",
-                    "https://github.com/inialiyaar/AlishanRobot.git"),
-                ]
             ], 
          parse_mode="html"
          )
      await msg.delete()
+     

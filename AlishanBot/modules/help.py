@@ -23,7 +23,7 @@ async def help(event, command, args):
             emoticon='❤️'
         )]
     ))
-    caption = f"{BOT_MENTION}'s ʜᴇʟᴘ ᴍᴇɴᴜ\n\nᴄʜᴏꜱᴇ ᴛʜᴇ ᴄᴀᴛᴇɢᴏʀʏ ꜰᴏʀ ᴡʜɪᴄʜ ʏᴏᴜ ᴡᴀɴɴᴀ ɢᴇᴛ ʜᴇʟᴘ. ᴡɪᴛʜ {BOT_MENTION}\n<b>ᴀɴʏ ᴘʀᴏʙʟᴇᴍ ᴀsᴋ ʏᴏᴜʀ ᴅᴏᴜʙᴛs ᴀᴛ</b> <a href=\"https://t.me/{SUPPORT_CHAT}\">sᴜᴘᴘᴏʀᴛ chat</a>.\n\nᴀʟʟ ᴄᴏᴍᴍᴀɴᴅꜱ ᴄᴀɴ ʙᴇ ᴜꜱᴇᴅ ᴡɪᴛʜ : /"
+    caption = f"{BOT_MENTION}'s Help Menu\n\nChose the category for which you wanna get help. With {BOT_MENTION}\n<b>Any problem ask your doubts at</b> <a href=\"https://t.me/{SUPPORT_CHAT}\">support chat</a>.\n\nAll commands can be used with : /"
     if event.is_private:
         await Alishan.send_file(
             event.chat_id, 
@@ -31,14 +31,14 @@ async def help(event, command, args):
             caption=caption, 
             buttons = [
                 [
-                    Button.inline("ᴍᴀɴᴀɢᴇᴍᴇɴᴛ", data=b"management_help"), 
-                    Button.inline("ᴍᴜsɪᴄ", data=b"music_help"), 
+                    Button.inline("Management", data=b"management_help"), 
+                    Button.inline("Music", data=b"music_help"), 
                 ], 
                 [
-                    Button.inline("ɢᴀᴍᴇs", data=b"games_help")
+                    Button.inline("Games", data=b"games_help")
                 ],
                 [
-                    Button.url("ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ᴄʜᴀᴛ", f"https://t.me/{BOT_USERNAME}?startgroup=true"), 
+                    Button.url("Add me to your Group", f"https://t.me/{BOT_USERNAME}?startgroup=true"), 
                 ], 
                 
             ], 
@@ -46,14 +46,14 @@ async def help(event, command, args):
         )
     else:
         await event.reply(
-            "**» ᴄʜᴏᴏsᴇ ᴀɴ ᴏᴩᴛɪᴏɴ ғᴏʀ ɢᴇᴛᴛɪɴɢ ʜᴇʟᴩ.**", 
+            "**» Choose an option for getting Help.**", 
             file=START_IMG, 
             buttons = [
                 [
-                    Button.url("ᴏᴘᴇɴ ɪɴ ᴘʀɪᴠᴀᴛᴇ", f"https://t.me/{BOT_USERNAME}?start=help"), 
+                    Button.url("Open in Private", f"https://t.me/{BOT_USERNAME}?start=help"), 
                 ], 
                 [
-                   Button.inline(" ᴏᴘᴇɴ ʜᴇʀᴇ", data=b"help_menu"), 
+                   Button.inline("Open Here", data=b"help_menu"), 
                 ], 
             ]
         )
@@ -69,23 +69,23 @@ async def callback_help(event):
         full_name = (first_name + " " + last_name).strip()
         mention = f"<a href=\"tg://user?Id={user_id}\">{full_name}</a>"
     except:
-        mention = "ᴀɴᴏɴʏᴍᴏᴜs"  
+        mention = "Anonymous"  
     if data == b"help_menu":
-        caption = f"{BOT_MENTION}'s ʜᴇʟᴘ ᴍᴇɴᴜ\n\nᴄʜᴏᴏsᴇ ᴛʜᴇ ᴄᴀᴛᴇɢᴏʀʏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ʜᴇʟᴘ ᴡɪᴛʜ {BOT_MENTION}\n\n<b>ᴀɴʏ ᴘʀᴏʙʟᴇᴍ ᴀsᴋ ʏᴏᴜʀ ᴅᴏᴜʙᴛs ᴀᴛ</b> <a href=\"https://t.me/{SUPPORT_CHAT}\">sᴜᴘᴘᴏʀᴛ chat</a>."
+        caption = f"{BOT_MENTION}'s Help Menu\n\nChoose the category you want to help with {BOT_MENTION}\n\n<b>Any problem ask your doubts at</b> <a href=\"https://t.me/{SUPPORT_CHAT}\">support chat</a>."
         buttons = [
             [
-                Button.inline("ᴍᴀɴᴀɢᴇᴍᴇɴᴛ", data=b"management_help"), 
-                Button.inline("ᴍᴜsɪᴄ", data=b"music_help"), 
+                Button.inline("Management", data=b"management_help"), 
+                Button.inline("Music", data=b"music_help"), 
             ], 
             [
-                Button.inline("ɢᴀᴍᴇs", data=b"games_help")
+                Button.inline("Games", data=b"games_help")
             ], 
             [
-                Button.url("ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ᴄʜᴀᴛ", f"https://t.me/{BOT_USERNAME}?startgroup=true")
+                Button.url("Add me to your Group", f"https://t.me/{BOT_USERNAME}?startgroup=true")
             ], 
             [
                             
-                Button.inline("• ʜᴏᴍᴇ •", data=b"back_to_start")
+                Button.inline("Home", data=b"back_to_start")
             ]
                         
             ]
@@ -94,78 +94,70 @@ async def callback_help(event):
         uptime = get_uptime()
         total_users = users.count_documents({})
         chats = groups.count_documents({})
-        caption = f"<b>ʜᴇʏ</b> {mention},\n<b>ᴛʜɪs ɪs</b> {BOT_MENTION}\n<b>ᴀ ᴘᴏᴡᴇʀꜰᴜʟ ɢʀᴏᴜᴘ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ ᴀɴᴅ ᴍᴜsɪᴄ ʙᴏᴛ ʙᴜɪʟᴛ ᴛᴏ ʜᴇʟᴘ ʏᴏᴜ ᴍᴀɴᴀɢᴇ ʏᴏᴜʀ ɢʀᴏᴜᴘ ᴇᴀꜱɪʟʏ ᴀɴᴅ ᴛᴏ ᴘʀᴏᴛᴇᴄᴛ ʏᴏᴜʀ ɢʀᴏᴜᴘ ꜰʀᴏᴍ ꜱᴄᴀᴍᴍᴇʀꜱ ᴀɴᴅ ꜱᴘᴀᴍᴍᴇʀꜱ.\nᴡʀɪᴛᴛᴇɴ ɪɴ ᴩʏᴛʜᴏɴ ᴡɪᴛʜ ᴍᴏɴɢᴏᴅʙ ᴀs ᴅᴀᴛᴀʙᴀsᴇ.</b>\n────────────────────\n<b>➻ ᴜᴩᴛɪᴍᴇ »</b> {uptime}\n<b>➻ ᴘɪɴɢ »<b> {ping}\n<b>➻ ᴜsᴇʀs »</b> {total_users}\n<b>➻ ᴄʜᴀᴛs »</b> {chats}\n────────────────────\n\n➲  ɪ ᴄᴀɴ ɢʀᴇᴇᴛ ᴜꜱᴇʀꜱ ᴡɪᴛʜ ᴄᴜꜱᴛᴏᴍɪᴢᴀʙʟᴇ ᴡᴇʟᴄᴏᴍᴇ ᴍᴇꜱꜱᴀɢᴇꜱ ᴀɴᴅ ᴇᴠᴇɴ ꜱᴇᴛ ᴀ ɢʀᴏᴜᴘ'ꜱ ʀᴜʟᴇꜱ.\n➲ ɪ ᴄᴀɴ ᴘʟᴀʏ ᴍᴜsɪᴄ/ᴠɪᴅᴇᴏ ғʀᴏᴍ ʏᴏᴜᴛᴜʙᴇ ᴡɪᴛʜ ᴄᴏɴᴛʀᴏʟ ᴄᴏᴍᴍᴀɴᴅs.\n\n➻ ᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ ʙᴜᴛᴛᴏɴs ɢɪᴠᴇɴ ʙᴇʟᴏᴡ ғᴏʀ ɢᴇᴛᴛɪɴɢ ʙᴀsɪᴄ ʜᴇʟᴩ ᴀɴᴅ ɪɴғᴏ ᴀʙᴏᴜᴛ {BOT_MENTION}."
+        caption = f"<b>Hey</b> {mention},\n<b>This is</b> {BOT_MENTION}\n<b>A powerful group management and music bot built to help you manage your group easily and to protect your group from scammers and spammers.\nWritten in Python with MongoDB as database.</b>\n────────────────────\n<b>➻ Uptime »</b> {uptime}\n<b>➻ Ping »</b> {ping}\n<b>➻ Users »</b> {total_users}\n<b>➻ Chats »</b> {chats}\n────────────────────\n\n➲  I can greet users with customizable welcome messages and even set a group's rules.\n➲ I can play music/video from youtube with control commands.\n\n➻ Click on the buttons given below for getting basic help and info about {BOT_MENTION}."
         buttons = [
             [
-                Button.url("sᴜᴘᴘᴏʀᴛ", f"https://t.me/{SUPPORT_CHAT}"), 
-                Button.url("ᴜᴘᴅᴀᴛᴇs", f"https://t.me/{SUPPORT_CHANNEL}")
+                Button.url("Support", f"https://t.me/{SUPPORT_CHAT}"), 
+                Button.url("Updates", f"https://t.me/{SUPPORT_CHANNEL}")
             ], 
             [
-                Button.url("Source Code",
-                    "https://github.com/inialiyaar/AlishanRobot.git"),
-            ],
-            [
-                Button.inline("• ʜᴏᴍᴇ •", data=b"back_to_start")
+                Button.inline("Home", data=b"back_to_start")
             ]
         ]
     elif data == b"back_to_start":
         ping = get_ping() 
         uptime = get_uptime()
         if event.is_private:
-            caption=f"ʜᴇʏ {mention}.\n\nɪ ᴀᴍ {BOT_MENTION} ᴛʜᴇ ᴍᴏsᴛ ᴘᴏᴡᴇʀғᴜʟ ᴛᴇʟᴇɢʀᴀᴍ ᴍᴜsɪᴄ ᴀɴᴅ ɢʀᴏᴜᴘ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ ʙᴏᴛ ᴡʜɪᴄʜ ᴄᴀɴ ʜᴇʟᴘ ʏᴏᴜ ᴛᴏ ᴍᴀɴᴀɢᴇ ᴀɴᴅ sᴇᴄᴜʀᴇ ʏᴏᴜʀ ɢʀᴏᴜᴘ\n\n<b>➺ ᴘɪɴɢ :</b> {ping}\n<b>➺ ᴜᴘᴛɪᴍᴇ :</b> {uptime}\n\n<b>ᴄʟɪᴄᴋ ᴏɴ ʜᴇʟᴘ ᴛᴏ ʟᴇᴀʀɴ ᴍᴏʀᴇ. </b>"
+            caption=f"Hey {mention}.\n\nI am {BOT_MENTION} the most powerful Telegram music and group management bot which can help you to manage and secure your group\n\n<b>➺ Ping :</b> {ping}\n<b>➺ Uptime :</b> {uptime}\n\n<b>Click on help to learn more. </b>"
             buttons = [
                     [
-                        Button.url("ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ", f"https://t.me/{BOT_USERNAME}?startgroup=true")
+                        Button.url("Add me to your Group", f"https://t.me/{BOT_USERNAME}?startgroup=true")
                     ],
                     [
-                        Button.inline("ʜᴇʟᴘ ᴍᴇɴᴜ", data=b"help_menu")
+                        Button.inline("Help Menu", data=b"help_menu")
                     ], 
                     [
-                        Button.inline("ᴀʙᴏᴜᴛ ᴍᴇ", data=b"about_help"), 
-                        Button.inline("ʀᴇғʀᴇsʜ", data=b"refresh")
+                        Button.inline("About Me", data=b"about_help"), 
+                        Button.inline("Refresh", data=b"refresh")
                     ], 
                     [
-                        Button.url("sᴜᴘᴘᴏʀᴛ", f"https://t.me/{SUPPORT_CHAT}"), 
-                        Button.url("ᴜᴘᴅᴀᴛᴇs", f"https://t.me/{SUPPORT_CHANNEL}")
-                    ], 
-                    [
-                        Button.url("Source Code",
-                    "https://github.com/inialiyaar/AlishanRobot.git"),
-                    ], 
+                        Button.url("Support", f"https://t.me/{SUPPORT_CHAT}"), 
+                        Button.url("Updates", f"https://t.me/{SUPPORT_CHANNEL}")
+                    ],
                 ]
         else:
-            caption=f"<b>» ᴄʜᴏᴏsᴇ ᴀɴ ᴏᴩᴛɪᴏɴ ғᴏʀ ɢᴇᴛᴛɪɴɢ ʜᴇʟᴩ.</b>"
+            caption=f"<b>» Choose an option for getting Help.</b>"
             buttons = [
                     [
-                        Button.url("ᴏᴘᴇɴ ɪɴ ᴘʀɪᴠᴀᴛᴇ", f"https://t.me/{BOT_USERNAME}?start=help"), 
+                        Button.url("Open in Private", f"https://t.me/{BOT_USERNAME}?start=help"), 
                     ], 
                     [
-                        Button.inline(" ᴏᴘᴇɴ ʜᴇʀᴇ", data=b"help_menu"), 
+                        Button.inline("Open Here", data=b"help_menu"), 
                     ], 
                 ]
     elif data == b"management_help":
-        caption = f"<b>{BOT_MENTION}'s ᴇxᴄʟᴜsɪᴠᴇ ғᴇᴀᴛᴜʀᴇs</b>\n\nᴄʜᴏꜱᴇ ᴛʜᴇ ᴄᴀᴛᴇɢᴏʀʏ ꜰᴏʀ ᴡʜɪᴄʜ ʏᴏᴜ ᴡᴀɴɴᴀ ɢᴇᴛ ʜᴇʟᴘ. ᴡɪᴛʜ {BOT_MENTION}\n<b>ᴀɴʏ ᴘʀᴏʙʟᴇᴍ ᴀsᴋ ʏᴏᴜʀ ᴅᴏᴜʙᴛs ᴀᴛ</b> <a href=\"https://t.me/{SUPPORT_CHAT}\">sᴜᴘᴘᴏʀᴛ chat</a>.\n\nᴀʟʟ ᴄᴏᴍᴍᴀɴᴅꜱ ᴄᴀɴ ʙᴇ ᴜꜱᴇᴅ ᴡɪᴛʜ : /"
+        caption = f"<b>{BOT_MENTION}'s Exclusive Features</b>\n\nChose the category for which you wanna get help. With {BOT_MENTION}\n<b>Any problem ask your doubts at</b> <a href=\"https://t.me/{SUPPORT_CHAT}\">support chat</a>.\n\nAll commands can be used with : /"
         buttons = [
             [
-                Button.inline("𝖬ᴜᴛᴇ", data=b"mute_help"), 
-                Button.inline("Dᴏᴡɴʟᴏᴀᴅ", data=b"download_help"),
-                Button.inline("𝖡ᴀɴs", data=b"ban_help"), 
+                Button.inline("Mute", data=b"mute_help"), 
+                Button.inline("Download", data=b"download_help"),
+                Button.inline("Bans", data=b"ban_help"), 
                 
             ], 
             [
-                Button.inline("𝖥ᴜɴ", data=b"fun_help"), 
-                Button.inline("𝖠ᴅᴍɪɴs", data=b"admins_help"), 
-                Button.inline("𝖢ʜᴀᴛʙᴏᴛ", data=b"chatbot_help")
+                Button.inline("Fun", data=b"fun_help"), 
+                Button.inline("Admins", data=b"admins_help"), 
+                Button.inline("Chatbot", data=b"chatbot_help")
             ],
             [
-                Button.inline("𝖨ɴғᴏs", data=b"info_help"), 
-                Button.inline("𝖦ʀᴇᴇᴛɪɴɢs", data=b"greetings_help"), 
-                Button.inline("𝖠ғᴋ", data=b"afk_help")
+                Button.inline("Infos", data=b"info_help"), 
+                Button.inline("Greetings", data=b"greetings_help"), 
+                Button.inline("Afk", data=b"afk_help")
             ], 
             [
-           Button.inline("◁", data=b"management_preview"), 
-           Button.inline("ʙᴀᴄᴋ", data=b"help_menu"), 
-           Button.inline("▷", data=b"management_next"), 
+           Button.inline("Preview", data=b"management_preview"), 
+           Button.inline("Back", data=b"help_menu"), 
+           Button.inline("Next", data=b"management_next"), 
            ], 
         ]
     elif data == b"management_next":
@@ -173,94 +165,94 @@ async def callback_help(event):
     elif data == b"management_preview":
         pass  
     elif data == b"mute_help":
-        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ Mᴜᴛᴇ​ :\n\nᴀᴅᴍɪɴs ᴏɴʟʏ</b>\n\n❍ /mute <ᴜsᴇʀʜᴀɴᴅʟᴇ>: sɪʟᴇɴᴄᴇs ᴀ ᴜsᴇʀ. ᴄᴀɴ ᴀʟsᴏ ʙᴇ ᴜsᴇᴅ ᴀs ᴀ ʀᴇᴘʟʏ, ᴍᴜᴛɪɴɢ ᴛʜᴇ ʀᴇᴘʟɪᴇᴅ ᴛᴏ ᴜᴘᴀss. \n❍ /tmute <ᴜsᴇʀʜᴀɴᴅʟᴇ> x(ᴍ/ʜ/ᴅ): ᴍᴜᴛᴇs ᴀ ᴜsᴇʀ ғᴏʀ x ᴛɪᴍᴇ. (ᴠɪᴀ ʜᴀɴᴅʟᴇ, ᴏʀ ʀᴇᴘʟʏ). ᴍ = ᴍɪɴᴜᴛᴇs, ʜ = ʜᴏᴜʀs, ᴅ = ᴅᴀʏs.\n❍ /unmute <ᴜsᴇʀʜᴀɴᴅʟᴇ>: ᴜɴᴍᴜᴛᴇs ᴀ ᴜsᴇʀ. ᴄᴀɴ ᴀʟsᴏ ʙᴇ ᴜsᴇᴅ ᴀs ᴀ ʀᴇᴘʟʏ, ᴍᴜᴛɪɴɢ ᴛʜᴇ ʀᴇᴘʟɪᴇᴅ to ᴜsᴇʀ." 
+        caption = f"<b>» Available commands for Mute :\n\nAdmins Only</b>\n\n❍ /mute <userhandle>: Silences a user. Can also be used as a reply, muting the replied to upass. \n❍ /tmute <userhandle> x(m/h/d): Mutes a user for x time. (via handle, or reply). M = minutes, h = hours, d = days.\n❍ /unmute <userhandle>: Unmutes a user. Can also be used as a reply, muting the replied to user." 
         buttons = [
             [
-                Button.inline("ʙᴀᴄᴋ", data=b"management_help")
+                Button.inline("Back", data=b"management_help")
             ]
         ]
     elif data == b"ban_help":
-        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ Bᴀɴs :</b>\n\n❍ /kickme: ᴋɪᴄᴋs ᴛʜᴇ ᴜsᴇʀ ᴡʜᴏ ɪssᴜᴇᴅ ᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ.\n\n<b>ᴀᴅᴍɪɴs ᴏɴʟʏ:</b>\n❍ /ban <ᴜsᴇʀʜᴀɴᴅʟᴅ>: ʙᴀɴs ᴀ ᴜsᴇʀ. (ᴠɪᴀ ʜᴀɴᴅʟᴇ, ᴏʀ ʀᴇᴘʟʏ).\n❍ /sban <ᴜsᴇʀʜᴀɴᴅʟᴇ>: sɪʟᴇɴᴛʟʏ ʙᴀɴ ᴀ ᴜsᴇʀ. ᴅᴇʟᴇᴛᴇs ᴄᴏᴍᴍᴀɴᴅ, ʀᴇᴘʟɪᴇᴅ ᴍᴇssᴀɢᴇ ᴀɴᴅ ᴅᴏᴇsɴ'ᴛ ʀᴇᴘʟʏ. (ᴠɪᴀ ʜᴀɴᴅʟᴇ, ᴏʀ ʀᴇᴘʟʏ).\n❍ /tban <ᴜsᴇʀʜᴀɴᴅʟᴇ> x(ᴍ/ʜ/ᴅ): ʙᴀɴs ᴀ ᴜsᴇʀ ғᴏʀ x ᴛɪᴍᴇ. (ᴠɪᴀ ʜᴀɴᴅʟᴇ, ᴏʀ ʀᴇᴘʟʏ). ᴍ = ᴍɪɴᴜᴛᴇs, ʜ = ʜᴏᴜʀs, ᴅ = ᴅᴀʏs.\n❍ /unban <ᴜsᴇʀʜᴀɴᴅʟᴇ>: ᴜɴʙᴀɴs ᴀ ᴜsᴇʀ. (ᴠɪᴀ ʜᴀɴᴅʟᴇ, ᴏʀ ʀᴇᴘʟʏ).\n❍ /kick <ᴜsᴇʀʜᴀɴᴅʟᴇ>: ᴋɪᴄᴋs ᴀ ᴜsᴇʀ ᴏᴜʀ ᴏғ ᴛʜᴇ ɢʀᴏᴜᴘ, (ᴠɪᴀ ʜᴀɴᴅʟᴇ, ᴏʀ ʀᴇᴘʟʏ)."
+        caption = f"<b>» Available commands for Bans :</b>\n\n❍ /kickme: Kicks the user who issued the command.\n\n<b>Admins Only:</b>\n❍ /ban <userhandld>: Bans a user. (via handle, or reply).\n❍ /sban <userhandle>: Silently ban a user. Deletes command, replied message and doesn't reply. (via handle, or reply).\n❍ /tban <userhandle> x(m/h/d): Bans a user for x time. (via handle, or reply). M = minutes, h = hours, d = days.\n❍ /unban <userhandle>: Unbans a user. (via handle, or reply).\n❍ /kick <userhandle>: Kicks a user our of the group, (via handle, or reply)."
         buttons = [
             [
-                Button.inline("ʙᴀᴄᴋ", data=b"management_help")
+                Button.inline("Back", data=b"management_help")
             ]
         ]
     elif data == b"download_help":
-        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ 𝖣ᴏᴡɴʟᴏᴀᴅ :\n\n𝖯ʀɪᴠᴀᴛᴇ ᴏɴʟʏ</b>\n❍ /download <𝖲ᴏɴɢ𝖭ᴀᴍᴇ/𝖸ᴏᴜᴛᴜʙᴇ𝖴ʀʟ> : 𝖥ᴇᴛᴄʜ 𝖣ᴏᴡɴʟᴏᴀᴅ ᴏᴘᴛɪᴏɴs ғᴏʀ ᴀ 𝖲ᴏɴɢ ᴏʀ 𝖵ɪᴅᴇᴏ ʙʏ ᴘʀᴏᴠɪᴅɪɴɢ ᴀ 𝖭ᴀᴍᴇ ᴏʀ ᴀ ᴅɪʀᴇᴄᴛ 𝖴ʀʟ."
+        caption = f"<b>» Available commands for Download :\n\nPrivate Only</b>\n❍ /download <SongName/YoutubeUrl> : Fetch download options for a song or video by providing a name or a direct Url."
         buttons = [
             [
-                Button.inline("ʙᴀᴄᴋ", data=b"management_help")
+                Button.inline("Back", data=b"management_help")
             ]
         ]
     elif data == b"fun_help":
-        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ 𝖥ᴜɴ :</b>\n\n❍ /truth : ᴛᴏ ɢɪᴠᴇ ᴀ ʀᴀɴᴅᴏᴍ ᴛʀᴜᴛʜ. \n❍ /dare : ᴛᴏ ɢɪᴠᴇ ᴀ ʀᴀɴᴅᴏᴍ ᴅᴀʀᴇ.\n❍ /slap : ᴛᴏ sʟᴀᴘ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /punch : ᴛᴏ ᴘᴜɴᴄɢ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n ❍ /hug : ᴛᴏ ʜᴜɢ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /pat : ᴛᴏ ᴘᴀᴛ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /kiss : ᴛᴏ ᴋɪss ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /cry : ᴛᴏ ᴄʀʏ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /dance : ᴛᴏ ᴅᴀɴᴄᴇ ᴡɪᴛʜ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /wink : ᴛᴏ ᴡɪɴᴋ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /bite : ᴛᴏ ʙɪᴛᴇ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /blush : ᴛᴏ ʙʟᴜsʜ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /smile : ᴛᴏ sᴍɪʟᴇ ᴡɪᴛʜ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /love : ᴛᴏ ʟᴏᴠᴇ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /highfive : ᴛᴏ ʜɪɢʜғɪᴠᴇ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n❍ /wave : ᴛᴏ ᴡᴀᴠᴇ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ.\n"
+        caption = f"<b>» Available commands for Fun :</b>\n\n❍ /truth : To give a random truth. \n❍ /dare : To give a random dare.\n❍ /slap : To slap repliad user.\n❍ /punch : To puncg repliad user.\n ❍ /hug : To hug repliad user.\n❍ /pat : To pat repliad user.\n❍ /kiss : To kiss repliad user.\n❍ /cry : To cry repliad user.\n❍ /dance : To dance with repliad user.\n❍ /wink : To wink repliad user.\n❍ /bite : To bite repliad user.\n❍ /blush : To blush repliad user.\n❍ /smile : To smile with repliad user.\n❍ /love : To love repliad user.\n❍ /highfive : To highfive repliad user.\n❍ /wave : To wave repliad user."
         buttons = [
             [
-                Button.inline("ʙᴀᴄᴋ", data=b"management_help")
+                Button.inline("Back", data=b"management_help")
             ]
         ]
     elif data == b"admins_help":
-        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ 𝖠ᴅᴍɪɴs :\n\n𝖴sᴇʀ ᴄᴏᴍᴍᴀɴᴅs</b>\n❍ /admins: ʟɪsᴛ ᴏꜰ ᴀᴅᴍɪɴs ɪɴ ᴛʜᴇ ᴄʜᴀᴛ.\n❍ /pinned: ᴛᴏ ɢᴇᴛ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴘɪɴɴᴇᴅ ᴍᴇssᴀɢᴇ.\n\n<b>𝖠ᴅᴍɪɴs ᴏɴʟʏ</b>\n❍ /pin: sɪʟᴇɴᴛʟʏ ᴘɪɴs ᴛʜᴇ ᴍᴇssᴀɢᴇ ʀᴇᴘʟɪᴇᴅ ᴛᴏ - ᴀᴅᴅ 'loud' ᴏʀ 'notify' ᴛᴏ ɢɪᴠᴇ ɴᴏᴛɪꜰs ᴛᴏ ᴜsᴇʀs. \n❍ /unpin: ᴜɴᴘɪɴs ᴛʜᴇ ᴄᴜʀʀᴇɴᴛʟʏ ᴘɪɴɴᴇᴅ ᴍᴇssᴀɢᴇ.\n❍ /invitelink: ɢᴇᴛs ɪɴᴠɪᴛᴇʟɪɴᴋ.\n❍ /promote: ᴘʀᴏᴍᴏᴛᴇs ᴛʜᴇ ᴜsᴇʀ ʀᴇᴘʟɪᴇᴅ ᴛᴏ.\n❍ /lowpromote: ᴘʀᴏᴍᴏᴛᴇs ᴛʜᴇ ᴜsᴇʀ ʀᴇᴘʟɪᴇᴅ ᴛᴏ ᴡɪᴛʜ ʜᴀʟꜰ ʀɪɢʜᴛs.\n❍ /fullpromote: ᴘʀᴏᴍᴏᴛᴇs ᴛʜᴇ ᴜsᴇʀ ʀᴇᴘʟɪᴇᴅ ᴛᴏ ᴡɪᴛʜ ꜰᴜʟʟ ʀɪɢʜᴛs.\n❍ /demote: ᴅᴇᴍᴏᴛᴇs ᴛʜᴇ ᴜsᴇʀ ʀᴇᴘʟɪᴇᴅ ᴛᴏ.\n❍ /setgtitle <text>: sᴇᴛ ɢʀᴏᴜᴘ ᴛɪᴛʟᴇ.\n❍ /setgpic: ʀᴇᴘʟʏ ᴛᴏ ᴀɴ ɪᴍᴀɢᴇ ᴛᴏ sᴇᴛ ᴀs ɢʀᴏᴜᴘ ᴘʜᴏᴛᴏ.\n❍ /setdes: sᴇᴛ ɢʀᴏᴜᴘ ᴅᴇsᴄʀɪᴘᴛɪᴏɴ.\n❍ /setsticker: sᴇᴛ ɢʀᴏᴜᴘ sᴛɪᴄᴋᴇʀ."
+        caption = f"<b>» Available commands for Admins :\n\nUser commands</b>\n❍ /admins: List of admins in the chat.\n❍ /pinned: To get the current pinned message.\n\n<b>Admins Only</b>\n❍ /pin: Silently pins the message replied to - add 'loud' or 'notify' to give notifs to users. \n❍ /unpin: Unpins the currently pinned message.\n❍ /invitelink: Gets invitelink.\n❍ /promote: Promotes the user replied to.\n❍ /lowpromote: Promotes the user replied to with half rights.\n❍ /fullpromote: Promotes the user replied to with full rights.\n❍ /demote: Demotes the user replied to.\n❍ /setgtitle <text>: Set group title.\n❍ /setgpic: Reply to an image to set as group photo.\n❍ /setdes: Set group description.\n❍ /setsticker: Set group sticker."
         buttons = [
             [
-                Button.inline("ʙᴀᴄᴋ", data=b"management_help")
+                Button.inline("Back", data=b"management_help")
             ]
         ]
     elif data == b"chatbot_help":
-        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ Cʜᴀᴛʙᴏᴛ :\n\nɢʀᴏᴜᴘ ᴏɴʟʏ</b>\n{BOT_MENTION} ʜᴀs ᴀɴ ᴄʜᴀᴛʙᴏᴛ ᴡʜɪᴄʜ ᴘʀᴏᴠɪᴅᴇs ʏᴏᴜ ᴀ sᴇᴇᴍɪɴɢʟᴇss ᴄʜᴀᴛᴛɪɴɢ ᴇxᴘᴇʀɪᴇɴᴄᴇ :\n\n❍  /chatbot : sʜᴏᴡs ᴄʜᴀᴛʙᴏᴛ ᴄᴏɴᴛʀᴏʟ ᴘᴀɴɴᴇʟ."
+        caption = f"<b>» Available commands for Chatbot :\n\nGroup Only</b>\n{BOT_MENTION} has an chatbot which provides you a seemingleess chatting experience :\n\n❍  /chatbot : Shows chatbot control pannel."
         buttons = [
             [
-                Button.inline("ʙᴀᴄᴋ", data=b"management_help")
+                Button.inline("Back", data=b"management_help")
             ]
         ]
     elif data == b"afk_help":
-        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ Iɴғᴏ:\n\nɢʀᴏᴜᴘ ᴏɴʟʏ</b>\n❍  /afk ᴏʀ /brb : ᴀɴɴᴏᴜɴᴄᴇᴅ ʏᴏᴜʀ ᴀғᴋ! ."
+        caption = f"<b>» Available commands for Afk:\n\nGroup Only</b>\n❍  /afk or /brb : Announced your afk! ."
         buttons = [
             [
-                Button.inline("ʙᴀᴄᴋ", data=b"management_help")
+                Button.inline("Back", data=b"management_help")
             ]
         ]
     elif data == b"info_help":
-        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ 𝖠ғᴋ :\n</b>❍ /Id : ᴛᴏ sʜᴏᴡ ʏᴏᴜʀ ɪᴅ ᴏʀ ᴄʜᴀᴛ ɪᴅ ᴀɴᴅ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ ɪᴅ. \n\n<b>ɢʀᴏᴜᴘ ᴏɴʟʏ</b>\n❍  /info : ᴛᴏ sʜᴏᴡ ᴛʜᴇ ʀᴇᴘʟɪᴀᴅ ᴜsᴇʀ ᴏʀ ʏᴏᴜʀ ɪɴғᴏʀᴍᴀᴛɪᴏɴ.."
+        caption = f"<b>» Available commands for Info:\n</b>❍ /Id : To show your id or chat id and repliad user id. \n\n<b>Group Only</b>\n❍  /info : To show the repliad user or your information.."
         buttons = [
             [
-                Button.inline("ʙᴀᴄᴋ", data=b"management_help")
+                Button.inline("Back", data=b"management_help")
             ]
         ]
     elif data == b"greetings_help":
-        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ Iɴғᴏ:\n\nɢʀᴏᴜᴘ ᴏɴʟʏ</b>\n❍ /welcome ᴏʀ /wel(on|yes/off|no) : ᴛᴏ sʜᴏᴡ ᴄᴜʀʀᴇɴᴛ ᴡᴇʟᴄᴏᴍᴇ sᴛᴀᴛᴜs ᴀɴᴅ ᴏɴ ᴏʀ ᴏғғ ᴡᴇʟᴄᴏᴍɪɴɢ.\n❍ /goodbye ᴏʀ /gb (on|yes/off|no) : ᴛᴏ sʜᴏᴡ ᴄᴜʀʀᴇɴᴛ ɢᴏᴏᴅʙʏᴇ sᴛᴀᴛᴜs ᴀɴᴅ ᴏɴ ᴏʀ ᴏғғ ɢᴏᴏᴅʙʏɪɴɢ\n❍ /setwelcome or /setwel (message or reply message) : ᴛᴏ sᴇᴛ ᴄᴜsᴛᴏᴍᴇ ᴡᴇʟᴄᴏᴍᴇ ᴛᴇxᴛ ᴏʀᴀᴍᴇᴅɪᴀ. \n❍ /setgoodbye or /setgoodbye (message or reply message) : ᴛᴏ sᴇᴛ ᴄᴜsᴛᴏᴍᴇ ɢᴏᴏᴅʙʏᴇ ᴛᴇxᴛ ᴏʀ ᴍᴇᴅɪᴀ. \n❍ /cleanservice (ᴏɴ|ʏᴇs/ᴏғғ|ɴᴏ) : ᴛᴏ ᴅᴇʟᴇᴛᴇ ᴏʟᴅ ɢʀᴇᴇᴛɪɴɢs ᴍᴇssᴀɢᴇ ᴍᴀᴋᴇ ʏᴏᴜʀ ɢʀᴏᴜᴘ ᴄʟᴇᴀɴ. "
+        caption = f"<b>» Available commands for Greetings:\n\nGroup Only</b>\n❍ /welcome or /wel(on|yes/off|no) : To show current welcome status and on or off welcoming.\n❍ /goodbye or /gb (on|yes/off|no) : To show current goodbye status and on or off goodbying\n❍ /setwelcome or /setwel (message or reply message) : To set custome welcome text oramedia. \n❍ /setgoodbye or /setgoodbye (message or reply message) : To set custome goodbye text or media. \n❍ /cleanservice (on|yes/off|no) : To delete old greetings message make your group clean."
         buttons = [
             [
-                Button.inline("ʙᴀᴄᴋ", data=b"management_help"), 
-                Button.inline("ᴍᴀʀᴋᴅᴏᴡɴ", data=b"markdown_help"), 
+                Button.inline("Back", data=b"management_help"), 
+                Button.inline("Markdown", data=b"markdown_help"), 
             ]
         ]
     elif data == b"music_help":
-         caption = f"<b>{BOT_MENTION} ᴛʜᴇ ᴜʟᴛɪᴍᴀᴛᴇ ᴍᴜsɪᴄ ʙᴏᴛ</b>\n\nᴄʜᴏꜱᴇ ᴛʜᴇ ᴄᴀᴛᴇɢᴏʀʏ ꜰᴏʀ ᴡʜɪᴄʜ ʏᴏᴜ ᴡᴀɴɴᴀ ɢᴇᴛ ʜᴇʟᴘ. ᴡɪᴛʜ {BOT_MENTION}\n<b>ᴀɴʏ ᴘʀᴏʙʟᴇᴍ ᴀsᴋ ʏᴏᴜʀ ᴅᴏᴜʙᴛs ᴀᴛ</b> <a href=\"https://t.me/{SUPPORT_CHAT}\">sᴜᴘᴘᴏʀᴛ chat</a>.\n\nᴀʟʟ ᴄᴏᴍᴍᴀɴᴅꜱ ᴄᴀɴ ʙᴇ ᴜꜱᴇᴅ ᴡɪᴛʜ : /"
+         caption = f"<b>{BOT_MENTION} The Ultimate Music Bot</b>\n\nChose the category for which you wanna get help. With {BOT_MENTION}\n<b>Any problem ask your doubts at</b> <a href=\"https://t.me/{SUPPORT_CHAT}\">support chat</a>.\n\nAll commands can be used with : /"
          buttons = [
              [
-                 Button.inline("ᴀᴅᴍɪɴ", data=b"music_admin_help"), 
-                 Button.inline("ᴘʟᴀʏ", data=b"play_help"), 
+                 Button.inline("Admin", data=b"music_admin_help"), 
+                 Button.inline("Play", data=b"play_help"), 
              ], 
              [
-                 Button.inline("◁", data=b"music_preview"), 
-                 Button.inline("ʙᴀᴄᴋ", data=b"help_menu"), 
-                 Button.inline("▷", data=b"music_next")
+                 Button.inline("Preview", data=b"music_preview"), 
+                 Button.inline("Back", data=b"help_menu"), 
+                 Button.inline("Next", data=b"music_next")
              ]
          ]
     elif data == b"play_help":
-        caption = f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ 𝖯ʟᴀʏ:\n\nv : sᴛᴀɴᴅs ғᴏʀ ᴠɪᴅᴇᴏ ᴩʟᴀʏ.\nforce : sᴛᴀɴᴅs ғᴏʀ ғᴏʀᴄᴇ ᴩʟᴀʏ.</b>\n\n❍ /play ᴏʀ /vplay : sᴛᴀʀᴛs sᴛʀᴇᴀᴍɪɴɢ ᴛʜᴇ ʀᴇǫᴜᴇsᴛᴇᴅ ᴛʀᴀᴄᴋ ᴏɴ ᴠɪᴅᴇᴏᴄʜᴀᴛ.\n\n<b>ᴀᴅᴍɪɴs ᴏɴʟʏ</b>\n❍ /playforce ᴏʀ /vplayforce : sᴛᴏᴩs ᴛʜᴇ ᴏɴɢᴏɪɴɢ sᴛʀᴇᴀᴍ ᴀɴᴅ sᴛᴀʀᴛs sᴛʀᴇᴀᴍɪɴɢ ᴛʜᴇ ʀᴇǫᴜᴇsᴛᴇᴅ ᴛʀᴀᴄᴋ."
+        caption = f"<b>» Available commands for Play:\n\nv : Stands for video play.\nforce : Stands for force play.</b>\n\n❍ /play or /vplay : Starts streaming the requested track on videochat.\n\n<b>Admins Only</b>\n❍ /playforce or /vplayforce : Stops the ongoing stream and starts streaming the requested track."
         buttons = [
             [
-                Button.inline("ʙᴀᴄᴋ", data=b"music_help")
+                Button.inline("Back", data=b"music_help")
             ]
         ] 
     elif data == b"music_admin_help":
-        caption= f"<b>» ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅs ꜰᴏʀ 𝖠ᴅᴍɪɴ:</b>\n\n❍ /pause : ᴩᴀᴜsᴇ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴩʟᴀʏɪɴɢ sᴛʀᴇᴀᴍ.\n\n❍ /resume : ʀᴇsᴜᴍᴇ ᴛʜᴇ ᴩᴀᴜsᴇᴅ sᴛʀᴇᴀᴍ.\n\n❍ /skip : sᴋɪᴩ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴩʟᴀʏɪɴɢ sᴛʀᴇᴀᴍ ᴀɴᴅ sᴛᴀʀᴛ sᴛʀᴇᴀᴍɪɴɢ ᴛʜᴇ ɴᴇxᴛ ᴛʀᴀᴄᴋ ɪɴ ǫᴜᴇᴜᴇ.\n\n/end ᴏʀ /stop : ᴄʟᴇᴀʀs ᴛʜᴇ ǫᴜᴇᴜᴇ ᴀɴᴅ ᴇɴᴅ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴩʟᴀʏɪɴɢ sᴛʀᴇᴀᴍ.\n\n❍ /replay : ʀᴇᴘʟᴀʏ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴘʟᴀʏɪɴɢ sᴛʀᴇᴀᴍ. " 
+        caption= f"<b>» Available commands for Admin:</b>\n\n❍ /pause : Pause the current playing stream.\n\n❍ /resume : Resume the paused stream.\n\n❍ /skip : Skip the current playing stream and start streaming the next track in queue.\n\n/end or /stop : Clears the queue and end the current playing stream.\n\n❍ /replay : Replay the current playing stream." 
         buttons = [
             [
-                Button.inline("ʙᴀᴄᴋ", data=b"music_help")
+                Button.inline("Back", data=b"music_help")
             ]
         ] 
     try:
@@ -270,4 +262,5 @@ async def callback_help(event):
             parse_mode="html"
         )
     except:
-        pass          
+        pass    
+        

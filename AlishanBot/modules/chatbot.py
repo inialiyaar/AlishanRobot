@@ -70,22 +70,22 @@ async def router_reply(user_text: str) -> str:
 @add_command("chatbot")
 async def chatbot_toggle(event, command_used, args):
     if not event.is_group:
-        return await event.reply("» ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴡᴏʀᴋ ᴏɴʟʏ ɪɴ ɢʀᴏᴜᴘ")
+        return await event.reply("» This command works only in group")
 
     user = await event.get_sender()
     chat = await event.get_chat()
     chat_id = int(f"-100{abs(chat.id)}") if not str(chat.id).startswith("-100") else int(chat.id)
 
     if not await is_admin(user, event):
-        return await event.reply("» ʏᴏᴜ ᴍᴜsᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴍᴀɴᴀɢᴇ ᴄʜᴀᴛʙᴏᴛ")
+        return await event.reply("» You must be an admin to manage chatbot")
 
     keyboard = [
         [
-            Button.inline("ᴇɴᴀʙʟᴇ", data=f"enable_chatbot({event.chat_id})"),
-            Button.inline("ᴅɪsᴀʙʟᴇ", data=f"disable_chatbot({event.chat_id})"),
+            Button.inline("Enable", data=f"enable_chatbot({event.chat_id})"),
+            Button.inline("Disable", data=f"disable_chatbot({event.chat_id})"),
         ]
     ]
-    await event.reply("• ᴄʜᴏᴏsᴇ ᴀɴ ᴏᴩᴛɪᴏɴ ᴛᴏ ᴇɴᴀʙʟᴇ/ᴅɪsᴀʙʟᴇ ᴄʜᴀᴛʙᴏᴛ", buttons=keyboard)
+    await event.reply("• Choose an option to enable/disable chatbot", buttons=keyboard)
 
 
 @Alishan.on(events.CallbackQuery(pattern=r"enable_chatbot\((.+)\)"))
@@ -94,10 +94,10 @@ async def enable_chatbot(event):
     chat_id = int(event.pattern_match.group(1))
 
     if not await is_admin(user, event):
-        return await event.answer("ᴏɴʟʏ ᴀᴅᴍɪɴ ᴄᴀɴ ᴇɴᴀʙʟᴇ ᴄʜᴀᴛ ʙᴏᴛ", alert=True)
+        return await event.answer("Only admin can enable chat bot", alert=True)
 
     chat_bot_groups.update_one({"chat_id": chat_id}, {"$set": {"enabled": True}}, upsert=True)
-    await event.edit(f"ᴄʜᴀᴛ ʙᴏᴛ ᴇɴᴀʙʟᴇ ᴅ ʙʏ {user.first_name}~!")
+    await event.edit(f"Chat bot enabled by {user.first_name}!")
 
 
 @Alishan.on(events.CallbackQuery(pattern=r"disable_chatbot\((.+)\)"))
@@ -106,10 +106,10 @@ async def disable_chatbot(event):
     chat_id = int(event.pattern_match.group(1))
 
     if not await is_admin(user, event):
-        return await event.answer("ᴏɴʟʏ ᴀᴅᴍɪɴ ᴄᴀɴ ᴅɪsᴀʙʟᴇ ᴄʜᴀᴛʙᴏᴛ", alert=True)
+        return await event.answer("Only admin can disable chatbot", alert=True)
 
     chat_bot_groups.update_one({"chat_id": chat_id}, {"$set": {"enabled": False}}, upsert=True)
-    await event.edit(f"ᴄʜᴀᴛʙᴏᴛ ᴅɪsᴀʙʟᴇᴅ ʙʏ {user.first_name}...")
+    await event.edit(f"Chatbot disabled by {user.first_name}...")
 
 
 
@@ -169,4 +169,4 @@ async def chatbot_reply(event):
             
             if reply:
                 await event.reply(reply)
-
+                
