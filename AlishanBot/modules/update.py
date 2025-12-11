@@ -171,7 +171,7 @@ async def ChatAction(event):
 @music.on_update(filters.call_participant(GroupCallParticipant.Action.LEFT | GroupCallParticipant.Action.JOINED))
 async def VoiceChatUpdate(_, update: Update):
     participant = update.participant
-    action = participant.action
+    action = participant.Action
     chat_id = update.chat_id
     user = await Alishan.get_entity(participant.user_id)
     if action == GroupCallParticipant.Action.JOINED:

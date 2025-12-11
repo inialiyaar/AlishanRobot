@@ -27,17 +27,12 @@ async def Info_Handler(event, command_used, args):
         username = user.username or ""
         user_id = user.id
         chat = await event.get_chat()
-        photos = await Alishan.get_profile_photos(user_id, limit=1)
         if await is_admin(user, event):
             admin_stats = f"Yes!"
         else:
             admin_stats = f"No!"
-        if photos:
-            photo = photos[0]
-        else:    
-            photo = Unknown_Pic
         text = f"{full_name} Information.\n\nFirst Name: {first}\nLast Name: {last}\nFull Name: {full_name}\nUsername: @{username}\nUser ID: {user_id}\nLink: <a href='tg://user?id={user_id}'>{first}</a>\n\nIs Admin: {admin_stats}"
-        await Alishan.send_file(chat.id, file=photo, caption=text, parse_mode="html")
+        await Alishan.send_message(chat.id, text, parse_mode="html")
     if command_used == "id":
         if event.is_private:
             first = sender.first_name or ""
