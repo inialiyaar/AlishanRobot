@@ -33,6 +33,7 @@ def readable_time(seconds: int) -> str:
     if seconds > 0 or not parts:
         parts.append(f"{seconds} second{'s' if seconds != 1 else ''}")
     return " ".join(parts)
+    
 @Alishan.on(events.Raw)
 async def GroupCallUpdate(event):
     if not isinstance(event, UpdateNewChannelMessage):
@@ -171,11 +172,10 @@ async def ChatAction(event):
 @music.on_update(filters.call_participant(GroupCallParticipant.Action.LEFT | GroupCallParticipant.Action.JOINED))
 async def VoiceChatUpdate(_, update: Update):
     participant = update.participant
-    action = participant.Action
     chat_id = update.chat_id
     user = await Alishan.get_entity(participant.user_id)
-    if action == GroupCallParticipant.Action.JOINED:
-        await Assistant.send_message(chat_id, f"{user.first_name} joined the VoiceChat.")
-    else:
+    if "Action.LEFT" == GroupCallParticipant.Action.LEFT:
         await Assistant.send_message(chat_id, f"{user.first_name} left the VoiceChat.")
+    if "Action.JOINED" == GroupCallParticipant.Action.JOINED:
+        await Assistant.send_message(chat_id, f"{user.first_name} joined the VoiceChat.")
         
