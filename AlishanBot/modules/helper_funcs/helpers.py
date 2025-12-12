@@ -11,9 +11,12 @@ from AlishanBot.modules.helper_funcs.ErrorLog import send_error
 import traceback
 
 async def check_rights(event, user, right):
-    chat = await event.get_chat()
+    try:
+        chat = await event.get_chat()
+    except:
+        chat = await Alishan.get_entity(event)    
 
-    participant = await event.client(GetParticipantRequest(chat.id, user))
+    participant = await Alishan(GetParticipantRequest(chat.id, user))
     participant = participant.participant
     
     if isinstance(participant, (ChannelParticipantCreator, ChatParticipantCreator)):
